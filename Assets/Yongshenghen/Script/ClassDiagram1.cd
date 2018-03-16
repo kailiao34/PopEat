@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="PlayerManager">
+    <Position X="5.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\Yongshenghen\Script\PlayerManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="YongGameManager">
+    <Position X="9.25" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAAAAAAiACAAAQAAAQAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Yongshenghen\Script\YongGameManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="YongConnectAndJoinRandom">
+    <Position X="12.5" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>IAQQIAAAACBAAAAAAECAAAAACAAAAAQAEAAAAAAAwAA=</HashCode>
+      <FileName>Assets\Yongshenghen\Script\YongConnectAndJoinRandom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Microsoft JhengHei UI" Size="9" />
+</ClassDiagram>
