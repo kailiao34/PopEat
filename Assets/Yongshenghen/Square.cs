@@ -11,9 +11,11 @@ public class Square : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        thisRenderer = GetComponent<Renderer>();
-        thisRenderer.material=new  Material(Shader.Find("Standard"));
-        thisRenderer.material.color = c1[Random.Range(0, c1.Length)];
+        //thisRenderer = GetComponent<Renderer>();
+        //thisRenderer.material=new  Material(Shader.Find("Standard"));
+		//GetComponent<MeshRenderer>().material.color
+
+		GetComponent<MeshRenderer>().material.color = c1[Random.Range(0, c1.Length)];
     }
 
     // Update is called once per frame

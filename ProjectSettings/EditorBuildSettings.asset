@@ -4,4 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Hall.unity
+    guid: 96d4b3aad77b98a419d2b66d832a702f
+  - enabled: 1
+    path: Assets/Scenes/Room.unity
+    guid: 438c23c06e792e3419b73f60ecf5067f
+  - enabled: 1
+    path: Assets/Scenes/GameMain.unity
+    guid: caaa013aed8d7464f8c73e65890c9860

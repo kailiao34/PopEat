@@ -17,8 +17,11 @@ public class WWWTest : MonoBehaviour {
     }
 
 	void PrintDetails(Details dd) {
+
 		print(dd.name);
-        print(dd.address);
+		foodLis.list.Add(dd.name);
+
+		print(dd.address);
 		print(dd.phoneNum);
 		foreach (string s in dd.openingHours) {
 			print(s);
@@ -36,6 +39,6 @@ public class WWWTest : MonoBehaviour {
 		print(dd.permanentlyClosed);
 		print(dd.requested);
 		print("=======================");
-      
+		foodLis.Getlist();
 	}
 }

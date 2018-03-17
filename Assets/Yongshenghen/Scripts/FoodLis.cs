@@ -13,11 +13,29 @@ public class FoodLis : MonoBehaviour
     public List<string> list;
     public List<RectTransform> foodListRectTransform;
     public List<FoodListButton> FoodListButtonscript;
-    // Use this for initialization
-    public void Getlist()
+	// Use this for initialization
+
+	private void Start()
+	{
+		GetRes.ins.Get(24.99579212, 121.48876185, 500, GetResNames);
+	}
+
+	void GetResNames(string[] resNames)
+	{
+		foreach (string s in resNames)
+		{
+			list.Add(s);
+		}
+
+		Getlist();
+	}
+
+	public void Getlist()
     {
-        for (int i = 0; i < list.Count; i++)
+
+		for (int i = 0; i < list.Count; i++)
         {
+			print(list[i]);
             UISort(i);
         }
     }
