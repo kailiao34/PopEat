@@ -51,13 +51,13 @@ public class FoodLis : MonoBehaviour
         foodListRectTransform[i].transform.parent = FoodListButtonParentobject.transform;
         if (i == 0)
         {
-            foodListRectTransform[i].anchoredPosition = new Vector2(7.47F, -207F);
+            foodListRectTransform[i].anchoredPosition = new Vector2(7.47F, -230F);
             foodListRectTransform[i].localScale = new Vector3(2, 2, 1);
 
         }
         if (i >= 1)
         {
-            foodListRectTransform[i].anchoredPosition = new Vector2(foodListRectTransform[0].anchoredPosition.x, foodListRectTransform[0].anchoredPosition.y + (i * -100));
+            foodListRectTransform[i].anchoredPosition = new Vector2(foodListRectTransform[0].anchoredPosition.x, foodListRectTransform[0].anchoredPosition.y + (i * -120));
             foodListRectTransform[i].localScale = new Vector3(2, 2, 1);
 
         }
