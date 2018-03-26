@@ -51,7 +51,7 @@ public class FoodLis : MonoBehaviour
         foodListRectTransform[i].transform.parent = FoodListButtonParentobject.transform;
         if (i == 0)
         {
-            foodListRectTransform[i].anchoredPosition = new Vector2(7.47F, -230F);
+            foodListRectTransform[i].anchoredPosition = new Vector2(7.47F, -140F);
             foodListRectTransform[i].localScale = new Vector3(2, 2, 1);
 
         }
