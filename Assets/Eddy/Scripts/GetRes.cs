@@ -22,7 +22,7 @@ public class Reviews {
 
 public class GetRes : MonoBehaviour {
 	public static GetRes ins;
-	public delegate void GetDetailDel(List<Details> resDetails);
+	public delegate void GetDetailDel(List<string> resNames, List<Details> resDetails);
 
 	private void Awake() {
 		ins = this;
@@ -41,6 +41,7 @@ public class GetRes : MonoBehaviour {
 		string text1 = www.text;
 
 		List<Details> detailsList = new List<Details>();
+		List<string> nameList = new List<string>();
 		int s1 = 0, e1 = 0;
 
 		#region =========================== 取得餐廳列表 ===========================
@@ -65,6 +66,8 @@ public class GetRes : MonoBehaviour {
 				name = name,
 				permanentlyClosed = false,
 			};
+
+			nameList.Add(name);
 
 			#region ======= 取得各餐廳的 Details =======
 			www = new WWW(url);
@@ -156,7 +159,7 @@ public class GetRes : MonoBehaviour {
 		}
 		#endregion ==================================================================
 
-		if (callBackEvent != null) callBackEvent(detailsList);
+		if (callBackEvent != null) callBackEvent(nameList, detailsList);
 	}
 
 	#endregion ==========================================================
