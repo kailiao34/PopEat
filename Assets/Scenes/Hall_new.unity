@@ -1583,7 +1583,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UItext: {fileID: 1397630258}
-  foodLis: {fileID: 2067317551}
+  resIndex: 0
 --- !u!114 &403217218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2900,7 +2900,7 @@ RectTransform:
   - {fileID: 1631338936}
   - {fileID: 2068681414}
   m_Father: {fileID: 1118178204}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3204,7 +3204,7 @@ RectTransform:
   m_LocalScale: {x: 1.00032, y: 1.00032, z: 1.00032}
   m_Children: []
   m_Father: {fileID: 1118178204}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4467,7 +4467,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00010716584}
+  m_AnchoredPosition: {x: 0, y: 0.000047734957}
   m_SizeDelta: {x: 0.00024414062, y: -1.4000831}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1102801875
@@ -4595,7 +4595,6 @@ RectTransform:
   - {fileID: 113385343}
   - {fileID: 730462808}
   - {fileID: 319428690}
-  - {fileID: 1504747712}
   - {fileID: 785413855}
   - {fileID: 761445181}
   m_Father: {fileID: 0}
@@ -4956,7 +4955,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 702906993}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5273,6 +5272,7 @@ GameObject:
   - component: {fileID: 1431389682}
   - component: {fileID: 1431389681}
   - component: {fileID: 1431389685}
+  - component: {fileID: 1431389686}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5359,6 +5359,17 @@ MonoBehaviour:
   storeInformationtUI: {fileID: 0}
   FoodInputField: {fileID: 387876299}
   food: 
+--- !u!114 &1431389686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1431389680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f32a562c4908f41af18f1324eb17e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1482663073
 GameObject:
   m_ObjectHideFlags: 0
@@ -5497,8 +5508,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2074088744}
   m_HandleRect: {fileID: 2074088743}
   m_Direction: 0
-  m_Value: 0.16666667
-  m_Size: 0.99999964
+  m_Value: 0
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5538,80 +5549,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1495462761}
---- !u!1 &1504747711
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1504747712}
-  - component: {fileID: 1504747714}
-  - component: {fileID: 1504747713}
-  m_Layer: 5
-  m_Name: txtOprTrueFalse
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1504747712
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1504747711}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.00032, y: 1.00032, z: 1.00032}
-  m_Children: []
-  m_Father: {fileID: 1118178204}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1429, y: -54.000008}
-  m_SizeDelta: {x: 500, y: 150}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1504747713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1504747711}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 100
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 1
-    m_MaxSize: 100
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: "\u662F/\u5426"
---- !u!222 &1504747714
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1504747711}
 --- !u!1 &1506128971
 GameObject:
   m_ObjectHideFlags: 0
@@ -5860,8 +5797,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 480806297}
   m_HandleRect: {fileID: 480806296}
   m_Direction: 0
-  m_Value: 0.5
-  m_Size: 0.9999999
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6297,7 +6234,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 491.5, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1810017692
@@ -6654,7 +6591,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00005523467, y: -0.0000026829787}
+  m_AnchoredPosition: {x: 0.000010391913, y: 0.000012927205}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &2028897557
@@ -6903,7 +6840,6 @@ GameObject:
   - component: {fileID: 2067317550}
   - component: {fileID: 2067317549}
   - component: {fileID: 2067317551}
-  - component: {fileID: 2067317552}
   m_Layer: 5
   m_Name: FoodListUI
   m_TagString: Untagged
@@ -6974,6 +6910,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168dd11a55fc21643a0bba8c76af3e17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resInfosUI:
+  - {fileID: 331565318}
+  - {fileID: 421573079}
+  - {fileID: 1521218115}
+  - {fileID: 113385344}
+  - {fileID: 730462809}
+  - {fileID: 319428691}
+  - {fileID: 785413856}
+  reviewListUI: {fileID: 761445184}
   FoodInputField: {fileID: 387876299}
   FoodListUI_ScrollView_Content: {fileID: 1102801873}
   FoodListButtonParentobject: {fileID: 28386815}
@@ -6981,20 +6926,8 @@ MonoBehaviour:
     type: 2}
   EnterFoodListButton: {fileID: 403217217}
   EnterFoodListButtonAnimator: {fileID: 28386817}
-  list: []
   foodListRectTransform: []
   FoodListButtonscript: []
---- !u!114 &2067317552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2067317547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66f32a562c4908f41af18f1324eb17e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2068681413
 GameObject:
   m_ObjectHideFlags: 0
@@ -7426,6 +7359,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 470.25, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}

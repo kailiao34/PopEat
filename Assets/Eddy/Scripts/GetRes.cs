@@ -3,26 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Details {
-	public string name;                                             // 餐廳名
-	public string address;                                          // 地址
-	public string phoneNum;                                         // 電話
-	public List<string> openingHours = new List<string>();          // 營業時間 (字串表示)
-	public float rating;                                            // 評價分數
-	public List<Reviews> reviews = new List<Reviews>();             // 網友評價
-	public bool permanentlyClosed;                                  // 如果 True 則此餐廳已永久停業
-}
-
-public class Reviews {
-	public string name;
-	public int rating;
-	public string text;
-	public DateTime time = new DateTime(1970, 1, 1);
-}
 
 public class GetRes : MonoBehaviour {
 	public static GetRes ins;
-	public delegate void GetDetailDel(List<string> resNames, List<Details> resDetails);
+	public delegate void GetDetailDel(List<Details> resDetails);
 
 	private void Awake() {
 		ins = this;
@@ -41,7 +25,6 @@ public class GetRes : MonoBehaviour {
 		string text1 = www.text;
 
 		List<Details> detailsList = new List<Details>();
-		List<string> nameList = new List<string>();
 		int s1 = 0, e1 = 0;
 
 		#region =========================== 取得餐廳列表 ===========================
@@ -67,7 +50,6 @@ public class GetRes : MonoBehaviour {
 				permanentlyClosed = false,
 			};
 
-			nameList.Add(name);
 
 			#region ======= 取得各餐廳的 Details =======
 			www = new WWW(url);
@@ -159,7 +141,7 @@ public class GetRes : MonoBehaviour {
 		}
 		#endregion ==================================================================
 
-		if (callBackEvent != null) callBackEvent(nameList, detailsList);
+		if (callBackEvent != null) callBackEvent(detailsList);
 	}
 
 	#endregion ==========================================================

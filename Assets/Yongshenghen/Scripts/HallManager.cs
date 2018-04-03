@@ -13,7 +13,7 @@ public class HallManager : MonoBehaviour
     public StoreInformationtUI storeInformationtUI;
     public InputField FoodInputField;
     public string food;
-    void Start()
+    void Awake()
     {
         hallManager = this;
 

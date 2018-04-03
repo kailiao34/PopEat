@@ -1,0 +1,2 @@
+FoodLis : 取得附近餐廳並排出餐廳 UI 按鈕
+FoodListButton: 按下餐廳按鈕事件呼叫此腳本的 select 函數，按下資訊按鈕呼叫 OpenStoreInformation 函數

@@ -3,55 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WWWTest : MonoBehaviour {
-    //public FoodLis foodLis;
     void Start() {
-		System.Text.StringBuilder b = new System.Text.StringBuilder();
-		b.Append(" ");
-		b.Append(3).Append(" ");
-		b.Append(5.45f).Append(" sdf");
-
-		print(b.ToString());
-
-		//System.DateTime d = new System.DateTime(1995,6,7,8,9,1);
-		//print(d);
-
-		//System.DateTime d1 = new System.DateTime(d.Ticks);
-		//print(d1);
-
-		//GetRes.ins.GetAllRes(24.99579212, 121.48876185, 500, PrintDetails);
-		//GetRes.ins.Get(24.99579212, 121.48876185, 500, PrintNames);
+		GetRes.ins.GetAllRes(24.99579212, 121.48876185, 500, PrintDetails);
 	}
 
-	//void PrintNames(string[] resNames) {
-	//	foreach (string s in resNames) {
-	//		GetRes.ins.GetResDetails(s, PrintDetails);
- //       }
- //   }
+	public static void PrintDetails(List<Details> d) {
 
-	void PrintDetails(List<Details> d) {
+		int index = 0;
 
 		foreach (Details dd in d) {
-			print(dd.name);
-			//foodLis.list.Add(dd.name);
+			index++;
+			print("============================== (" + index + ") ==============================");
+			print("餐廳名 --> " + dd.name);
 
-			print(dd.address);
-			print(dd.phoneNum);
+			print("地址 --> " + dd.address);
+			print("電話 --> " + dd.phoneNum);
+			print("====== ↓↓↓ 以下是營業時間 (字串型式) ======");
 			foreach (string s in dd.openingHours) {
 				print(s);
 			}
-			print(dd.rating);
-			print("--------- reviews ----------");
+			print("餐廳評價(是數字，到時可以用星號表示之類) --> " + dd.rating);
+			print("====== 以下是各個評價留言 (每個留言有4個資訊: 留言者名、給予的評價、留言、留言時間 ======");
 			foreach (Reviews r in dd.reviews) {
+				print("-------- 評價 --------");
 				print(r.name);
 				print(r.rating);
 				print(r.text);
 				print(r.time);
 			}
 
-			print("----------------------------");
-			print(dd.permanentlyClosed);
-			print("=======================");
-			//foodLis.Getlist();
+			print("------------------------- 評價完 --------------------------");
+			print("餐廳是否已永久關閉 --> " + dd.permanentlyClosed);
+			print("===================================================================");
 		}
 	}
 }
