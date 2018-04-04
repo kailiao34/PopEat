@@ -45,7 +45,7 @@ public class FoodLis : MonoBehaviour
 			f.UItext.text = resList[i].name;
 			f.resIndex = i;
 			
-			if (i == 0) {
+			/*if (i == 0) {
 				r.anchoredPosition = new Vector2(7.47F, -140F);
 				r.localScale = new Vector3(2, 2, 1);
 
@@ -58,7 +58,7 @@ public class FoodLis : MonoBehaviour
 			if (i >= 11) {
 				RectTransform r1 = FoodListUI_ScrollView_Content.GetComponent<RectTransform>();
 				r1.sizeDelta = new Vector2(r1.rect.width, r1.rect.height + (120));
-			}
+			}*/
 
 			foodListRectTransform.Add(r);
 			FoodListButtonscript.Add(f);
