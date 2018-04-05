@@ -114,5 +114,5 @@ public class NetworkBehaviour : TcpBase {
 		Send(socket, str.ToString());
 	}
 
-
+	
 }
