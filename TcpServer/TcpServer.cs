@@ -1,15 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 
-public class RoomCommands : NetworkBehaviour {
+public class TcpServer : ServerActions {
 
 	public delegate void ReceiveResDel(Socket socket, List<Details> dList);
 	public ReceiveResDel ReceiveResCallback;
 
 	protected const string ReceiveResInfosCode = "RRI";                   // 接收所有餐廳資訊的指令代號
 
-	public RoomCommands() {
+	public TcpServer() {
 		methods.Add(ReceiveResInfosCode, ReceiveResInfos);       // 接收所有餐廳資訊
+	}
+
+	public void PrintRooms() {
+		foreach (KeyValuePair<string, HashSet<Socket>> p in roomDict) {
+			System.Console.WriteLine(p.Key + " --> " + p.Value.Count);
+		}
 	}
 
 	const string split = "[,-]", listSplit = "{,-}";
@@ -41,7 +47,7 @@ public class RoomCommands : NetworkBehaviour {
 			param[index++] = str.ToString();
 		}
 
-		SendCommand(socket, ReceiveResInfosCode, param, listSplit);
+		SendCommand(socket, ReceiveResInfosCode, listSplit, param);
 	}
 
 	void ReceiveResInfos(Socket inSocket, string[] inParams) {
@@ -55,7 +61,7 @@ public class RoomCommands : NetworkBehaviour {
 				Details d = new Details();
 				int n, ii;
 				string[] paramsStr = str1.Split(new string[] { split }, System.StringSplitOptions.None);
-
+				
 				d.name = paramsStr[0];
 				d.address = paramsStr[1];
 				d.phoneNum = paramsStr[2];

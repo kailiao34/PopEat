@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 public class FoodListButton : MonoBehaviour {
     public Text UItext;
@@ -11,9 +9,9 @@ public class FoodListButton : MonoBehaviour {
     public void Select()
     {
 		print("您選擇了: " + UItext.text);
-
-    }
-    public void OpenStoreInformation()
+		GameManager.playerInfos.foodSelected = UItext.text;
+	}
+    public void Info()
     {
 		Details d = FoodLis.resList[resIndex];
 
