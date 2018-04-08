@@ -6,8 +6,9 @@ public class FoodListButton : MonoBehaviour {
     public Text UItext;
 	[HideInInspector]
 	public int resIndex;
-	
-	public void Select()
+    string closed;
+
+    public void Select()
     {
 		print("您選擇了: " + UItext.text);
 
@@ -22,15 +23,38 @@ public class FoodListButton : MonoBehaviour {
 		FoodLis.resInfos[1].text = d.phoneNum;
 		FoodLis.resInfos[2].text = d.address;
 
-		foreach (string s in d.openingHours) {
-			str.AppendLine(s);
-		}
-		FoodLis.resInfos[3].text = str.ToString();
+        if (d.openingHours == null)
+        {
+            str = new System.Text.StringBuilder("無資料 _(´ཀ`」 ∠)_");            
+        }
+        else {
+            foreach (string s in d.openingHours)
+            {
+                str.AppendLine(s);
+            }
+        }
 
-		FoodLis.resInfos[4].text = d.rating.ToString();
-		FoodLis.resInfos[5].text = d.permanentlyClosed.ToString();
+        if (str.ToString().Length <= 1)
+        {
+            FoodLis.resInfos[3].text = "無資料 _(´ཀ`」 ∠)_";
+        }
+        else FoodLis.resInfos[3].text = str.ToString();
 
-		str = new System.Text.StringBuilder();
+        FoodLis.resInfos[4].text = "評價：" + d.rating.ToString() + "/5";
+
+        if (d.permanentlyClosed){
+            closed = "否";
+        }
+        if (!d.permanentlyClosed)
+        {
+            closed = "是";
+        }
+        else closed = "待確認";
+
+		FoodLis.resInfos[5].text = "仍有營業：" + closed;
+
+
+        str = new System.Text.StringBuilder();
 
 		foreach (Reviews s in d.reviews) {
 			str.AppendLine("評價者: " + s.name);
