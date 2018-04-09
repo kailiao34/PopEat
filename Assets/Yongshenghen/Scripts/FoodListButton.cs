@@ -5,6 +5,7 @@ public class FoodListButton : MonoBehaviour {
 	[HideInInspector]
 	public int resIndex;
     string closed;
+    string closed2;
 
     public void Select()
     {
@@ -41,16 +42,14 @@ public class FoodListButton : MonoBehaviour {
         FoodLis.resInfos[4].text = "評價：" + d.rating.ToString() + "/5";
 
         if (d.permanentlyClosed){
-            closed = "否";
+            closed = "已歇業";
         }
-        if (!d.permanentlyClosed)
+        else if (!d.permanentlyClosed)
         {
-            closed = "是";
+            closed = "";
         }
-        else closed = "待確認";
 
-		FoodLis.resInfos[5].text = "仍有營業：" + closed;
-
+        FoodLis.resInfos[5].text = closed;
 
         str = new System.Text.StringBuilder();
 
@@ -61,5 +60,6 @@ public class FoodListButton : MonoBehaviour {
 			str.AppendLine("留言時間: " + s.time.ToString("yyyy-MM-dd HH:mm:ss"));
 		}
 		FoodLis.resInfos[6].text = str.ToString();
-	}
+        FoodLis.resInfos[7].text = d.opNow;
+    }
 }

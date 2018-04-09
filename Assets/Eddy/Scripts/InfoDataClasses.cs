@@ -16,6 +16,7 @@ public class Details {
 	public float rating;                                            // 評價分數
 	public List<Reviews> reviews = new List<Reviews>();             // 網友評價
 	public bool permanentlyClosed;                                  // 如果 True 則此餐廳已永久停業
+    public string opNow;                                              //是否營業中 - BR
 }
 
 public class Reviews {

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 public class GetRes : MonoBehaviour {
 	public static GetRes ins;
@@ -22,117 +25,94 @@ public class GetRes : MonoBehaviour {
 			"&type=restaurant&language=zh-TW&rankby =distance&key=AIzaSyDiC9HjxWI0dBa9x5hYL9xOmOnWJcFE-zU");
 		yield return www;
 
-		string text1 = www.text;
-
 		List<Details> detailsList = new List<Details>();
-		int s1 = 0, e1 = 0;
+        JObject responce1 = JObject.Parse(www.text);
+        JArray resultsArray = (JArray)responce1["results"];
 
-		#region =========================== 取得餐廳列表 ===========================
-		while (true) {
+        #region =========================== 取得餐廳列表 ===========================
+        for (int i = 0; i < resultsArray.Count; i++) {
 			string name, url;
 
-			// 取得餐廳名
-            s1 = text1.IndexOf("name", s1) + 9;
-            if (s1 <= 9) break;
-            e1 = text1.IndexOf("\",", s1);
-			name = text1.Substring(s1, e1 - s1);
-
-			// 取得餐廳 ID 的 Url
-			s1 = text1.IndexOf("place_id", s1) + 13;
-			if (s1 <= 13) break;
-			e1 = text1.IndexOf("\",", s1);
-			url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + text1.Substring(s1, e1 - s1) +
-				"&language=zh-TW&key=AIzaSyDiC9HjxWI0dBa9x5hYL9xOmOnWJcFE-zU";
-
-			// 填入字典
-			Details d = new Details {
+            JObject result = (JObject)resultsArray[i];
+            
+            // 取得餐廳名
+            name = result.Value<string>("name");
+            // 取得餐廳 ID 的 Url
+            url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + result.Value<string>("place_id") +
+                "&language=zh-TW&key=AIzaSyDiC9HjxWI0dBa9x5hYL9xOmOnWJcFE-zU";
+            // 填入字典
+            Details d = new Details {
 				name = name,
 				permanentlyClosed = false,
 			};
 
-
-			#region ======= 取得各餐廳的 Details =======
-			www = new WWW(url);
+            #region ======= 取得各餐廳的 Details =======
+            www = new WWW(url);
 			yield return www;
 
-			string text = www.text;
-			int s = 0, e = 0;
+            JObject responce = JObject.Parse(www.text);
 
 			#region ------------- 解析 Json -------------
 			// 是否永遠關閉
-			if (text.IndexOf("permanently_closed") > 0) {
+			if (responce["result"]["permanently_closed"] != null) {
 				d.permanentlyClosed = true;
 			}
-			// 取得地址
-			s = text.IndexOf("formatted_address") + 22;
-			if (s > 22) {
-				e = text.IndexOf("\",", s);
-				d.address = text.Substring(s, e - s);
-			}
-			// 取得電話
-			s = text.IndexOf("formatted_phone_number") + 27;
-			if (s > 27) {
-				e = text.IndexOf("\",", s);
-				d.phoneNum = text.Substring(s, e - s);
-			}
-			// 取得營業時間
-			s = text.IndexOf("weekday_text");
-			if (s > 0) {
-				int maxEnd = text.IndexOf("},", s);
-				while (true) {
-					s = text.IndexOf("星期", s);
-					if (s <= 0 || s >= maxEnd) break;
-					e = text.IndexOf("\"", s);
-					d.openingHours.Add(text.Substring(s, e - s));
-					s = e;
-				}
-			}
-			// 取得評價分數
-			s = text.IndexOf("rating") + 10;
-			if (s > 10) {
-				e = text.IndexOf(",", s);
-				float rate;
-				if (float.TryParse(text.Substring(s, e - s), out rate)) {
-					d.rating = rate;
-				}
-			}
-			// 取得評價留言
-			s = text.IndexOf("reviews");
-			if (s > 0) {
-				while (true) {
+            // 取得地址
+            d.address = responce["result"].Value<string>("formatted_address");
+            if (d.address.Length > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(d.address[0]);
+                //讓數字和中文字之間添加空白，避免一組數字被從中切開(ex. 631 -> 6 換行 31)。
+                for (int j = 1; j < d.address.Length; j++)
+                {
+                    char c = d.address[j];
+                    char pc = d.address[j-1];
+                    bool isNumber = char.IsNumber(c);
+                    bool wasNumber = char.IsNumber(pc);
+                    if (isNumber != wasNumber)
+                    {
+                        sb.Append(" ");
+                    }
+                    sb.Append(c);
+                }
+                d.address = sb.ToString();
+            }
+            
+            // 取得電話
+            d.phoneNum = responce["result"].Value<string>("formatted_phone_number");
+            // 取得營業時間
+			if (responce["result"]["opening_hours"] != null && responce["result"]["opening_hours"]["weekday_text"] != null) {
+                JArray weekdayArray = (JArray)responce["result"]["opening_hours"]["weekday_text"];
+                for (int j = 0; j < weekdayArray.Count; j++)
+                {
+                    d.openingHours.Add(weekdayArray[j].Value<string>());
+                }
+            }
+            // 取得是否營業中
+            if (responce["result"]["opening_hours"] != null && responce["result"]["opening_hours"]["open_now"] != null) {
+                if (responce["result"]["opening_hours"]["open_now"].Value<bool>())
+                {
+                    d.opNow = "營業中";
+                }
+                else d.opNow = "閉店中";
+            }
+            else d.opNow = "無營業時段資訊";
+
+            // 取得評價分數
+            d.rating = responce["result"].Value<float>("rating");
+            // 取得評價留言
+            JArray reviewArray = (JArray)responce["result"]["reviews"];
+			if (reviewArray != null) {
+                for (int j = 0; j < reviewArray.Count; j++)
+                {
 					Reviews review = new Reviews();
-
-					// 留言者暱稱
-					s = text.IndexOf("author_name", s) + 16;
-					if (s <= 16) break;
-					e = text.IndexOf("\"", s);
-					review.name = text.Substring(s, e - s);
-
-					// 給予的評價分數
-					s = text.IndexOf("rating", s) + 10;
-					if (s <= 10) break;
-					e = text.IndexOf(",", s);
-					int rate;
-					if (int.TryParse(text.Substring(s, e - s), out rate)) {
-						review.rating = rate;
-					}
-
-					// 給予的評價內容
-					s = text.IndexOf("text", s) + 9;
-					if (s <= 9) break;
-					e = text.IndexOf("\"", s);
-					review.text = text.Substring(s, e - s);
-
-					// 評價時的時間
-					s = text.IndexOf("time", s) + 8;
-					if (s <= 8) break;
-					e = text.IndexOf("}", s);
-					int sec;
-					if (int.TryParse(text.Substring(s, e - s), out sec)) {
-						review.time = new DateTime(1970, 1, 1).AddSeconds(sec);
-					}
-
-					d.reviews.Add(review);
+                    JObject reviewJObject = (JObject)reviewArray[j];
+                    review.name = reviewJObject.Value<string>("author_name");
+                    review.rating = reviewJObject.Value<int>("rating");
+                    review.text = reviewJObject.Value<string>("text")+"\n";
+                    review.time = new DateTime(1970, 1, 1).AddSeconds(reviewJObject.Value<int>("time"));
+                    d.reviews.Add(review);
 				}
 			}
 			#endregion -------------------------
