@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour {
 	public static PlayerInfos playerInfos = new PlayerInfos();
 	public static TcpClient client;
 
-	public string roomName = "ABC";
+	public string roomName = "ABC", nickName = "KK", foodSelected;
 
 	//private void Start() {
 	//	client = new TcpClient("127.0.0.1", 8000);
@@ -34,7 +34,25 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void GoButton() {
+		if (client == null || !client.isConnected || playerInfos.roomName == "") {
+			Debug.LogError("尚未加入房間或建立房間");
+			return;
+		}
+		if (playerInfos.nickName == "") {
+			Debug.LogError("請輸入暱稱");
+			return;
+		}
+		if (playerInfos.foodSelected == "") {
+			Debug.LogError("選擇一個餐廳");
+			return;
+		}
 
+		playerInfos.ready = false;
+		client.SendPlayerInfos(playerInfos);
+	}
+
+	public void NickNameButton() {
+		playerInfos.nickName = nickName;
 	}
 
 	public void ReadyButton() {
@@ -100,6 +118,16 @@ public class GameManager : MonoBehaviour {
 		// 入房
 		if (Input.GetKeyDown(KeyCode.F)) {
 			JoinRoom();
+		}
+		// Go
+		if (Input.GetKeyDown(KeyCode.A)) {
+			playerInfos.nickName = nickName;
+			playerInfos.foodSelected = foodSelected;
+			GoButton();
+		}
+		// Ready
+		if (Input.GetKeyDown(KeyCode.S)) {
+			ReadyButton();
 		}
 	}
 }

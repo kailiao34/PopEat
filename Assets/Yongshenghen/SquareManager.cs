@@ -9,15 +9,10 @@ public class SquareManager : MonoBehaviour
     public int I1;
     public List<Square> Inseries;
     public bool Startbool;
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
+	
     Ray ray;
     RaycastHit hit;
-    // Update is called once per frame
+
     void Update()
     {
         if (Input.GetMouseButton(0))

@@ -3,13 +3,55 @@ using System.Net.Sockets;
 
 public class TcpServer : ServerActions {
 
-	public delegate void ReceiveResDel(Socket socket, List<Details> dList);
-	public ReceiveResDel ReceiveResCallback;
+	public Dictionary<Socket, PlayerInfos> infosDict = new Dictionary<Socket, PlayerInfos>();
+	public Dictionary<string, List<Socket>> inWaitRoom = new Dictionary<string, List<Socket>>();
 
-	protected const string ReceiveResInfosCode = "RRI";                   // 接收所有餐廳資訊的指令代號
+	const string PlayerInfosCode = "RPI";
+	const string GetInfosInRoomCode = "GIIR";
+	const string AddNewPlayerCode = "ANP";
 
 	public TcpServer() {
-		methods.Add(ReceiveResInfosCode, ReceiveResInfos);       // 接收所有餐廳資訊
+		// 註冊指令對應的函數
+		methods.Add(PlayerInfosCode, RECPlayerInfos);
+	}
+
+	void RECPlayerInfos(Socket inSocket, string[] inParams) {
+		try {
+			// 傳來的 Infos 放入字典
+			PlayerInfos pi;
+			if (!infosDict.TryGetValue(inSocket, out pi)) {
+				pi = new PlayerInfos() {
+					roomName = socketDict[inSocket],
+					ready = false
+				};
+			}
+
+			pi.nickName = inParams[0];
+			pi.foodSelected = inParams[1];
+			infosDict[inSocket] = pi;
+
+			// 回傳已在房間裡的人的資訊給新進的這位
+			List<Socket> sList = inWaitRoom[pi.roomName];
+			string[] paramsStr = new string[sList.Count];
+			for (int i=0; i<sList.Count; i++) {
+				paramsStr[i] = InfosStr(infosDict[sList[i]]);
+			}
+			SendCommand(inSocket, GetInfosInRoomCode, paramsStr, "````");
+
+			// 回傳給已在房間裡的人這位新進的人的資訊
+			Send(inWaitRoom[pi.roomName].ToArray(), SendCommand(null, AddNewPlayerCode, InfosStr(pi)));
+
+			// 將這個用戶加入等待室
+			if (!inWaitRoom.ContainsKey(pi.roomName)) inWaitRoom.Add(pi.roomName, new List<Socket>());
+			inWaitRoom[pi.roomName].Add(inSocket);
+		} catch { }
+	}
+
+	string InfosStr(PlayerInfos p) {
+		System.Text.StringBuilder str = new System.Text.StringBuilder();
+		str.Append(p.nickName).Append("{+-}").Append(p.foodSelected).Append("{+-}").
+			Append(p.ready).Append("{+-}");
+		return str.ToString();
 	}
 
 	public void PrintRooms() {
@@ -18,77 +60,18 @@ public class TcpServer : ServerActions {
 		}
 	}
 
-	const string split = "[,-]", listSplit = "{,-}";
-	public void SendResInfos(Socket socket, List<Details> dList) {
-		if (dList == null || dList.Count == 0) return;
-
-		string[] param = new string[dList.Count];
-		int index = 0;
-
-		foreach (Details d in dList) {
-			System.Text.StringBuilder str = new System.Text.StringBuilder();
-			str.Append(d.name).Append(split);
-			str.Append(d.address).Append(split);
-			str.Append(d.phoneNum).Append(split);
-			str.Append(d.openingHours.Count).Append(split);
-			foreach (string s in d.openingHours) {
-				str.Append(s).Append(split);
-			}
-			str.Append(d.rating).Append(split);
-			str.Append(d.reviews.Count).Append(split);
-			foreach (Reviews s in d.reviews) {
-				str.Append(s.name).Append(split);
-				str.Append(s.rating).Append(split);
-				str.Append(s.text).Append(split);
-				str.Append(s.time.Ticks).Append(split);
-			}
-			str.Append(d.permanentlyClosed ? "T" : "F");
-
-			param[index++] = str.ToString();
+	public void PrintInfos() {
+		foreach (KeyValuePair<Socket, PlayerInfos> p in infosDict) {
+			System.Console.WriteLine("NickName --->" + p.Value.nickName);
+			System.Console.WriteLine("foodSelected --->" + p.Value.foodSelected);
+			System.Console.WriteLine("roomName --->" + p.Value.roomName);
+			System.Console.WriteLine("ready --->" + p.Value.ready);
+			System.Console.WriteLine("=====================================");
 		}
-
-		SendCommand(socket, ReceiveResInfosCode, listSplit, param);
 	}
 
-	void ReceiveResInfos(Socket inSocket, string[] inParams) {
-		List<Details> dList = new List<Details>();
-
-		try {
-			if (inParams.Length < 1) return;
-
-
-			foreach (string str1 in inParams) {
-				Details d = new Details();
-				int n, ii;
-				string[] paramsStr = str1.Split(new string[] { split }, System.StringSplitOptions.None);
-				
-				d.name = paramsStr[0];
-				d.address = paramsStr[1];
-				d.phoneNum = paramsStr[2];
-				n = int.Parse(paramsStr[3]);
-				ii = 4;
-				for (int i = 0; i < n; i++) {
-					d.openingHours.Add(paramsStr[ii++]);
-				}
-				d.rating = float.Parse(paramsStr[ii++]);
-				n = int.Parse(paramsStr[ii++]);
-				for (int i = 0; i < n; i++) {
-					Reviews r = new Reviews();
-					r.name = paramsStr[ii++];
-					r.rating = int.Parse(paramsStr[ii++]);
-					r.text = paramsStr[ii++];
-					r.time = new System.DateTime(long.Parse(paramsStr[ii++]));
-					d.reviews.Add(r);
-				}
-				d.permanentlyClosed = paramsStr[ii++] == "T";
-
-				dList.Add(d);
-			}
-		} catch { return; }
-
-		//System.Console.WriteLine("dList -->" + dList.Count + " param -->" + inParams.Length);
-
-
-		if (ReceiveResCallback != null) ReceiveResCallback(inSocket, dList);
+	protected override void OnDisconnected(Socket socket) {
+		base.OnDisconnected(socket);
+		infosDict.Remove(socket);
 	}
 }

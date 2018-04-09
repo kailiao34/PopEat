@@ -221,6 +221,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ca31321fb9717408261b9e7e814be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nickNameUI: {fileID: 0}
+  roomName: ABC
+  nickName: KK
+  foodSelected: "\u5403"
 --- !u!4 &1708860789
 Transform:
   m_ObjectHideFlags: 0

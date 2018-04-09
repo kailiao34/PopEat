@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-public class NetworkBehaviour : TcpBase {
+public abstract class NetworkBehaviour : TcpBase {
 
 	public enum RoomStatus {
 		// 成功訊息 (0 ~ 99)
@@ -23,7 +23,7 @@ public class NetworkBehaviour : TcpBase {
 	/// 傳入字串，第一個空格前為指令代號，第二個空格前為用來分割參數的字串 
 	/// (最多只取 4 個字元，不可使用"{NUL")，其後為要輸入的參數
 	/// </summary>
-	protected void Command(Socket socket, string str) {
+	protected void ReceiveCommand(Socket socket, string str) {
 
 		int i1 = str.IndexOf(' ');
 		if (i1 <= 0) return;
@@ -72,8 +72,9 @@ public class NetworkBehaviour : TcpBase {
 	}
 	/// <summary>
 	/// separator 最多只取 4 個字元
+	/// 若給予有效的 Socket 則此函數會直接傳送指令，如果要手動傳送，指定 Socket = null，則函數將回傳指令字串
 	/// </summary>
-	protected void SendCommand(Socket socket, string cmd, string separator, string[] paramsStr) {
+	protected string SendCommand(Socket socket, string cmd, string[] paramsStr, string separator = " ") {
 
 		StringBuilder str = new StringBuilder();
 		string sep;
@@ -98,21 +99,29 @@ public class NetworkBehaviour : TcpBase {
 				if (i < n - 1) str.Append(sep);
 			}
 		}
-		//System.Console.WriteLine(str.ToString());
-		//Command(socket, str.ToString());
-		Send(socket, str.ToString());
+		if (socket == null) {
+			return str.ToString();
+		} else {
+			Send(socket, str.ToString());
+			return null;
+		}
 	}
 
 	/// <summary>
 	/// 只需要傳一個參數時用這一個
 	/// </summary>
-	protected void SendCommand(Socket socket, string cmd, string paramsStr) {
+	protected string SendCommand(Socket socket, string cmd, string paramsStr) {
 		StringBuilder str = new StringBuilder();
 
 		str.Append(cmd).Append(" {NUL[||-}");
 		if (paramsStr != null) str.Append(paramsStr);
-		Send(socket, str.ToString());
-	}
 
+		if (socket == null) {
+			return str.ToString();
+		} else {
+			Send(socket, str.ToString());
+			return null;
+		}
+	}
 
 }

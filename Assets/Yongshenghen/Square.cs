@@ -28,27 +28,4 @@ public class Square : MonoBehaviour
         }
         else Debug.Log("error no mesh or iamge renderer");
     }
-
-    void Update()
-    {
-      
-    }
-
-
-    //BR - 實驗性的東西 / 舊的東西
-    /*c1 = new Color[100];
-        for (int i = 0; i < c1.Length; i++)
-        {
-            float h = Random.value;
-            //while (h > 0.7f && h < 0.88f)
-            {
-                //h = Random.value;
-            }
-            Color color = Random.ColorHSV(h, h, 0.8f, 1, 0.5f, 1, 1, 1);
-
-            c1[i] = color;
-        }*/
-    //thisRenderer = GetComponent<Renderer>();
-    //thisRenderer.material=new  Material(Shader.Find("Standard"));
-    //GetComponent<MeshRenderer>().material.color
 }

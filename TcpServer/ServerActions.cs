@@ -36,7 +36,7 @@ public class ServerActions : NetworkBehaviour {
 	private void Accept() {
 		while (isRunning) {
 			Socket clientSocket = mySocket.Accept();    // 接收到連線請求
-			Receive(clientSocket, Command);        // 開啟接收資料線程
+			Receive(clientSocket, ReceiveCommand);        // 開啟接收資料線程
 			System.Console.WriteLine("Accepted");
 		}
 	}
@@ -51,6 +51,19 @@ public class ServerActions : NetworkBehaviour {
 		socketDict.Remove(socket);
 
 		System.Console.WriteLine("Client Leave");
+	}
+
+	protected void SendInRoom(Socket clientSocket, string command) {
+		try {
+			HashSet<Socket> sSet = roomDict[socketDict[clientSocket]];
+			Socket[] sockets = new Socket[sSet.Count];
+			int ii = 0;
+			foreach (Socket s in sSet) {
+				sockets[ii] = s;
+				ii++;
+			}
+			Send(sockets, command);
+		} catch { }
 	}
 
 	private void Realse() {

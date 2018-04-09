@@ -8,7 +8,7 @@ public class ClientActions : NetworkBehaviour {
 	
 	public void ConnectToServer(string ipAddr, int port) {
 		mySocket.Connect(ipAddr, port);
-		Receive(mySocket, Command);
+		Receive(mySocket, ReceiveCommand);
 		isConnected = true;
 
 		// 註冊指令對應的函數

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
@@ -19,6 +17,7 @@ public class GetRes : MonoBehaviour {
 	public void GetAllRes(double lat, double lng, int radius, GetDetailDel callBackEvent) {
 		StartCoroutine(GetInfo(lat, lng, radius, callBackEvent));
 	}
+	#endregion ==========================================================
 
 	IEnumerator GetInfo(double lat, double lng, int radius, GetDetailDel callBackEvent) {
 		WWW www = new WWW("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + lat.ToString() + "," + lng.ToString() + "&radius=" + radius.ToString() +
@@ -124,5 +123,4 @@ public class GetRes : MonoBehaviour {
 		if (callBackEvent != null) callBackEvent(detailsList);
 	}
 
-	#endregion ==========================================================
 }

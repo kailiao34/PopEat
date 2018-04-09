@@ -111,5 +111,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorList: {fileID: 11400000, guid: 50956da2cede8ac4e9d27d9ad1890859, type: 2}
   Numbering: 0
-  thisRenderer: {fileID: 0}
+  thisRenderer: {fileID: 23825675000648874}
   Clickbool: 0

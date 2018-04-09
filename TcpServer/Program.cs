@@ -14,7 +14,6 @@ class Program {
 
 		server = new TcpServer();
 		server.StartServer("127.0.0.1", 8056);
-		server.ReceiveResCallback = ReceiveRes;
 
 		//string s = "RRI  ";
 		//int i1 = s.IndexOf(' ') +1;
@@ -28,16 +27,14 @@ class Program {
 
 	}
 
-	static void ReceiveRes(Socket socket, List<Details> dList) {
-		System.Console.WriteLine("Received: " + dList.Count);
-		server.SendResInfos(socket, dList);
-	}
-
-
 	static void UserInput() {
 		while (true) {
-			if (Console.ReadLine() == "r") {
+			string s = Console.ReadLine();
+
+			if (s == "r") {
 				server.PrintRooms();
+			} else if (s == "i") {
+				server.PrintInfos();
 			}
 		}
 	}
