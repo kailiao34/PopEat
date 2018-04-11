@@ -11,14 +11,14 @@ public class TcpClient : ClientActions {
 	const string GetInfosInRoomCode = "GIIR";
 	const string AddNewPlayerCode = "ANP";
 	const string PlayerExitCode = "PExit";
-	const string PlayerIDCode = "PID";
 	const string ReadyCode = "Ready";
+	const string LeaveRoomCode = "LeaveRoom";
+
 
 	public TcpClient() {
 		methods.Add(GetInfosInRoomCode, RECGetInfosInRoom);
 		methods.Add(AddNewPlayerCode, RECAddNewPlayer);
 		methods.Add(PlayerExitCode, RECPlayerExit);
-		methods.Add(PlayerIDCode, RECID);
 		methods.Add(ReadyCode, RECReady);
 	}
 
@@ -36,6 +36,10 @@ public class TcpClient : ClientActions {
 	/// </summary>
 	public void SendReady() {
 		SendCommand(mySocket, ReadyCode);
+	}
+
+	public void SendLeaveRoom() {
+		SendCommand(mySocket, LeaveRoomCode);
 	}
 	#endregion =======================================
 
@@ -60,12 +64,15 @@ public class TcpClient : ClientActions {
 	/// 當傳送 (SendPlayerInfos) 成功進房後會收到，接收在自己進房前已在房內的所有人的資訊
 	/// </summary>
 	void RECGetInfosInRoom(Socket inSocket, string[] inParams) {
+		GameManager.InfosInRoom.Clear();
+
 		foreach (string s in inParams) {
 			PlayerInfos pi = ParsePlayerInfo(s);
 			if (pi == null) continue;
 
 			GameManager.InfosInRoom.Add(pi);
 		}
+
 		if (OnPlayerListChanged != null) OnPlayerListChanged();
 	}
 	/// <summary>
@@ -79,15 +86,6 @@ public class TcpClient : ClientActions {
 
 		GameManager.InfosInRoom.Add(pi);
 		if (OnPlayerListChanged != null) OnPlayerListChanged();
-	}
-	/// <summary>
-	/// 從伺服器接收分配到的 ID
-	/// </summary>
-	void RECID(Socket inSocket, string[] inParams) {
-		try {
-			GameManager.myInfos.ID = int.Parse(inParams[0]);
-			GameManager.InfosInRoom.Add(GameManager.myInfos);
-		} catch { }
 	}
 
 	void RECPlayerExit(Socket inSocket, string[] inParams) {
@@ -111,13 +109,21 @@ public class TcpClient : ClientActions {
 	PlayerInfos ParsePlayerInfo(string inParams) {
 		try {
 			string[] ps = ExtractParams(inParams);
-			PlayerInfos pi = new PlayerInfos() {
-				nickName = ps[0],
-				foodSelected = ps[1],
-				ready = ps[2] == "T",
-				ID = int.Parse(ps[3])
-			};
-			return pi;
+
+			// 只收到1個參數，是伺服器給自己的 ID
+			if (ps.Length == 1) {
+				GameManager.myInfos.ID = int.Parse(ps[0]);
+				GameManager.InfosInRoom.Add(GameManager.myInfos);
+				return null;
+			} else {
+				PlayerInfos pi = new PlayerInfos() {
+					nickName = ps[0],
+					foodSelected = ps[1],
+					ready = ps[2] == "T",
+					ID = int.Parse(ps[3])
+				};
+				return pi;
+			}
 		} catch { return null; };
 	}
 }

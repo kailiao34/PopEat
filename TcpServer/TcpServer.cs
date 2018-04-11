@@ -12,50 +12,54 @@ public class TcpServer : ServerActions {
 	const string GetInfosInRoomCode = "GIIR";
 	const string AddNewPlayerCode = "ANP";
 	const string PlayerExitCode = "PExit";
-	const string PlayerIDCode = "PID";
 	const string ReadyCode = "Ready";
+	const string LeaveRoomCode = "LeaveRoom";
 
 	public TcpServer() {
 		// 註冊指令對應的函數
 		methods.Add(PlayerInfosCode, RECPlayerInfos);
 		methods.Add(ReadyCode, RECReady);
+		methods.Add(LeaveRoomCode, RECLeaveRoom);
 	}
 
 	void RECPlayerInfos(Socket inSocket, string[] inParams) {
+		// 如果這個用戶已經進來過則不再處理 (除非先呼叫離開房間命令)
+		if (infosDict.ContainsKey(inSocket)) return;
+
 		try {
 			// 傳來的 Infos 放入字典
-			PlayerInfos pi;
-			if (!infosDict.TryGetValue(inSocket, out pi)) {
-				pi = new PlayerInfos() {
-					roomName = socketDict[inSocket],
-					ready = false,
-					ID = IDCount++
-				};
-			}
+			PlayerInfos pi = new PlayerInfos() {
+				roomName = socketDict[inSocket],
+				ready = false,
+				ID = IDCount++,
 
-			pi.nickName = inParams[0];
-			pi.foodSelected = inParams[1];
+				nickName = inParams[0],
+				foodSelected = inParams[1]
+			};
+
 			infosDict[inSocket] = pi;
 
 			if (inWaitRoom.ContainsKey(pi.roomName)) {
 				// 回傳已在房間裡的人的資訊給新進的這位 (為節省網路流量，不連自己的資訊一起傳回)
 				List<Socket> sList = inWaitRoom[pi.roomName];
-				string[] paramsStr = new string[sList.Count];
+				string[] paramsStr = new string[sList.Count+1];
 				int ii = 0;
 				foreach (Socket s in sList) {
 					paramsStr[ii] = InfosStr(infosDict[s]);
 					ii++;
 				}
+				// 最後一個只放這個玩家的ID，若收到參數只有1個的就是 ID
+				paramsStr[ii] = GetCmdString(pi.ID.ToString()).ToString();
+
 				SendCommand(inSocket, GetInfosInRoomCode, paramsStr);
 
 				// 回傳給已在房間裡的人這位新進的人的資訊
 				SendCommand(sList.ToArray(), AddNewPlayerCode, InfosStr(pi));
 			} else {
 				inWaitRoom.Add(pi.roomName, new List<Socket>());
+				// 只傳送 ID
+				SendCommand(inSocket, GetInfosInRoomCode, GetCmdString(pi.ID.ToString()).ToString());
 			}
-
-			// 回傳這個用戶在等待室的ID
-			SendCommand(inSocket, PlayerIDCode, pi.ID.ToString());
 
 			// 將這個用戶加入等待室
 			inWaitRoom[pi.roomName].Add(inSocket);
@@ -74,6 +78,22 @@ public class TcpServer : ServerActions {
 				});
 				infosDict[inSocket].ready = !pi.ready;
 			}
+		}
+	}
+
+	void RECLeaveRoom(Socket inSocket, string[] inParams) {
+		PlayerInfos pi;
+
+		if (infosDict.TryGetValue(inSocket, out pi)) {
+			string room = pi.roomName;
+			inWaitRoom[room].Remove(inSocket);
+			if (inWaitRoom[room].Count == 0) {
+				inWaitRoom.Remove(room);
+			} else {
+				// 告訴其它人這個用戶已離開
+				SendCommand(inWaitRoom[room].ToArray(), PlayerExitCode, pi.ID.ToString());
+			}
+			infosDict.Remove(inSocket);
 		}
 	}
 
@@ -104,17 +124,7 @@ public class TcpServer : ServerActions {
 	protected override void OnDisconnected(Socket socket) {
 		base.OnDisconnected(socket);
 
-		if (infosDict.ContainsKey(socket)) {
-			string room = infosDict[socket].roomName;
-			inWaitRoom[room].Remove(socket);
-			if (inWaitRoom[room].Count == 0) {
-				inWaitRoom.Remove(room);
-			} else {
-				// 告訴其它人這個用戶已離開
-				SendCommand(inWaitRoom[room].ToArray(), PlayerExitCode, infosDict[socket].ID.ToString());
-			}
-			infosDict.Remove(socket);
-		}
+		RECLeaveRoom(socket, null);
 	}
 
 	T[] SetToArray<T>(HashSet<T> set) {

@@ -64,6 +64,13 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	public void LeaveRoom() {
+		if (client != null && client.isConnected) {
+			client.SendLeaveRoom();
+		}
+		InfosInRoom.Clear();
+	}
+
 	public void StartGameButton() {
 	}
 	#endregion ====================================
@@ -84,7 +91,7 @@ public class GameManager : MonoBehaviour {
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)
 			Debug.LogError("房間不存在，請重新輸入");
-		} else {															// 未知錯誤
+		} else {                                                            // 未知錯誤
 			Debug.LogError("錯誤");
 		}
 
@@ -95,7 +102,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void ReadyCallback(int playerIndex) {
-		Debug.Log("Read: " + playerIndex);
+		Debug.Log("Ready: " + playerIndex);
 	}
 	#endregion =============================================
 	/// <summary>
@@ -145,6 +152,10 @@ public class GameManager : MonoBehaviour {
 		// Ready
 		if (Input.GetKeyDown(KeyCode.S)) {
 			ReadyButton();
+		}
+		// 返回 (離開房間)
+		if (Input.GetKeyDown(KeyCode.G)) {
+			LeaveRoom();
 		}
 	}
 }
