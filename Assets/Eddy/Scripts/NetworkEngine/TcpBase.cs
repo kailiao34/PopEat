@@ -41,13 +41,16 @@ public class TcpBase {
 		}
 	}
 
-	protected void SendToAll(string data) {
-		List<Socket> sockets = new List<Socket>(threadsDict.Keys);
+	protected void Send(Socket[] sockets, string data) {
 		foreach (Socket s in sockets) {
 			if (CheckSocket(s)) {
 				s.Send(Encoding.UTF8.GetBytes(data));
 			}
 		}
+	}
+
+	public void LogMessage(string msg, Socket socket = null, string fileName = "ErrorLog.txt") {
+
 	}
 
 	public void RealseAll() {

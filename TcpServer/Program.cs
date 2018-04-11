@@ -15,6 +15,11 @@ class Program {
 		server = new TcpServer();
 		server.StartServer("127.0.0.1", 8056);
 
+		//string[] ss = str.Split(new char[] { ' ' }, -1);
+		//foreach (string s in ss) {
+		//	Console.WriteLine(s);
+		//}
+
 		//string s = "RRI  ";
 		//int i1 = s.IndexOf(' ') +1;
 		//Console.WriteLine(i1);
