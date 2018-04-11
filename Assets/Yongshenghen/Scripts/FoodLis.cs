@@ -20,8 +20,12 @@ public class FoodLis : MonoBehaviour
     public List<FoodListButton> FoodListButtonscript;
     public RectTransform eatCanvas;
 
+    public static Animator UIswitcher1;
+    public Animator UIswitcher;
+
 	private void Awake() {
 		resInfos = resInfosUI;
+        UIswitcher1 = UIswitcher;
     }
 
 	private void Start()

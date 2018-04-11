@@ -14,7 +14,9 @@ public class FoodListButton : MonoBehaviour {
 	}
     public void Info()
     {
-		Details d = FoodLis.resList[resIndex];
+        FoodLis.UIswitcher1.SetBool("ResInfo", true);
+
+        Details d = FoodLis.resList[resIndex];
 
 		System.Text.StringBuilder str = new System.Text.StringBuilder();
 
@@ -61,5 +63,10 @@ public class FoodListButton : MonoBehaviour {
 		}
 		FoodLis.resInfos[6].text = str.ToString();
         FoodLis.resInfos[7].text = d.opNow;
+    }
+
+    public void InfoOff()
+    {
+        FoodLis.UIswitcher1.SetBool("ResInfo", false);
     }
 }
