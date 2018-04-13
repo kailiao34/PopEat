@@ -42,12 +42,47 @@ public class ButtonManager : MonoBehaviour {
         if (UIswitcher1.GetBool("eat") == false)
         {
             UIswitcher1.SetBool("eat", true);
-            buttons[1].enabled = false;
+            //buttons[1].enabled = false;
         }
         else if (UIswitcher1.GetBool("eat") == true)
         {
             UIswitcher1.SetBool("eat", false);
-            buttons[1].enabled = true;
+            //buttons[1].enabled = true;
+        }
+        else print("這不該發生!");
+    }
+
+    //=======呼叫進入/創立房間介面==========
+
+    public void buttonCer()
+    {
+        if (UIswitcher1.GetBool("cer") == false)
+        {
+            UIswitcher1.SetBool("cer", true);
+        }
+        else if (UIswitcher1.GetBool("cer") == true)
+        {
+            UIswitcher1.SetBool("cer", false);
+        }
+        else print("這不該發生!");
+    }
+
+    //=======呼叫等候室介面==========
+
+    public void buttonWait()
+    {
+        Button buttonAllGo = buttons[0];
+        //Button buttonEscape = buttons[5];
+
+        //need Escape Yes No UI
+
+        if (UIswitcher1.GetBool("wait") == false && buttonAllGo.isActiveAndEnabled)
+        {
+            UIswitcher1.SetBool("wait", true);
+        }
+        else if (UIswitcher1.GetBool("wait") == true && /*buttonEscape.isActiveAndEnabled*/)
+        {
+            UIswitcher1.SetBool("wait", false);
         }
         else print("這不該發生!");
     }
