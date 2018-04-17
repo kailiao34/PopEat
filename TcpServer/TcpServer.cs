@@ -1,10 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 
+class Room {
+	public List<Socket> sockets = new List<Socket>();
+	// 這個房間已經有幾個人按 Ready，如果 = 人數則表示所有人都 Ready了
+	public int readyCount = 0;
+	// 遊戲結束後，每個餐廳的得分記在這裡
+	public Dictionary<string, int> resScore = new Dictionary<string, int>();
+
+	public Room(string res) {
+		resScore.Add(res, 0);
+	}
+}
+
 public class TcpServer : ServerActions {
 
 	Dictionary<Socket, PlayerInfos> infosDict = new Dictionary<Socket, PlayerInfos>();
-	Dictionary<string, List<Socket>> inWaitRoom = new Dictionary<string, List<Socket>>();
+	Dictionary<string, Room> inWaitRoom = new Dictionary<string, Room>();
+
+
 
 	int IDCount = 0;
 
@@ -14,12 +28,16 @@ public class TcpServer : ServerActions {
 	const string PlayerExitCode = "PExit";
 	const string ReadyCode = "Ready";
 	const string LeaveRoomCode = "LeaveRoom";
+	const string GameReadyCode = "GameReady";
+	const string StartGameCode = "StartGame";
+	const string GameResultCode = "GameResult";
 
 	public TcpServer() {
 		// 註冊指令對應的函數
 		methods.Add(PlayerInfosCode, RECPlayerInfos);
 		methods.Add(ReadyCode, RECReady);
 		methods.Add(LeaveRoomCode, RECLeaveRoom);
+		methods.Add(GameReadyCode, RECGameReady);
 	}
 
 	void RECPlayerInfos(Socket inSocket, string[] inParams) {
@@ -41,8 +59,8 @@ public class TcpServer : ServerActions {
 
 			if (inWaitRoom.ContainsKey(pi.roomName)) {
 				// 回傳已在房間裡的人的資訊給新進的這位 (為節省網路流量，不連自己的資訊一起傳回)
-				List<Socket> sList = inWaitRoom[pi.roomName];
-				string[] paramsStr = new string[sList.Count+1];
+				List<Socket> sList = inWaitRoom[pi.roomName].sockets;
+				string[] paramsStr = new string[sList.Count + 1];
 				int ii = 0;
 				foreach (Socket s in sList) {
 					paramsStr[ii] = InfosStr(infosDict[s]);
@@ -56,27 +74,33 @@ public class TcpServer : ServerActions {
 				// 回傳給已在房間裡的人這位新進的人的資訊
 				SendCommand(sList.ToArray(), AddNewPlayerCode, InfosStr(pi));
 			} else {
-				inWaitRoom.Add(pi.roomName, new List<Socket>());
+				inWaitRoom.Add(pi.roomName, new Room(pi.roomName));
 				// 只傳送 ID
 				SendCommand(inSocket, GetInfosInRoomCode, GetCmdString(pi.ID.ToString()).ToString());
 			}
 
 			// 將這個用戶加入等待室
-			inWaitRoom[pi.roomName].Add(inSocket);
+			inWaitRoom[pi.roomName].sockets.Add(inSocket);
 		} catch { }
 	}
 
 	void RECReady(Socket inSocket, string[] inParams) {
 		PlayerInfos pi;
 		if (infosDict.TryGetValue(inSocket, out pi)) {
-			List<Socket> sockets;
-			if (inWaitRoom.TryGetValue(pi.roomName, out sockets)) {
+			Room room;
+			if (inWaitRoom.TryGetValue(pi.roomName, out room)) {
 				// Ready 狀態傳給其它人 (包括傳送者自己)
-				SendCommand(sockets.ToArray(), ReadyCode, new string[] {
+				SendCommand(room.sockets.ToArray(), ReadyCode, new string[] {
 					pi.ID.ToString(),
 					(pi.ready) ? "F" : "T"
 				});
-				infosDict[inSocket].ready = !pi.ready;
+				bool b = !pi.ready;
+				pi.ready = b;
+				if (b) {
+					room.readyCount++;
+				} else {
+					room.readyCount--;
+				}
 			}
 		}
 	}
@@ -85,15 +109,30 @@ public class TcpServer : ServerActions {
 		PlayerInfos pi;
 
 		if (infosDict.TryGetValue(inSocket, out pi)) {
-			string room = pi.roomName;
-			inWaitRoom[room].Remove(inSocket);
-			if (inWaitRoom[room].Count == 0) {
-				inWaitRoom.Remove(room);
-			} else {
-				// 告訴其它人這個用戶已離開
-				SendCommand(inWaitRoom[room].ToArray(), PlayerExitCode, pi.ID.ToString());
+			Room room;
+			if (inWaitRoom.TryGetValue(pi.roomName, out room)) {
+				room.sockets.Remove(inSocket);
+				if (room.sockets.Count == 0) {
+					inWaitRoom.Remove(pi.roomName);
+				} else {
+					// 告訴其它人這個用戶已離開
+					SendCommand(room.sockets.ToArray(), PlayerExitCode, pi.ID.ToString());
+				}
+
+				if (pi.ready) room.readyCount--;
 			}
 			infosDict.Remove(inSocket);
+			ClientLeaveRoom(inSocket);
+		}
+	}
+
+	void RECGameReady(Socket inSocket, string[] inParams) {
+		Room room;
+		try { room = inWaitRoom[infosDict[inSocket].roomName]; } catch { return; }
+
+		if (room.readyCount == room.sockets.Count) {
+			// 廣播開始遊戲
+			SendCommand(room.sockets.ToArray(), StartGameCode);
 		}
 	}
 

@@ -16,7 +16,6 @@ public class TcpBase {
 	public delegate void ReceiveCallBack(Socket socket, string data);
 	public delegate void Methods(Socket inSocket, string[] inParams);
 	public delegate void Del();
-	protected event Del QuitEvent;
 	protected bool isRunning = true;
 	protected Socket mySocket;
 
@@ -25,7 +24,6 @@ public class TcpBase {
 	public TcpBase() {
 		//開始連線，設定使用網路、串流、TCP
 		mySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//new server socket object
-		QuitEvent = Realse;
 	}
 
 	protected void Receive(Socket clientSocket, ReceiveCallBack callBack) {
@@ -52,11 +50,6 @@ public class TcpBase {
 	public void LogMessage(string msg, Socket socket = null, string fileName = "ErrorLog.txt") {
 
 	}
-
-	public void RealseAll() {
-		if (QuitEvent != null) QuitEvent();
-	}
-
 	/// <summary>
 	/// 如果該 Socket 已經斷開連線，則從字典中將它刪除
 	/// </summary>
@@ -88,17 +81,6 @@ public class TcpBase {
 		}
 	}
 
-	private void Realse() {
-		isRunning = false;
-		// 關閉所有 Client 連線
-		foreach (KeyValuePair<Socket, Thread> d in threadsDict) {
-			try { d.Value.Abort(); } catch { }
-			try { d.Key.Close(); } catch { }
-		}
-		// 關閉 Server Socket
-		if (mySocket != null) mySocket.Close();
-	}
-
 	void ClientLeave(Socket socket) {
 		if (threadsDict.ContainsKey(socket)) {
 			OnDisconnected(socket);             // 呼叫斷線事件
@@ -110,4 +92,17 @@ public class TcpBase {
 	}
 
 	protected virtual void OnDisconnected(Socket socket) { }
+	/// <summary>
+	/// 給用戶在應用程式結束時呼叫，用來釋放所有資源
+	/// </summary>
+	public virtual void ApplicationQuit() {
+		isRunning = false;
+		// 關閉所有 Client 連線
+		foreach (KeyValuePair<Socket, Thread> d in threadsDict) {
+			try { d.Value.Abort(); } catch { }
+			try { d.Key.Close(); } catch { }
+		}
+		// 關閉 Server Socket
+		if (mySocket != null) mySocket.Close();
+	}
 }

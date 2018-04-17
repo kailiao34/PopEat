@@ -10,7 +10,7 @@ public class FoodListButton : MonoBehaviour {
     public void Select()
     {
 		print("您選擇了: " + UItext.text);
-		GameManager.myInfos.foodSelected = UItext.text;
+		UIRoomManager.myInfos.foodSelected = UItext.text;
 	}
     public void Info()
     {

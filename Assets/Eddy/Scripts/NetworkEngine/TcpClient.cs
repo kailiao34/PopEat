@@ -6,6 +6,7 @@ public class TcpClient : ClientActions {
 	public delegate void ReadyDel(int playerIndex);
 	public ReadyDel OnReadyCallback;
 	public Del OnPlayerListChanged;
+	public Ticker.Del OnStartGame;
 
 	const string PlayerInfosCode = "RPI";
 	const string GetInfosInRoomCode = "GIIR";
@@ -13,6 +14,9 @@ public class TcpClient : ClientActions {
 	const string PlayerExitCode = "PExit";
 	const string ReadyCode = "Ready";
 	const string LeaveRoomCode = "LeaveRoom";
+	const string GameReadyCode = "GameReady";
+	const string StartGameCode = "StartGame";
+	const string GameResultCode = "GameResult";
 
 
 	public TcpClient() {
@@ -20,6 +24,7 @@ public class TcpClient : ClientActions {
 		methods.Add(AddNewPlayerCode, RECAddNewPlayer);
 		methods.Add(PlayerExitCode, RECPlayerExit);
 		methods.Add(ReadyCode, RECReady);
+		methods.Add(StartGameCode, RECStartGame);
 	}
 
 	#region ============== 傳送函數 ==============
@@ -41,9 +46,17 @@ public class TcpClient : ClientActions {
 	public void SendLeaveRoom() {
 		SendCommand(mySocket, LeaveRoomCode);
 	}
+
+	public void SendGameReady() {
+		SendCommand(mySocket, GameReadyCode);
+	}
 	#endregion =======================================
 
 	#region ============== 接收函數 ==============
+	/// <summary>
+	/// 當房間內有人改變 Ready 狀態時，會接收到伺服器傳來這個指令
+	/// 參數裡包括: 那個人的 ID，True 或 False
+	/// </summary>
 	void RECReady(Socket inSocket, string[] inParams) {
 		int id;
 		bool ready;
@@ -52,9 +65,9 @@ public class TcpClient : ClientActions {
 			ready = (inParams[1] == "T");
 		} catch { return; }
 
-		for (int i = 0; i < GameManager.InfosInRoom.Count; i++) {
-			if (GameManager.InfosInRoom[i].ID == id) {
-				GameManager.InfosInRoom[i].ready = ready;
+		for (int i = 0; i < UIRoomManager.InfosInRoom.Count; i++) {
+			if (UIRoomManager.InfosInRoom[i].ID == id) {
+				UIRoomManager.InfosInRoom[i].ready = ready;
 				if (OnReadyCallback != null) OnReadyCallback(i);
 				return;
 			}
@@ -64,13 +77,13 @@ public class TcpClient : ClientActions {
 	/// 當傳送 (SendPlayerInfos) 成功進房後會收到，接收在自己進房前已在房內的所有人的資訊
 	/// </summary>
 	void RECGetInfosInRoom(Socket inSocket, string[] inParams) {
-		GameManager.InfosInRoom.Clear();
+		UIRoomManager.InfosInRoom.Clear();
 
 		foreach (string s in inParams) {
 			PlayerInfos pi = ParsePlayerInfo(s);
 			if (pi == null) continue;
 
-			GameManager.InfosInRoom.Add(pi);
+			UIRoomManager.InfosInRoom.Add(pi);
 		}
 
 		if (OnPlayerListChanged != null) OnPlayerListChanged();
@@ -84,23 +97,29 @@ public class TcpClient : ClientActions {
 		PlayerInfos pi = ParsePlayerInfo(inParams[0]);
 		if (pi == null) return;
 
-		GameManager.InfosInRoom.Add(pi);
+		UIRoomManager.InfosInRoom.Add(pi);
 		if (OnPlayerListChanged != null) OnPlayerListChanged();
 	}
-
+	/// <summary>
+	/// 當有人離開房間時接收到這個指令，收到的參數為對方的 ID
+	/// </summary>
 	void RECPlayerExit(Socket inSocket, string[] inParams) {
 		int id;
 		try {
 			id = int.Parse(inParams[0]);
 		} catch { return; }
 
-		for (int i = 0; i < GameManager.InfosInRoom.Count; i++) {
-			if (GameManager.InfosInRoom[i].ID == id) {
-				GameManager.InfosInRoom.RemoveAt(i);
+		for (int i = 0; i < UIRoomManager.InfosInRoom.Count; i++) {
+			if (UIRoomManager.InfosInRoom[i].ID == id) {
+				UIRoomManager.InfosInRoom.RemoveAt(i);
 				break;
 			}
 		}
 		if (OnPlayerListChanged != null) OnPlayerListChanged();
+	}
+
+	void RECStartGame(Socket inSocket, string[] inParams) {
+		Ticker.StartTicker(0, OnStartGame);
 	}
 	#endregion =======================================
 	/// <summary>
@@ -112,8 +131,8 @@ public class TcpClient : ClientActions {
 
 			// 只收到1個參數，是伺服器給自己的 ID
 			if (ps.Length == 1) {
-				GameManager.myInfos.ID = int.Parse(ps[0]);
-				GameManager.InfosInRoom.Add(GameManager.myInfos);
+				UIRoomManager.myInfos.ID = int.Parse(ps[0]);
+				UIRoomManager.InfosInRoom.Add(UIRoomManager.myInfos);
 				return null;
 			} else {
 				PlayerInfos pi = new PlayerInfos() {

@@ -48,8 +48,7 @@ public abstract class NetworkBehaviour : TcpBase {
 	/// </summary>
 	protected void SendCommand(Socket socket, string cmd, string paramsStr) {
 		if (socket == null) return;
-		Send(socket, (GetCmdString(new string[] { paramsStr })
-			.Insert(0, " ").Insert(0, cmd)).ToString());
+		Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
 	protected void SendCommand(Socket[] socket, string cmd, string[] paramsStr = null) {
@@ -59,8 +58,7 @@ public abstract class NetworkBehaviour : TcpBase {
 
 	protected void SendCommand(Socket[] socket, string cmd, string paramsStr) {
 		if (socket == null) return;
-		Send(socket, (GetCmdString(new string[] { paramsStr })
-			.Insert(0, " ").Insert(0, cmd)).ToString());
+		Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
 	protected StringBuilder GetCmdString(string[] paramsStr) {
@@ -75,6 +73,16 @@ public abstract class NetworkBehaviour : TcpBase {
 
 		for (int i = 0; i < n; i++) {
 			str.Append(paramsStr[i]);
+		}
+		return str;
+	}
+
+	protected StringBuilder GetCmdString(string paramsStr) {
+		StringBuilder str = new StringBuilder();
+		if (paramsStr == null || paramsStr.Length == 0) {
+			str.Append(0).Append(' ');
+		} else {
+			str.Append(1).Append(' ').Append(paramsStr.Length).Append(' ').Append(paramsStr);
 		}
 		return str;
 	}

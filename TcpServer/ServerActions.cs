@@ -16,9 +16,8 @@ public class ServerActions : NetworkBehaviour {
 	/// 用 Socket 找房名的字典
 	/// </summary>
 	protected Dictionary<Socket, string> socketDict = new Dictionary<Socket, string>();
-	
+
 	public void StartServer(string ipAddr, int port, int maxClient = 9999) {
-		QuitEvent += Realse;
 
 		//伺服器本身的IP和Port
 		mySocket.Bind(new IPEndPoint(IPAddress.Parse(ipAddr), port));
@@ -42,6 +41,11 @@ public class ServerActions : NetworkBehaviour {
 	}
 
 	protected override void OnDisconnected(Socket socket) {
+		ClientLeaveRoom(socket);
+		System.Console.WriteLine("Client Leave");
+	}
+
+	protected void ClientLeaveRoom(Socket socket) {
 		if (!socketDict.ContainsKey(socket)) return;
 		string roomName = socketDict[socket];
 		if (roomDict.ContainsKey(roomName)) {
@@ -49,24 +53,10 @@ public class ServerActions : NetworkBehaviour {
 			if (roomDict[roomName].Count == 0) roomDict.Remove(roomName);
 		}
 		socketDict.Remove(socket);
-
-		System.Console.WriteLine("Client Leave");
 	}
 
-	protected void SendInRoom(Socket clientSocket, string command) {
-		try {
-			HashSet<Socket> sSet = roomDict[socketDict[clientSocket]];
-			Socket[] sockets = new Socket[sSet.Count];
-			int ii = 0;
-			foreach (Socket s in sSet) {
-				sockets[ii] = s;
-				ii++;
-			}
-			Send(sockets, command);
-		} catch { }
-	}
-
-	private void Realse() {
+	public override void ApplicationQuit() {
+		base.ApplicationQuit();
 		if (acceptThread != null) acceptThread.Abort();
 	}
 
@@ -128,18 +118,4 @@ public class ServerActions : NetworkBehaviour {
 		roomDict[roomName].Add(socket);                    // 加入此房間
 		socketDict[socket] = roomName;
 	}
-
-	#region ============= 外部呼叫函數 ==============
-	public void SendInRoom(string roomName, string data) {
-		if (!roomDict.ContainsKey(roomName)) return;
-
-		List<Socket> sockets = new List<Socket>(roomDict[roomName]);
-		foreach (Socket s in sockets) {
-			if (CheckSocket(s)) {
-				s.Send(Encoding.UTF8.GetBytes(data));
-			}
-		}
-	}
-	#endregion ======================================
-
 }
