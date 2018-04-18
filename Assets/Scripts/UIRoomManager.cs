@@ -8,10 +8,14 @@ public class UIRoomManager : MonoBehaviour {
 	#region ========== Colors Variables ==========
 	[SerializeField]
 	ColorList colorListAsset;
-	public static Color[] colorList;        // 每一次的顏色順序都會不一樣 (在 Awake 裡打亂)
-	public List<string> colorResName = new List<string>();	// 被選中的餐廳名列表，Index 對應 colorList
-	public static Dictionary<string, int> resWeight = new Dictionary<string, int>();	// 這間餐廳有幾人選
+	public static Color[] colorList;								// 每一次的顏色順序都會不一樣 (在 Awake 裡打亂)
+	public static List<string> colorResName = new List<string>();	// 被選中的餐廳名列表，Index 對應 colorList
+	public static Dictionary<string,int> resWeight = new Dictionary<string, int>();         // 這間餐廳有幾人選
 	#endregion ===================================
+
+	public string ServerIP = "127.0.0.1";
+	public int port = 8056;
+
 	public Text nickNameUI;
 
 	public static PlayerInfos myInfos = new PlayerInfos();
@@ -183,7 +187,7 @@ public class UIRoomManager : MonoBehaviour {
 			myInfos.roomName = "";
 			try {
 				client = new TcpClient();
-				client.ConnectToServer("127.0.0.1", 8056);
+				client.ConnectToServer(ServerIP, port);
 				client.OnJoinedRoom = JoinRoomCallback;
 				client.OnPlayerListChanged = ListChangedCallback;
 				client.OnReadyCallback = ReadyCallback;
