@@ -4,9 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PlayerUIButton
   - Square
-  - floor
   layers:
   - Default
   - TransparentFX
