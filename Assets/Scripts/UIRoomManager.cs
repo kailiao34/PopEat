@@ -42,7 +42,8 @@ public class UIRoomManager : MonoBehaviour {
 
 
 	#region ========= 給UI按鈕使用的函數 =========
-	public void CreateRoom() {
+	public void CreateRoom(string name) {
+		roomName = name;
 		if (!ConnectWithRoomName()) return;
 
 		if (roomName != myInfos.roomName) {         // 一樣的房名不再創建名間
@@ -50,7 +51,8 @@ public class UIRoomManager : MonoBehaviour {
 		}
 	}
 
-	public void JoinRoom() {
+	public void JoinRoom(string name) {
+		roomName = name;
 		if (!ConnectWithRoomName()) return;
 
 		if (roomName != myInfos.roomName) {         // 一樣的房名不再加入
@@ -79,12 +81,13 @@ public class UIRoomManager : MonoBehaviour {
 
 		myInfos.ready = false;
 		client.SendPlayerInfos(myInfos);
+		ButtonManager.ins.buttonWait();
 	}
 
 	public void NickNameButton(Text nameText) {
 		myInfos.nickName = nameText.text;
 	}
-
+	
 	public void ReadyButton() {
 		if (client != null && client.isConnected) {
 			client.SendReady();
@@ -215,31 +218,31 @@ public class UIRoomManager : MonoBehaviour {
 		print("Quit");
 	}
 
-	void Update() {
-		// 開房
-		if (Input.GetKeyDown(KeyCode.D)) {
-			CreateRoom();
-		}
-		// 入房
-		if (Input.GetKeyDown(KeyCode.F)) {
-			JoinRoom();
-		}
-		// Go
-		if (Input.GetKeyDown(KeyCode.A)) {
-			GoButton();
-		}
-		// Ready
-		if (Input.GetKeyDown(KeyCode.S)) {
-			ReadyButton();
-		}
-		// 返回 (離開房間)
-		if (Input.GetKeyDown(KeyCode.G)) {
-			LeaveRoom();
-		}
-		// 開始遊戲
-		if (Input.GetKeyDown(KeyCode.H)) {
-			StartGameButton();
-		}
+	//void Update() {
+	//	// 開房
+	//	if (Input.GetKeyDown(KeyCode.D)) {
+	//		CreateRoom();
+	//	}
+	//	// 入房
+	//	if (Input.GetKeyDown(KeyCode.F)) {
+	//		JoinRoom();
+	//	}
+	//	// Go
+	//	if (Input.GetKeyDown(KeyCode.A)) {
+	//		GoButton();
+	//	}
+	//	// Ready
+	//	if (Input.GetKeyDown(KeyCode.S)) {
+	//		ReadyButton();
+	//	}
+	//	// 返回 (離開房間)
+	//	if (Input.GetKeyDown(KeyCode.G)) {
+	//		LeaveRoom();
+	//	}
+	//	// 開始遊戲
+	//	if (Input.GetKeyDown(KeyCode.H)) {
+	//		StartGameButton();
+	//	}
 
-	}
+	//}
 }

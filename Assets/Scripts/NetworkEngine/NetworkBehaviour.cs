@@ -47,7 +47,9 @@ public class NetworkBehaviour : TcpBase {
 
 	protected void SendCommand(Socket socket, string cmd, string[] paramsStr = null) {
 		if (socket == null) return;
-		Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
+		StringBuilder s = GetCmdString(paramsStr);
+		if (s == null) return;
+		Send(socket, (s.Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
 	/// <summary>
@@ -65,9 +67,14 @@ public class NetworkBehaviour : TcpBase {
 
 	protected void SendCommand(Socket[] socket, string cmd, string paramsStr) {
 		if (socket == null) return;
-		Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
+		StringBuilder s = GetCmdString(paramsStr);
+		if (s == null) return;
+		Send(socket, (s.Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
+	/// <summary>
+	/// 如果失敗回傳 null
+	/// </summary>
 	protected StringBuilder GetCmdString(string[] paramsStr) {
 		StringBuilder str = new StringBuilder();
 		if (paramsStr == null) paramsStr = new string[0];
@@ -75,6 +82,7 @@ public class NetworkBehaviour : TcpBase {
 
 		str.Append(n).Append(' ');
 		for (int i = 0; i < n; i++) {
+			if (paramsStr[i] == null) return null;
 			str.Append(paramsStr[i].Length).Append(' ');
 		}
 
