@@ -80,8 +80,8 @@ public class BendImage : MaskableGraphic
         {
             var r = GetPixelAdjustedRect();
             var v = new Vector4(r.x, r.y, r.x + r.width, r.y + r.height);
-            var scaleX = tex.width * tex.texelSize.x;
-            var scaleY = tex.height * tex.texelSize.y;
+            //var scaleX = tex.width * tex.texelSize.x;
+            //var scaleY = tex.height * tex.texelSize.y;
             var color32 = color;
 
             float segmentHeight = r.height/segmentCount;

@@ -5,6 +5,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Text;
 
+/// <summary>
+/// 此腳本才開始有房間的概念
+/// </summary>
 public class ServerActions : NetworkBehaviour {
 	Thread acceptThread;
 
@@ -35,7 +38,7 @@ public class ServerActions : NetworkBehaviour {
 	private void Accept() {
 		while (isRunning) {
 			Socket clientSocket = mySocket.Accept();    // 接收到連線請求
-			Receive(clientSocket, ReceiveCommand);        // 開啟接收資料線程
+			Receive(clientSocket);        // 開啟接收資料線程
 			System.Console.WriteLine("Accepted");
 		}
 	}
@@ -67,13 +70,15 @@ public class ServerActions : NetworkBehaviour {
 			return;
 		}
 
+		RoomStatus status;
+
 		if (!roomDict.ContainsKey(inParams[0])) {                   // 房間不存在的話創建一個房間
 			roomDict.Add(inParams[0], new HashSet<Socket>());
-			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.Created).ToString());
+			status = RoomStatus.Created;
 		} else {
-			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.Joined).ToString());
+			status = RoomStatus.Joined;
 		}
-		AddToRoom(inParams[0], inSocket);                        // 加入此房間
+		AddToRoom(inParams[0], inSocket, status);                        // 加入此房間
 	}
 
 	void RECCreateRoom(Socket inSocket, string[] inParams) {
@@ -86,8 +91,7 @@ public class ServerActions : NetworkBehaviour {
 			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.RoomExists).ToString());
 		} else {                                                    // 房間不存在，成功創建				
 			roomDict.Add(inParams[0], new HashSet<Socket>());
-			AddToRoom(inParams[0], inSocket);                        // 加入此房間
-			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.Created).ToString());
+			AddToRoom(inParams[0], inSocket, RoomStatus.Created);                        // 加入此房間
 		}
 	}
 
@@ -98,8 +102,7 @@ public class ServerActions : NetworkBehaviour {
 		}
 
 		if (roomDict.ContainsKey(inParams[0])) {                   // 房間存在，成功加入
-			AddToRoom(inParams[0], inSocket);                    // 加入此房間
-			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.Joined).ToString());
+			AddToRoom(inParams[0], inSocket, RoomStatus.Joined);                    // 加入此房間
 		} else {                                                    // 房間不存在，回傳錯誤		
 			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.RoomNotExists).ToString());
 		}
@@ -109,13 +112,14 @@ public class ServerActions : NetworkBehaviour {
 	/// <summary>
 	/// 需先自行判斷房間是否存在，若不存在會報錯
 	/// </summary>
-	void AddToRoom(string roomName, Socket socket) {
+	protected virtual void AddToRoom(string roomName, Socket socket, RoomStatus roomStatus) {
 		string oldRoom;
 		if (socketDict.TryGetValue(socket, out oldRoom)) {              // 這個連線者已經在其它房間
-			roomDict[oldRoom].Remove(socket);
+			roomDict[oldRoom].Remove(socket);							// 將他換過來
 			if (roomDict[oldRoom].Count == 0) roomDict.Remove(oldRoom);
 		}
 		roomDict[roomName].Add(socket);                    // 加入此房間
 		socketDict[socket] = roomName;
+		SendCommand(socket, ReciveRoomStatusCode, ((int)roomStatus).ToString());	// 回傳房間狀態
 	}
 }

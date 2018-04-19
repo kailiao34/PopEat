@@ -2,9 +2,14 @@
 using System.Net.Sockets;
 
 class Room {
+	// 房間內的玩家
 	public List<Socket> sockets = new List<Socket>();
 	// 這個房間已經有幾個人按 Ready，如果 = 人數則表示所有人都 Ready了
 	public int readyCount = 0;
+	// 進來的人會分配到一個ID，一直往上累加
+	public int IDCount = 0;
+	// 若 True 表示這個房間已經開始遊戲
+	public bool isPlaying = false;
 	// 遊戲結束後，每個餐廳的得分記在這裡
 	public Dictionary<string, int> resScore = new Dictionary<string, int>();
 
@@ -18,17 +23,15 @@ public class TcpServer : ServerActions {
 	Dictionary<Socket, PlayerInfos> infosDict = new Dictionary<Socket, PlayerInfos>();
 	Dictionary<string, Room> inWaitRoom = new Dictionary<string, Room>();
 
-
-
-	int IDCount = 0;
-
 	const string PlayerInfosCode = "RPI";
 	const string GetInfosInRoomCode = "GIIR";
 	const string AddNewPlayerCode = "ANP";
 	const string PlayerExitCode = "PExit";
 	const string ReadyCode = "Ready";
 	const string LeaveRoomCode = "LeaveRoom";
+	// 從客戶端傳送過來，在這裡判斷，若所有人都 Ready 了才向房內所有人廣播 StartGame
 	const string GameReadyCode = "GameReady";
+	// 客戶端收到這個指令將進入遊戲場景
 	const string StartGameCode = "StartGame";
 	const string GameResultCode = "GameResult";
 
@@ -45,42 +48,49 @@ public class TcpServer : ServerActions {
 		if (infosDict.ContainsKey(inSocket)) return;
 
 		try {
+			string roomName = socketDict[inSocket];
+			Room room;
+
 			// 傳來的 Infos 放入字典
 			PlayerInfos pi = new PlayerInfos() {
-				roomName = socketDict[inSocket],
+				roomName = roomName,
 				ready = false,
-				ID = IDCount++,
-
+				ID = 0,
 				nickName = inParams[0],
 				foodSelected = inParams[1]
 			};
 
-			infosDict[inSocket] = pi;
-
-			if (inWaitRoom.ContainsKey(pi.roomName)) {
+			if (inWaitRoom.TryGetValue(roomName, out room)) {
 				// 回傳已在房間裡的人的資訊給新進的這位 (為節省網路流量，不連自己的資訊一起傳回)
-				List<Socket> sList = inWaitRoom[pi.roomName].sockets;
+				List<Socket> sList = room.sockets;
 				string[] paramsStr = new string[sList.Count + 1];
 				int ii = 0;
 				foreach (Socket s in sList) {
 					paramsStr[ii] = InfosStr(infosDict[s]);
 					ii++;
 				}
+
+				pi.ID = room.IDCount;
+
 				// 最後一個只放這個玩家的ID，若收到參數只有1個的就是 ID
-				paramsStr[ii] = GetCmdString(pi.ID.ToString()).ToString();
+				paramsStr[ii] = GetCmdString(room.IDCount.ToString()).ToString();
 
 				SendCommand(inSocket, GetInfosInRoomCode, paramsStr);
 
 				// 回傳給已在房間裡的人這位新進的人的資訊
 				SendCommand(sList.ToArray(), AddNewPlayerCode, InfosStr(pi));
 			} else {
-				inWaitRoom.Add(pi.roomName, new Room(pi.roomName));
+				room = new Room(roomName);
+				inWaitRoom.Add(roomName, room);
 				// 只傳送 ID
-				SendCommand(inSocket, GetInfosInRoomCode, GetCmdString(pi.ID.ToString()).ToString());
+				SendCommand(inSocket, GetInfosInRoomCode, GetCmdString(0.ToString()).ToString());
 			}
 
+			infosDict[inSocket] = pi;
+			room.IDCount++;
+			
 			// 將這個用戶加入等待室
-			inWaitRoom[pi.roomName].sockets.Add(inSocket);
+			room.sockets.Add(inSocket);
 		} catch { }
 	}
 
@@ -133,6 +143,7 @@ public class TcpServer : ServerActions {
 		if (room.readyCount == room.sockets.Count) {
 			// 廣播開始遊戲
 			SendCommand(room.sockets.ToArray(), StartGameCode);
+			room.isPlaying = true;
 		}
 	}
 
@@ -144,6 +155,22 @@ public class TcpServer : ServerActions {
 			p.ID.ToString() }).ToString();
 	}
 
+	protected override void AddToRoom(string roomName, Socket socket, RoomStatus roomStatus) {
+		Room room;
+		if (inWaitRoom.TryGetValue(roomName, out room)) {
+			if (room.isPlaying) {           // 如果這個房間已經開始遊戲
+				SendCommand(socket, ReciveRoomStatusCode, ((int)RoomStatus.Others).ToString());    // 回傳房間狀態
+				return;
+			}
+		}
+		base.AddToRoom(roomName, socket, roomStatus);
+	}
+
+	protected override void OnDisconnected(Socket socket) {
+		base.OnDisconnected(socket);
+
+		RECLeaveRoom(socket, null);
+	}
 	public void PrintRooms() {
 		foreach (KeyValuePair<string, HashSet<Socket>> p in roomDict) {
 			System.Console.WriteLine(p.Key + " --> " + p.Value.Count);
@@ -158,24 +185,5 @@ public class TcpServer : ServerActions {
 			System.Console.WriteLine("ready --->" + p.Value.ready);
 			System.Console.WriteLine("=====================================");
 		}
-	}
-
-	protected override void OnDisconnected(Socket socket) {
-		base.OnDisconnected(socket);
-
-		RECLeaveRoom(socket, null);
-	}
-
-	T[] SetToArray<T>(HashSet<T> set) {
-		if (set == null) return new T[0];
-
-		T[] array = new T[set.Count];
-
-		int ii = 0;
-		foreach (T s in set) {
-			array[ii] = s;
-			ii++;
-		}
-		return array;
 	}
 }

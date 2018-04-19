@@ -4,16 +4,22 @@ using System.Threading;
 using System.Text;
 
 /// <summary>
-/// 負責開線程接收各 Socket 傳來的訊息
-/// 儲存這些 Socket 通道用以回覆訊息
+/// 此腳本負責最基礎的 TCP/IP 功能
+/// 1. 負責開線程接收各 Socket 傳來的訊息，儲存這些 Socket 通道用以回覆訊息
+/// 2. TCP 底層的字串傳送
+/// 3. 處理玩家斷線後的資源清理
+/// 4. 錯誤 Log
+/// 
 /// 使用方式:	1. 接收到連線後呼叫 Receive 持續接收訊息
-///				2. Send、SendAll 方法用以傳送訊息
-///				3. 繼承這個 Class 者可在 QuitEvent 註冊結束應用程式時需釋放的資源
-///				4. 應用程式關閉前呼叫 RealseAll 以關閉所有通道
+///				2. 覆寫 DataReceived 以處理每一次收到的資料
+///				2. Send 方法用以傳送訊息
+///				3. 繼承這個 Class 者可在 ApplicationQuit 覆寫(要呼叫base)結束應用程式時需釋放的資源
+///				4. 應用程式關閉前呼叫 ApplicationQuit 以關閉所有通道
+///				5. 需要 Log 錯誤時呼叫 LogMessage
 /// </summary>
 public class TcpBase {
 
-	public delegate void ReceiveCallBack(Socket socket, string data);
+	//public delegate void ReceiveCallBack(Socket socket, string data);
 	public delegate void Methods(Socket inSocket, string[] inParams);
 	public delegate void Del();
 	protected bool isRunning = true;
@@ -26,8 +32,8 @@ public class TcpBase {
 		mySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//new server socket object
 	}
 
-	protected void Receive(Socket clientSocket, ReceiveCallBack callBack) {
-		Thread threadReceive = new Thread(() => { ReceiveThread(clientSocket, callBack); });
+	protected void Receive(Socket clientSocket) {
+		Thread threadReceive = new Thread(() => { ReceiveThread(clientSocket); });
 		threadReceive.Start();
 
 		threadsDict.Add(clientSocket, threadReceive);
@@ -62,7 +68,7 @@ public class TcpBase {
 		return true;
 	}
 
-	private void ReceiveThread(Socket clientSocket, ReceiveCallBack callBack) {
+	private void ReceiveThread(Socket clientSocket) {
 		byte[] bytes = new byte[clientSocket.ReceiveBufferSize];
 		int size;
 
@@ -77,7 +83,7 @@ public class TcpBase {
 				ClientLeave(clientSocket);
 				return;
 			}
-			if (callBack != null) callBack(clientSocket, Encoding.UTF8.GetString(bytes, 0, size));
+			DataReceived(clientSocket, Encoding.UTF8.GetString(bytes, 0, size));
 		}
 	}
 
@@ -90,6 +96,8 @@ public class TcpBase {
 			t.Abort();                      // 停止 Receive Thread
 		}
 	}
+
+	protected virtual void DataReceived(Socket socket, string data) { }
 
 	protected virtual void OnDisconnected(Socket socket) { }
 	/// <summary>

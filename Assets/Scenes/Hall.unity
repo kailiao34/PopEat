@@ -2946,7 +2946,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &529560820
 GameObject:
@@ -3481,6 +3481,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 700410550}
+        m_MethodName: NickNameButton
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 759578435}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Text, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &656347659
@@ -3682,6 +3693,64 @@ RectTransform:
   m_AnchoredPosition: {x: -4.200602, y: 165.12053}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &700410548
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 700410551}
+  - component: {fileID: 700410550}
+  - component: {fileID: 700410549}
+  m_Layer: 0
+  m_Name: RoomManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &700410549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 700410548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ec508cbf8da444a8f22bcd272c8fbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoEnabled: 0
+--- !u!114 &700410550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 700410548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0ca31321fb9717408261b9e7e814be5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorListAsset: {fileID: 11400000, guid: 50956da2cede8ac4e9d27d9ad1890859, type: 2}
+  ServerIP: 114.42.167.102
+  port: 8056
+  roomName: ABC
+  roomTest: []
+--- !u!4 &700410551
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 700410548}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &702906992
 GameObject:
   m_ObjectHideFlags: 0
@@ -8346,7 +8415,7 @@ Transform:
   - {fileID: 1299058889}
   - {fileID: 787505639}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1442983574
 Animator:
@@ -10970,7 +11039,7 @@ MonoBehaviour:
   reviewListUI: {fileID: 0}
   FoodInputField: {fileID: 0}
   FoodListUI_ScrollView_Content: {fileID: 0}
-  FoodListButtonParentobject: {fileID: 0}
+  FoodListButtonParentobject: {fileID: 6970811}
   foodListButton: {fileID: 0}
   EnterFoodListButton: {fileID: 0}
   EnterFoodListButtonAnimator: {fileID: 0}

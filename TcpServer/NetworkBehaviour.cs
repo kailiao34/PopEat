@@ -2,13 +2,20 @@
 using System.Net.Sockets;
 using System.Text;
 
-public abstract class NetworkBehaviour : TcpBase {
+/// <summary>
+/// 在 Tcp 底層上加入接收、傳送指令和參數傳送的功能，指令可以呼叫對應的 Function
+/// 使用方法:
+///		1. 將從TCP收到的原始字串交給
+///		2. 要接收的 Function 和 指令代號的對應註冊到 methods 字典裡
+///		3. 用 SendCommand 方法來傳送指令和參數
+/// </summary>
+public class NetworkBehaviour : TcpBase {
 
 	public enum RoomStatus {
 		// 成功訊息 (0 ~ 99)
 		Created = 0, Joined = 1,
 		// 失敗訊息 ( >= 100)
-		NoRoomName = 100, RoomExists = 101, RoomNotExists = 102, ParamsError = 103
+		NoRoomName = 100, RoomExists = 101, RoomNotExists = 102, Others = 103, ParamsError = 104
 	}
 
 	// 指令表
@@ -24,20 +31,20 @@ public abstract class NetworkBehaviour : TcpBase {
 	/// 接下來每個空格前都是每個參數在這個字串的結束位置 (共有 n 個)
 	/// n 個空格後開始是參數
 	/// </summary>
-	protected void ReceiveCommand(Socket socket, string str) {
 
+	protected override void DataReceived(Socket socket, string data) {
 		// 取得指令代號
-		int i1 = str.IndexOf(' ');
+		int i1 = data.IndexOf(' ');
 		if (i1 <= 0) return;
-		string code = str.Substring(0, i1);             
+		string code = data.Substring(0, i1);
 		if (!methods.ContainsKey(code)) return;         // 如果指令代號沒有被註冊則離開
 
-		string[] inParams = ExtractParams(str.Substring(i1 + 1));
-		if (inParams == null) return;					// 如果參數解析失敗則離開
+		string[] inParams = ExtractParams(data.Substring(i1 + 1));
+		if (inParams == null) return;                   // 如果參數解析失敗則離開
 
 		methods[code](socket, inParams);                            // 呼叫指令代號對應的 Function
 	}
-
+	
 	protected void SendCommand(Socket socket, string cmd, string[] paramsStr = null) {
 		if (socket == null) return;
 		Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());

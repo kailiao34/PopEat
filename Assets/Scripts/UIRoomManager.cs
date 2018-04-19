@@ -8,23 +8,23 @@ public class UIRoomManager : MonoBehaviour {
 	#region ========== Colors Variables ==========
 	[SerializeField]
 	ColorList colorListAsset;
-	public static Color[] colorList;								// 每一次的顏色順序都會不一樣 (在 Awake 裡打亂)
-	public static List<string> colorResName = new List<string>();	// 被選中的餐廳名列表，Index 對應 colorList
+	public static Color[] colorList;                                // 每一次的顏色順序都會不一樣 (在 Awake 裡打亂)
+	// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
+	public static List<string> colorResName = new List<string>();
 	public static Dictionary<string,int> resWeight = new Dictionary<string, int>();         // 這間餐廳有幾人選
 	#endregion ===================================
 
 	public string ServerIP = "127.0.0.1";
 	public int port = 8056;
 
-	public Text nickNameUI;
-
 	public static PlayerInfos myInfos = new PlayerInfos();
 	public static List<PlayerInfos> playersInRoom = new List<PlayerInfos>();
 	public static TcpClient client;
-
-	public string roomName = "ABC", nickName = "KK", foodSelected;
+	[SerializeField]
+	string roomName = "";
+	// ***************** Test *****************
 	public List<PlayerInfos> roomTest;
-
+	// ****************************************
 	static bool notInitialized = true;
 
 	private void Awake() {
@@ -33,13 +33,11 @@ public class UIRoomManager : MonoBehaviour {
 	}
 
 	private void Start() {
-		//client = new TcpClient("127.0.0.1", 8000);
 		if (notInitialized) {
 			DontDestroyOnLoad(gameObject);
 			notInitialized = false;
 		}
 		LeaveRoom();
-		//roomTest = InfosInRoom;
 	}
 
 
@@ -61,6 +59,11 @@ public class UIRoomManager : MonoBehaviour {
 	}
 
 	public void GoButton() {
+		if (playersInRoom.Count > 0) {				// 已經進入等待室，不能再按這個按鈕 (實際在UI時，這情況不會發生)
+			Debug.LogError("已經在等待室");
+			return;
+		}
+
 		if (client == null || !client.isConnected || myInfos.roomName == "") {
 			Debug.LogError("尚未加入房間或建立房間");
 			return;
@@ -78,8 +81,8 @@ public class UIRoomManager : MonoBehaviour {
 		client.SendPlayerInfos(myInfos);
 	}
 
-	public void NickNameButton() {
-		myInfos.nickName = nickName;
+	public void NickNameButton(Text nameText) {
+		myInfos.nickName = nameText.text;
 	}
 
 	public void ReadyButton() {
@@ -95,7 +98,10 @@ public class UIRoomManager : MonoBehaviour {
 		playersInRoom.Clear();
 		myInfos = new PlayerInfos();
 		myInfos.roomName = "";
-	}
+
+		colorResName.Clear();
+		resWeight.Clear();
+}
 
 	public void StartGameButton() {
 		if (playersInRoom.Count <= 0) return;
@@ -128,6 +134,10 @@ public class UIRoomManager : MonoBehaviour {
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)
 			Debug.LogError("房間不存在，請重新輸入");
+
+		} else if (status == NetworkBehaviour.RoomStatus.Others) {
+			Debug.LogError("這個房間已經開始遊戲");
+
 		} else {                                                            // 未知錯誤
 			Debug.LogError("錯誤");
 		}
@@ -145,7 +155,7 @@ public class UIRoomManager : MonoBehaviour {
 				resWeight.Add(pi.foodSelected, 1);
 			}
 
-		} else if (index > 0 && index < playersInRoom.Count) {  // 玩家退出
+		} else if (index >= 0 && index < playersInRoom.Count) {  // 玩家退出
 			pi = playersInRoom[index];
 			int weight;
 			if (resWeight.TryGetValue(pi.foodSelected, out weight)) {
@@ -216,8 +226,6 @@ public class UIRoomManager : MonoBehaviour {
 		}
 		// Go
 		if (Input.GetKeyDown(KeyCode.A)) {
-			myInfos.nickName = nickName;
-			myInfos.foodSelected = foodSelected;
 			GoButton();
 		}
 		// Ready

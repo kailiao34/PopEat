@@ -223,11 +223,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorListAsset: {fileID: 11400000, guid: 50956da2cede8ac4e9d27d9ad1890859, type: 2}
-  ServerIP: 127.0.0.1
+  ServerIP: 114.42.167.102
   port: 8056
   nickNameUI: {fileID: 0}
   roomName: "\u6211"
-  nickName: KK
+  nickName: kai
   foodSelected: "\u5403"
   roomTest: []
 --- !u!4 &1708860789

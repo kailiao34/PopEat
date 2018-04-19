@@ -17,14 +17,6 @@ public class ButtonManager : MonoBehaviour {
     {
         UIswitcher1 = UIswitcher;
     }
-
-    void Start () {
-        
-	}
-	
-	void Update () {
-		
-	}
     //========呼叫暱稱輸入介面=========
     public void buttonNick()
     {
