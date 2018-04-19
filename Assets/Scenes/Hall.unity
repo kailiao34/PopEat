@@ -11036,16 +11036,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resInfosUI: []
-  reviewListUI: {fileID: 0}
-  FoodInputField: {fileID: 0}
-  FoodListUI_ScrollView_Content: {fileID: 0}
-  FoodListButtonParentobject: {fileID: 6970811}
-  foodListButton: {fileID: 0}
-  EnterFoodListButton: {fileID: 0}
-  EnterFoodListButtonAnimator: {fileID: 0}
+  reviewListUI: {fileID: 761445184}
+  FoodInputField: {fileID: 387876299}
+  FoodListUI_ScrollView_Content: {fileID: 1102801873}
+  FoodListButtonParentobject: {fileID: 28386815}
+  foodListButton: {fileID: 1639340278106482, guid: 1f6f75359bc387045b1281e4432f9bf9,
+    type: 2}
+  EnterFoodListButton: {fileID: 403217217}
+  EnterFoodListButtonAnimator: {fileID: 1102801878}
   foodListRectTransform: []
   FoodListButtonscript: []
-  eatCanvas: {fileID: 0}
+  eatCanvas: {fileID: 45466166}
 --- !u!1 &2068681413
 GameObject:
   m_ObjectHideFlags: 0
