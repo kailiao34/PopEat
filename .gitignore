@@ -20,7 +20,6 @@
 # Visual Studio 2015 cache directory
 /.vs/
 /TcpServer/.vs
-/TcpServer/bin
 /TcpServer/obj
 /TcpServer/Properties
 
