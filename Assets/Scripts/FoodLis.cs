@@ -19,6 +19,7 @@ public class FoodLis : MonoBehaviour
     public List<RectTransform> foodListRectTransform;
     public List<FoodListButton> FoodListButtonscript;
     public RectTransform eatCanvas;
+    public Animator loadingIndicatorAnimator;
 
     //public static Animator UIswitcher1;
     //public Animator UIswitcher;
@@ -30,13 +31,15 @@ public class FoodLis : MonoBehaviour
 
 	private void Start()
 	{
+        loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
         GetRes.ins.GetAllRes(24.99579212, 121.48876185, 500, GetResNames);
     }
 
-	void GetResNames(List<Details> resDetails)
+    void GetResNames(List<Details> resDetails)
 	{
 		resList = resDetails;
 		UISort();
+        loadingIndicatorAnimator.SetBool("Enabled", false); // used for loading animator
     }
 	
     public void UISort()
