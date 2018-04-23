@@ -8,6 +8,7 @@ public class PlayerInfos {
 	public string foodSelected = "";
 	public bool ready = false;
 	public int ID = 0;
+	public int colorIndex;
 }
 
 public class Details {

@@ -223,12 +223,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorListAsset: {fileID: 11400000, guid: 50956da2cede8ac4e9d27d9ad1890859, type: 2}
-  ServerIP: 114.42.167.102
+  ServerIP: 127.0.0.1
   port: 8056
-  nickNameUI: {fileID: 0}
   roomName: "\u6211"
-  nickName: kai
-  foodSelected: "\u5403"
+  myInfosTest:
+    nickName: 
+    roomName: 
+    foodSelected: 
+    ready: 0
+    ID: 0
+    resIndex: 0
   roomTest: []
 --- !u!4 &1708860789
 Transform:

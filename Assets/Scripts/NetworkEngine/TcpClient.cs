@@ -6,6 +6,7 @@ public class TcpClient : ClientActions {
 	public delegate void ReadyDel(int playerIndex);
 	public delegate void PlayerListChangedDel(PlayerInfos pi = null, int playerIndex = -1);
 	public ReadyDel OnReadyCallback;
+	public Del OnMyInfoChanged;
 	/// <summary>
 	/// pi - 加入的玩家的資訊 (若是玩家退出這個參數為 null)
 	/// playerID - 退出的玩家的ID (若是玩家加入這個參數為 -1)
@@ -90,8 +91,6 @@ public class TcpClient : ClientActions {
 
 			if (OnPlayerListChanged != null) OnPlayerListChanged(pi);
 		}
-
-		OnPlayerListChanged(UIRoomManager.myInfos);
 	}
 	/// <summary>
 	/// 有新玩家加入房間時伺服器將發來此通知
@@ -134,15 +133,18 @@ public class TcpClient : ClientActions {
 			string[] ps = ExtractParams(inParams);
 
 			// 只收到1個參數，是伺服器給自己的 ID
-			if (ps.Length == 1) {
+			if (ps.Length == 2) {
 				UIRoomManager.myInfos.ID = int.Parse(ps[0]);
+				UIRoomManager.myInfos.colorIndex = int.Parse(ps[1]);
+				if (OnMyInfoChanged != null) OnMyInfoChanged();
 				return null;
 			} else {
 				PlayerInfos pi = new PlayerInfos() {
 					nickName = ps[0],
 					foodSelected = ps[1],
 					ready = ps[2] == "T",
-					ID = int.Parse(ps[3])
+					ID = int.Parse(ps[3]),
+					colorIndex = int.Parse(ps[4])
 				};
 				return pi;
 			}

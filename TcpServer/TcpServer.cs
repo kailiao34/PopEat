@@ -10,11 +10,51 @@ class Room {
 	public int IDCount = 0;
 	// 若 True 表示這個房間已經開始遊戲
 	public bool isPlaying = false;
-	// 遊戲結束後，每個餐廳的得分記在這裡
-	public Dictionary<string, int> resScore = new Dictionary<string, int>();
+	// 餐廳名 (Key) 和 ColorList Index (Value) 的字典
+	Dictionary<string, ColorNum> resColorDict = new Dictionary<string, ColorNum>();
+	Queue<string> colorRecycling = new Queue<string>();
 
-	public Room(string res) {
-		resScore.Add(res, 0);
+	// 用來儲存數字和選這個餐廳的人數
+	class ColorNum {
+		public string colorIndex;
+		public int num;
+	}
+
+	public Room(string resName) {
+		resColorDict.Add(resName, new ColorNum() { colorIndex = "0", num = 1 });
+	}
+
+	public string AddRes(string resName) {
+		string colorIndex;
+		ColorNum cn;
+
+		if (resColorDict.TryGetValue(resName, out cn)) {                            // 已有相同的餐廳名
+			cn.num += 1;
+			colorIndex = cn.colorIndex;
+		} else {                                                            // 沒有相同的餐廳名
+			if (colorRecycling.Count == 0) {        // 沒有可回收的 ColorIndex
+				colorIndex = resColorDict.Count.ToString();
+			} else {                                // 有可回收的 ColorIndex
+				colorIndex = colorRecycling.Dequeue();
+			}
+
+			resColorDict.Add(resName, new ColorNum() {  // 餐廳索引, 1人
+				colorIndex = colorIndex, num = 1
+			});
+		}
+		return colorIndex;
+	}
+
+	public void MinusRes(string resName) {
+		ColorNum cn;
+		if (resColorDict.TryGetValue(resName, out cn)) {
+			if (cn.num > 1) {
+				cn.num -= 1;
+			} else {
+				colorRecycling.Enqueue(cn.colorIndex);		// 回收 ColorIndex
+				resColorDict.Remove(resName);
+			}
+		}
 	}
 }
 
@@ -42,7 +82,9 @@ public class TcpServer : ServerActions {
 		methods.Add(LeaveRoomCode, RECLeaveRoom);
 		methods.Add(GameReadyCode, RECGameReady);
 	}
-
+	/// <summary>
+	/// 玩家按下 Go 按鈕後會發送 (加入等待室請求)
+	/// </summary>
 	void RECPlayerInfos(Socket inSocket, string[] inParams) {
 		// 如果這個用戶已經進來過則不再處理 (除非先呼叫離開房間命令)
 		if (infosDict.ContainsKey(inSocket)) return;
@@ -56,6 +98,7 @@ public class TcpServer : ServerActions {
 				roomName = roomName,
 				ready = false,
 				ID = 0,
+				resIndex = "0",
 				nickName = inParams[0],
 				foodSelected = inParams[1]
 			};
@@ -70,25 +113,28 @@ public class TcpServer : ServerActions {
 					ii++;
 				}
 
+				// 賦與新進的這位 ID 和 餐廳 Index
 				pi.ID = room.IDCount;
+				pi.resIndex = room.AddRes(pi.foodSelected);
 
-				// 最後一個只放這個玩家的ID，若收到參數只有1個的就是 ID
-				paramsStr[ii] = GetCmdString(room.IDCount.ToString()).ToString();
-
+				// 最後一個只放這個玩家的ID，若收到參數只有2個的就是 ID 和 resIndex
+				paramsStr[ii] = GetCmdString(new string[] {
+					pi.ID.ToString(),
+					pi.resIndex}).ToString();
 				SendCommand(inSocket, GetInfosInRoomCode, paramsStr);
 
 				// 回傳給已在房間裡的人這位新進的人的資訊
 				SendCommand(sList.ToArray(), AddNewPlayerCode, InfosStr(pi));
-			} else {
-				room = new Room(roomName);
+			} else {                                // 第一位進等待室的
+				room = new Room(pi.foodSelected);
 				inWaitRoom.Add(roomName, room);
-				// 只傳送 ID
-				SendCommand(inSocket, GetInfosInRoomCode, GetCmdString(0.ToString()).ToString());
+				// 只傳送 ID 和 resIndex
+				SendCommand(inSocket, GetInfosInRoomCode, GetCmdString(new string[]{"0", "0"}).ToString());
 			}
 
 			infosDict[inSocket] = pi;
 			room.IDCount++;
-			
+
 			// 將這個用戶加入等待室
 			room.sockets.Add(inSocket);
 		} catch { }
@@ -122,6 +168,7 @@ public class TcpServer : ServerActions {
 			Room room;
 			if (inWaitRoom.TryGetValue(pi.roomName, out room)) {
 				room.sockets.Remove(inSocket);
+				room.MinusRes(pi.foodSelected);
 				if (room.sockets.Count == 0) {
 					inWaitRoom.Remove(pi.roomName);
 				} else {
@@ -152,7 +199,9 @@ public class TcpServer : ServerActions {
 			p.nickName,
 			p.foodSelected,
 			p.ready ? "T" : "F",
-			p.ID.ToString() }).ToString();
+			p.ID.ToString(),
+			p.resIndex
+		}).ToString();
 	}
 
 	protected override void AddToRoom(string roomName, Socket socket, RoomStatus roomStatus) {
@@ -183,6 +232,8 @@ public class TcpServer : ServerActions {
 			System.Console.WriteLine("foodSelected --->" + p.Value.foodSelected);
 			System.Console.WriteLine("roomName --->" + p.Value.roomName);
 			System.Console.WriteLine("ready --->" + p.Value.ready);
+			System.Console.WriteLine("ID --->" + p.Value.ID);
+			System.Console.WriteLine("resIndex --->" + p.Value.resIndex);
 			System.Console.WriteLine("=====================================");
 		}
 	}

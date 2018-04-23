@@ -8,10 +8,10 @@ public class UIRoomManager : MonoBehaviour {
 	#region ========== Colors Variables ==========
 	[SerializeField]
 	ColorList colorListAsset;
-	public static Color[] colorList;                                // 每一次的顏色順序都會不一樣 (在 Awake 裡打亂)
-	// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
+	public static Color[] colorList;        // 每一次的顏色順序都會不一樣 (在 Awake 裡打亂) -- 已取消打亂功能
+											// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
 	public static List<string> colorResName = new List<string>();
-	public static Dictionary<string,int> resWeight = new Dictionary<string, int>();         // 這間餐廳有幾人選
+	public static Dictionary<string, int> resWeight = new Dictionary<string, int>();         // 這間餐廳有幾人選
 	#endregion ===================================
 
 	public string ServerIP = "127.0.0.1";
@@ -23,13 +23,15 @@ public class UIRoomManager : MonoBehaviour {
 	[SerializeField]
 	string roomName = "";
 	// ***************** Test *****************
-	public List<PlayerInfos> roomTest;
+	public PlayerInfos myInfosTest;
+	public List<PlayerInfos> roomTest = playersInRoom;
 	// ****************************************
 	static bool notInitialized = true;
 
 	private void Awake() {
-		colorList = new Color[colorListAsset.colors.Count];
-		colorList = Algorithms.GetRandomArray(colorListAsset.colors.ToArray());
+		colorList = colorListAsset.colors.ToArray();
+		//colorList = new Color[colorListAsset.colors.Count];
+		//colorList = Algorithms.GetRandomArray(colorListAsset.colors.ToArray());
 	}
 
 	private void Start() {
@@ -38,6 +40,16 @@ public class UIRoomManager : MonoBehaviour {
 			notInitialized = false;
 		}
 		LeaveRoom();
+
+		// ***************** Test *****************
+		roomName = "ABAB";
+		ConnectWithRoomName();
+		client.CreateOrJoinRoom("ABAB");
+		//CreateRoom("ABAB");
+		myInfos.nickName = "KAI";
+		myInfos.foodSelected = "肯德鴉";
+		//myInfos.foodSelected = "喝";
+		// ****************************************
 	}
 
 
@@ -61,7 +73,7 @@ public class UIRoomManager : MonoBehaviour {
 	}
 
 	public void GoButton() {
-		if (playersInRoom.Count > 0) {				// 已經進入等待室，不能再按這個按鈕 (實際在UI時，這情況不會發生)
+		if (playersInRoom.Count > 0) {              // 已經進入等待室，不能再按這個按鈕 (實際在UI時，這情況不會發生)
 			Debug.LogError("已經在等待室");
 			return;
 		}
@@ -80,14 +92,14 @@ public class UIRoomManager : MonoBehaviour {
 		}
 
 		myInfos.ready = false;
-		client.SendPlayerInfos(myInfos);
-		ButtonManager.ins.buttonWait();
+		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
+		ButtonManager.ins.buttonWait();     // 打開等待室UI
 	}
 
 	public void NickNameButton(Text nameText) {
 		myInfos.nickName = nameText.text;
 	}
-	
+
 	public void ReadyButton() {
 		if (client != null && client.isConnected) {
 			client.SendReady();
@@ -104,7 +116,7 @@ public class UIRoomManager : MonoBehaviour {
 
 		colorResName.Clear();
 		resWeight.Clear();
-}
+	}
 
 	public void StartGameButton() {
 		if (playersInRoom.Count <= 0) return;
@@ -146,17 +158,21 @@ public class UIRoomManager : MonoBehaviour {
 		}
 
 	}
-
+	/// <summary>
+	/// pi = null 時代表玩家退出房間
+	/// </summary>
 	void ListChangedCallback(PlayerInfos pi, int index) {
-		if (pi != null) {										// 玩家加入
+		if (pi != null) {                                       // 玩家加入
 			playersInRoom.Add(pi);
 
-			if (resWeight.ContainsKey(pi.foodSelected)) {		// 如果有人和他選一樣的餐廳
+			if (resWeight.ContainsKey(pi.foodSelected)) {       // 如果有人和他選一樣的餐廳
 				resWeight[pi.foodSelected] += 1;
 			} else {
 				colorResName.Add(pi.foodSelected);
 				resWeight.Add(pi.foodSelected, 1);
 			}
+
+			Ticker.StartTicker(0, () => { WaitRoomManager.ins.PlayerJoin(playersInRoom.Count - 1); });
 
 		} else if (index >= 0 && index < playersInRoom.Count) {  // 玩家退出
 			pi = playersInRoom[index];
@@ -169,15 +185,12 @@ public class UIRoomManager : MonoBehaviour {
 					resWeight[pi.foodSelected] = weight - 1;
 				}
 			}
-
 			playersInRoom.RemoveAt(index);
 
-
+			Ticker.StartTicker(0, () => { WaitRoomManager.ins.PlayerLeave(index); });
 		}
-
-		// For Test
-		roomTest = playersInRoom;
-}
+		//myInfosTest = myInfos;
+	}
 
 	void ReadyCallback(int playerIndex) {
 		Debug.Log("Ready: " + playerIndex);
@@ -205,6 +218,7 @@ public class UIRoomManager : MonoBehaviour {
 				client.OnPlayerListChanged = ListChangedCallback;
 				client.OnReadyCallback = ReadyCallback;
 				client.OnStartGame = StartGameCallback;
+				client.OnMyInfoChanged = WaitRoomManager.ins.LocalPlayer;
 			} catch {
 				Debug.LogError("伺服器未開啟");
 				return false;

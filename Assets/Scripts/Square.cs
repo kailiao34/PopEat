@@ -11,7 +11,7 @@ public class Square : MonoBehaviour {
 		colorIndex = GameManager.colorPicker.Get();
 		if (ren != null) {
 			ren.material.color = UIRoomManager.colorList[colorIndex];
-		} else Debug.Log("error no mesh or iamge renderer");
+		}
 	}
 
 
