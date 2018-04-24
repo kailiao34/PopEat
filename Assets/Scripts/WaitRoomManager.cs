@@ -10,7 +10,7 @@ public class WaitRoomManager : MonoBehaviour {
 	[SerializeField]
 	GameObject playerInfoPrefab;
 	public static WaitRoomManager ins;
-	List<GameObject> players = new List<GameObject>();
+	List<WaitRoomPlayer> players = new List<WaitRoomPlayer>();
 
 	private void Awake() {
 		ins = this;
@@ -20,20 +20,36 @@ public class WaitRoomManager : MonoBehaviour {
 		FeedInfo(localPlayer, UIRoomManager.myInfos);
 	}
 
+	public void Ready(int index, bool ready) {
+		if (index == -1) {          // 本地玩家 Ready
+			localPlayer.readyUI.SetActive(ready);
+		} else {
+			players[index].readyUI.SetActive(ready);
+		}
+	}
+
 	public void PlayerJoin(int index) {
-		GameObject g = Instantiate(playerInfoPrefab, playersContent);
-		FeedInfo(g.AddComponent<WaitRoomPlayer>(), UIRoomManager.playersInRoom[index]);
+		WaitRoomPlayer g = Instantiate(playerInfoPrefab, playersContent).GetComponent<WaitRoomPlayer>();
+		FeedInfo(g, UIRoomManager.playersInRoom[index]);
 		players.Add(g);
 	}
 
 	public void PlayerLeave(int index) {
-		Destroy(players[index]);
+		Destroy(players[index].gameObject);
 		players.RemoveAt(index);
 	}
 
+	public void ClearAllPlayer() {
+		foreach (WaitRoomPlayer w in players) {
+			Destroy(w.gameObject);
+		}
+		players.Clear();
+	}
+
 	void FeedInfo(WaitRoomPlayer obj, PlayerInfos pi) {
-		//obj.nickNameText.text = pi.nickName;
-		//obj.resText.text = pi.foodSelected;
-		//obj.FeedColor(pi.colorIndex);
+		obj.nickNameText.text = pi.nickName;
+		obj.resText.text = pi.foodSelected;
+		obj.FeedColor(pi.colorIndex);
+		obj.readyUI.SetActive(pi.ready);
 	}
 }

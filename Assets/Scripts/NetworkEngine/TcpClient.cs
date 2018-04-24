@@ -3,9 +3,7 @@ using System.Net.Sockets;
 
 public class TcpClient : ClientActions {
 
-	public delegate void ReadyDel(int playerIndex);
 	public delegate void PlayerListChangedDel(PlayerInfos pi = null, int playerIndex = -1);
-	public ReadyDel OnReadyCallback;
 	public Del OnMyInfoChanged;
 	/// <summary>
 	/// pi - 加入的玩家的資訊 (若是玩家退出這個參數為 null)
@@ -71,10 +69,16 @@ public class TcpClient : ClientActions {
 			ready = (inParams[1] == "T");
 		} catch { return; }
 
+		if (id == UIRoomManager.myInfos.ID) {       // 如果是自己 Ready，回呼時傳回 -1
+			UIRoomManager.myInfos.ready = ready;
+			Ticker.StartTicker(0, () => { WaitRoomManager.ins.Ready(-1, ready); });
+			return;
+		}
+
 		for (int i = 0; i < UIRoomManager.playersInRoom.Count; i++) {
 			if (UIRoomManager.playersInRoom[i].ID == id) {
 				UIRoomManager.playersInRoom[i].ready = ready;
-				if (OnReadyCallback != null) OnReadyCallback(i);
+				Ticker.StartTicker(0, () => { WaitRoomManager.ins.Ready(i, ready); });
 				return;
 			}
 		}
@@ -132,7 +136,7 @@ public class TcpClient : ClientActions {
 		try {
 			string[] ps = ExtractParams(inParams);
 
-			// 只收到1個參數，是伺服器給自己的 ID
+			// 只收到2個參數，是伺服器給自己的 ID 和代表餐廳的 ColorIndex
 			if (ps.Length == 2) {
 				UIRoomManager.myInfos.ID = int.Parse(ps[0]);
 				UIRoomManager.myInfos.colorIndex = int.Parse(ps[1]);

@@ -110,7 +110,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &114058643751740164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -152,6 +152,7 @@ MonoBehaviour:
   image: {fileID: 114058643751740164}
   nickNameText: {fileID: 114223862712973772}
   resText: {fileID: 114223014997294526}
+  readyUI: {fileID: 1948902851828170}
 --- !u!114 &114107010440785016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -246,7 +247,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1948902851828170}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 

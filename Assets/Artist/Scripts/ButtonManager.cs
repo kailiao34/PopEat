@@ -9,10 +9,10 @@ public class ButtonManager : MonoBehaviour {
 	public static ButtonManager ins;
 	public static Animator UIswitcher1;
 	public Animator UIswitcher;
+	public Text roomNameText, waitRoomDisplayNameText;
 
 	public Button[] buttons;
 	//public Sprite[] spriteImages;
-	public Text roomNameText;
 	public Text errorText; // 用來顯示 錯誤訊息的 UI Text;
 	public UIRoomManager roomManager;
 	bool CreateOrJoinRoom;			// True: Create, False: Join
@@ -87,6 +87,8 @@ public class ButtonManager : MonoBehaviour {
 		} else if (UIswitcher1.GetBool("wait") == true && buttonEscape.isActiveAndEnabled) {
 			UIswitcher1.SetBool("wait", false);
 		} else print("這不該發生! Wait");
+
+		waitRoomDisplayNameText.text = UIRoomManager.myInfos.roomName;
 	}
 
 	//=======呼叫錯誤提示介面==========

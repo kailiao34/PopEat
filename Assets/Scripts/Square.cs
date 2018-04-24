@@ -8,7 +8,7 @@ public class Square : MonoBehaviour {
 	MeshRenderer ren;
 
 	void Start() {
-		colorIndex = GameManager.colorPicker.Get();
+		colorIndex = UIRoomManager.colorPicker.Get();
 		if (ren != null) {
 			ren.material.color = UIRoomManager.colorList[colorIndex];
 		}

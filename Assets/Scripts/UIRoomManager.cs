@@ -20,13 +20,9 @@ public class UIRoomManager : MonoBehaviour {
 	public static PlayerInfos myInfos = new PlayerInfos();
 	public static List<PlayerInfos> playersInRoom = new List<PlayerInfos>();
 	public static TcpClient client;
-	[SerializeField]
 	string roomName = "";
-	// ***************** Test *****************
-	public PlayerInfos myInfosTest;
-	public List<PlayerInfos> roomTest = playersInRoom;
-	// ****************************************
 	static bool notInitialized = true;
+	public static AlgoClasses.Probability colorPicker = new AlgoClasses.Probability();
 
 	private void Awake() {
 		colorList = colorListAsset.colors.ToArray();
@@ -39,7 +35,7 @@ public class UIRoomManager : MonoBehaviour {
 			DontDestroyOnLoad(gameObject);
 			notInitialized = false;
 		}
-		LeaveRoom();
+		//LeaveRoom();
 
 		// ***************** Test *****************
 		roomName = "ABAB";
@@ -51,7 +47,6 @@ public class UIRoomManager : MonoBehaviour {
 		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
-
 
 	#region ========= 給UI按鈕使用的函數 =========
 	public void CreateRoom(string name) {
@@ -111,8 +106,11 @@ public class UIRoomManager : MonoBehaviour {
 			client.SendLeaveRoom();
 		}
 		playersInRoom.Clear();
-		myInfos = new PlayerInfos();
+		WaitRoomManager.ins.ClearAllPlayer();
 		myInfos.roomName = "";
+		roomName = "";
+		//myInfos = new PlayerInfos();
+		//myInfos.roomName = "";
 
 		colorResName.Clear();
 		resWeight.Clear();
@@ -120,16 +118,26 @@ public class UIRoomManager : MonoBehaviour {
 
 	public void StartGameButton() {
 		if (playersInRoom.Count <= 0) return;
+		bool canGO = true;
 
-		for (int i = 0; i < playersInRoom.Count; i++) {
-			// 有一個人沒有 Ready，不給進入遊戲
-			if (!playersInRoom[i].ready) {
-				Debug.LogError("等待所有玩家都 Ready 才可以 GO");
-				return;
+		if (myInfos.ready) {            // 如果自己 Ready 了再檢查別人
+			for (int i = 0; i < playersInRoom.Count; i++) {
+				// 有一個人沒有 Ready，不給進入遊戲
+				if (!playersInRoom[i].ready) {
+					canGO = false;
+					break;
+				}
 			}
+		} else {
+			canGO = false;
 		}
 
+		if (canGO) {
 		client.SendGameReady();
+		} else {
+			Debug.LogError("等待所有玩家都 Ready 才可以 GO");
+		}
+
 	}
 	#endregion ====================================
 
@@ -158,20 +166,18 @@ public class UIRoomManager : MonoBehaviour {
 		}
 
 	}
+
+	void MyInfoChanged() {
+		Ticker.StartTicker(0, WaitRoomManager.ins.LocalPlayer);
+		AddRes(myInfos.foodSelected);
+	}
 	/// <summary>
 	/// pi = null 時代表玩家退出房間
 	/// </summary>
 	void ListChangedCallback(PlayerInfos pi, int index) {
 		if (pi != null) {                                       // 玩家加入
 			playersInRoom.Add(pi);
-
-			if (resWeight.ContainsKey(pi.foodSelected)) {       // 如果有人和他選一樣的餐廳
-				resWeight[pi.foodSelected] += 1;
-			} else {
-				colorResName.Add(pi.foodSelected);
-				resWeight.Add(pi.foodSelected, 1);
-			}
-
+			AddRes(pi.foodSelected);
 			Ticker.StartTicker(0, () => { WaitRoomManager.ins.PlayerJoin(playersInRoom.Count - 1); });
 
 		} else if (index >= 0 && index < playersInRoom.Count) {  // 玩家退出
@@ -189,14 +195,17 @@ public class UIRoomManager : MonoBehaviour {
 
 			Ticker.StartTicker(0, () => { WaitRoomManager.ins.PlayerLeave(index); });
 		}
-		//myInfosTest = myInfos;
-	}
-
-	void ReadyCallback(int playerIndex) {
-		Debug.Log("Ready: " + playerIndex);
 	}
 
 	void StartGameCallback() {
+		// 設定顏色取得機率
+		int n = colorResName.Count;
+		int[] p = new int[n];
+		for (int i = 0; i < n; i++) {
+			p[i] = resWeight[colorResName[i]];
+		}
+		colorPicker.SetProb(p);
+		// 載入遊戲場景
 		SceneManager.LoadScene("GameMain");
 	}
 	#endregion =============================================
@@ -216,9 +225,8 @@ public class UIRoomManager : MonoBehaviour {
 				client.ConnectToServer(ServerIP, port);
 				client.OnJoinedRoom = JoinRoomCallback;
 				client.OnPlayerListChanged = ListChangedCallback;
-				client.OnReadyCallback = ReadyCallback;
 				client.OnStartGame = StartGameCallback;
-				client.OnMyInfoChanged = WaitRoomManager.ins.LocalPlayer;
+				client.OnMyInfoChanged = MyInfoChanged;
 			} catch {
 				Debug.LogError("伺服器未開啟");
 				return false;
@@ -227,36 +235,17 @@ public class UIRoomManager : MonoBehaviour {
 		return true;
 	}
 
-	private void OnApplicationQuit() {
-		if (client != null) client.ApplicationQuit();
-		print("Quit");
+	void AddRes(string resName) {
+		if (resWeight.ContainsKey(resName)) {       // 如果有人和他選一樣的餐廳
+			resWeight[resName] += 1;
+		} else {
+			colorResName.Add(resName);
+			resWeight.Add(resName, 1);
+		}
 	}
 
-	//void Update() {
-	//	// 開房
-	//	if (Input.GetKeyDown(KeyCode.D)) {
-	//		CreateRoom();
-	//	}
-	//	// 入房
-	//	if (Input.GetKeyDown(KeyCode.F)) {
-	//		JoinRoom();
-	//	}
-	//	// Go
-	//	if (Input.GetKeyDown(KeyCode.A)) {
-	//		GoButton();
-	//	}
-	//	// Ready
-	//	if (Input.GetKeyDown(KeyCode.S)) {
-	//		ReadyButton();
-	//	}
-	//	// 返回 (離開房間)
-	//	if (Input.GetKeyDown(KeyCode.G)) {
-	//		LeaveRoom();
-	//	}
-	//	// 開始遊戲
-	//	if (Input.GetKeyDown(KeyCode.H)) {
-	//		StartGameButton();
-	//	}
-
-	//}
+	private void OnApplicationQuit() {
+		if (client != null) client.ApplicationQuit();
+		//print("Quit");
+	}
 }
