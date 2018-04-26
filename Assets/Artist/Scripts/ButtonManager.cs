@@ -9,7 +9,7 @@ public class ButtonManager : MonoBehaviour {
 	public static ButtonManager ins;
 	public static Animator UIswitcher1; //控制主選單介面切換
 	public Animator UIswitcher;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
     public static Animator errorUI1; //呼叫 錯誤訊息 介面
     public Animator errorUI;
@@ -18,10 +18,9 @@ public class ButtonManager : MonoBehaviour {
     public Animator loadingIndicatorAnimator;
 
     public Text roomNameText, waitRoomDisplayNameText;
-=======
-	public Text roomNameText, waitRoomDisplayNameText;
+//=======
 	string currentText;
->>>>>>> 1114a1a7147f193846bb5505d0b03d508c517292
+//>>>>>>> 1114a1a7147f193846bb5505d0b03d508c517292
 
 	public Button[] buttons;
 	//public Sprite[] spriteImages;
@@ -119,7 +118,7 @@ public class ButtonManager : MonoBehaviour {
 	public void ErrorMsg() {
 		if (errorUI1.GetBool("error") == false) {
 			errorUI1.SetBool("error", true);
-			//errorText.text = "想寫啥就換成啥";         //錯誤訊息由這邊置換
+			//errorText.text = currentText;         //錯誤訊息由這邊置換
 		}
         else if (errorUI1.GetBool("error") == true) {
             errorUI1.SetBool("error", false);
