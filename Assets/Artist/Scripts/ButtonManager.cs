@@ -10,6 +10,7 @@ public class ButtonManager : MonoBehaviour {
 	public static Animator UIswitcher1;
 	public Animator UIswitcher;
 	public Text roomNameText, waitRoomDisplayNameText;
+	string currentText;
 
 	public Button[] buttons;
 	//public Sprite[] spriteImages;
@@ -109,5 +110,12 @@ public class ButtonManager : MonoBehaviour {
 		} else if (UIswitcher1.GetBool("credits") == true) {
 			UIswitcher1.SetBool("credits", false);
 		} else print("這不該發生! credits");
+	}
+
+	public void ChangeButtonText(Text buttonText) {
+		buttonText.text = currentText;
+	}
+	public void CurrentText(Text text) {
+		currentText = text.text;
 	}
 }
