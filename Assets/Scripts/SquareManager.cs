@@ -3,20 +3,68 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SquareManager : MonoBehaviour {
+	[Header("開始前倒數幾秒")]
+	public int startSec = 3;
+	[Header("開始後幾秒結束")]
+	public int overSec = 3;
+
 	public LineRenderer L1;
-	public int I1;
-	public List<Square> Inseries;
-	public bool Startbool;
-	Square preSelected;
-	Square selected;
+	int I1;
+	List<Square> Inseries = new List<Square>() { null };
+	bool Startbool = true;
+	Square selected, preSelected;
+	// For Hex Arrangement
+	public int size;
+	public GameObject center, squarePrefab;
+	HashSet<GameObject> squares = new HashSet<GameObject>();
+
+	private void Start() {
+		StartCoroutine(StartTicker());
+	}
+
+	IEnumerator StartTicker() {
+		for (int i = 1; i <= startSec; i++) {
+			yield return new WaitForSeconds(1f);
+			if (i != startSec) {
+				print(i);
+			} else {
+				ArrangeHex();
+				yield return new WaitForSeconds(overSec);
+				enabled = false;
+				Release();
+				print("GameOver");
+
+				Dictionary<int, int> d = new Dictionary<int, int>();
+				foreach (GameObject g in squares) {
+					int n;
+					int ii = g.GetComponent<Square>().colorIndex;
+					if (d.TryGetValue(ii, out n)) {
+						d[ii] = n + 1;
+					} else {
+						d.Add(ii, 1);
+					}
+				}
+
+				UIRoomManager.client.SendGameResult(d);         // 傳送本地端統計結果給伺服器
+
+				int colorIndex = 0, max = int.MinValue;
+				// 計算本地端獲勝者
+				foreach (KeyValuePair<int, int> w in d) {
+					if (w.Value > max) {
+						colorIndex = w.Key;
+						max = w.Value;
+					}
+				}
+				Debug.Log("本地端獲勝者: " + colorIndex + " - " + UIRoomManager.GetResNameFromColor(colorIndex));
+			}
+		}
+	}
 
 	void Update() {
-		if (Input.GetMouseButton(0))            // 按住，連連看
-		{
+		if (Input.GetMouseButton(0)) {           // 按住，連連看
 			if (Startbool) eliminateSquare();
 		}
-		if (Input.GetMouseButtonUp(0))          // 放開，消除方塊
-		{
+		if (Input.GetMouseButtonUp(0)) {         // 放開，消除方塊
 			Release();
 			Startbool = true;
 		}
@@ -63,6 +111,7 @@ public class SquareManager : MonoBehaviour {
 	void Release() {
 		if (Inseries[0] != null) {
 			for (int i = 0; i < Inseries.Count; i++) {
+				squares.Remove(Inseries[i].gameObject);
 				Destroy(Inseries[i].gameObject);
 			}
 			Inseries.Clear();
@@ -71,5 +120,28 @@ public class SquareManager : MonoBehaviour {
 			I1 = 0;
 			Startbool = false;
 		}
+	}
+
+	void ArrangeHex() {
+		squares.Add(Instantiate(squarePrefab));
+
+		for (int j = 0; j < 6; j++) {
+			GameObject tt1 = Instantiate(center);
+			tt1.gameObject.name = "j=====>" + j;
+			for (int i = 1; i < size; i++) {
+				float z = i * 0.84f;
+				for (int k = 1; k < i + 1; k++) {
+					GameObject gg2 = Instantiate(squarePrefab);
+					squares.Add(gg2);
+					gg2.transform.position = new Vector3(k * 0.752f, 0, z - k * 0.422f);
+					gg2.transform.parent = tt1.transform;
+					gg2.gameObject.name = "k=====>" + k;
+				}
+			}
+			if (j >= 1) {
+				tt1.transform.eulerAngles = new Vector3(0, j * 60, 0);
+			}
+		}
+		//print("六角數量: " + squares.Count);
 	}
 }

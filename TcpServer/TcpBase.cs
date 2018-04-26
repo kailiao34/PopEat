@@ -86,10 +86,13 @@ public class TcpBase {
 			DataReceived(clientSocket, Encoding.UTF8.GetString(bytes, 0, size));
 		}
 	}
-
-	void ClientLeave(Socket socket) {
+	/// <summary>
+	/// 要斷開與用戶的連線也用這個函數
+	/// </summary>
+	protected void ClientLeave(Socket socket) {
 		if (threadsDict.ContainsKey(socket)) {
 			OnDisconnected(socket);             // 呼叫斷線事件
+			socket.Close();
 
 			Thread t = threadsDict[socket];
 			threadsDict.Remove(socket);       // 從字典移除

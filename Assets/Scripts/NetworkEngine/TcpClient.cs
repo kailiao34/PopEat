@@ -29,6 +29,7 @@ public class TcpClient : ClientActions {
 		methods.Add(PlayerExitCode, RECPlayerExit);
 		methods.Add(ReadyCode, RECReady);
 		methods.Add(StartGameCode, RECStartGame);
+		methods.Add(GameResultCode, RECGameResult);
 	}
 
 	#region ============== 傳送函數 ==============
@@ -53,6 +54,18 @@ public class TcpClient : ClientActions {
 
 	public void SendGameReady() {
 		SendCommand(mySocket, GameReadyCode);
+	}
+	/// <summary>
+	/// 傳入的字典為: 顏色編號,數量
+	/// </summary>
+	public void SendGameResult(Dictionary<int, int> colorNum) {
+		List<string> s = new List<string>();
+
+		foreach (KeyValuePair<int, int> d in colorNum) {
+			s.Add(d.Key.ToString());
+			s.Add(d.Value.ToString());
+		}
+		SendCommand(mySocket, GameResultCode, s.ToArray());
 	}
 	#endregion =======================================
 
@@ -127,6 +140,16 @@ public class TcpClient : ClientActions {
 
 	void RECStartGame(Socket inSocket, string[] inParams) {
 		Ticker.StartTicker(0, OnStartGame);
+	}
+
+	void RECGameResult(Socket inSocket, string[] inParams) {
+		string res = null;
+		int colorIndex = 0;
+		try { colorIndex = int.Parse(inParams[0]); } catch { return; }
+		res = UIRoomManager.GetResNameFromColor(colorIndex);
+		if (res == null) return;
+
+		UnityEngine.Debug.Log("統計結果: " + colorIndex + " - " + res);
 	}
 	#endregion =======================================
 	/// <summary>

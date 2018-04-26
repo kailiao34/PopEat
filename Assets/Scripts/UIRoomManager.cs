@@ -9,7 +9,7 @@ public class UIRoomManager : MonoBehaviour {
 	[SerializeField]
 	ColorList colorListAsset;
 	public static Color[] colorList;        // 每一次的顏色順序都會不一樣 (在 Awake 裡打亂) -- 已取消打亂功能
-											// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
+	// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
 	public static List<string> colorResName = new List<string>();
 	public static Dictionary<string, int> resWeight = new Dictionary<string, int>();         // 這間餐廳有幾人選
 	#endregion ===================================
@@ -109,15 +109,13 @@ public class UIRoomManager : MonoBehaviour {
 		WaitRoomManager.ins.ClearAllPlayer();
 		myInfos.roomName = "";
 		roomName = "";
-		//myInfos = new PlayerInfos();
-		//myInfos.roomName = "";
 
 		colorResName.Clear();
 		resWeight.Clear();
 	}
 
 	public void StartGameButton() {
-		if (playersInRoom.Count <= 0) return;
+		if (roomName == "") return;
 		bool canGO = true;
 
 		if (myInfos.ready) {            // 如果自己 Ready 了再檢查別人
@@ -133,7 +131,7 @@ public class UIRoomManager : MonoBehaviour {
 		}
 
 		if (canGO) {
-		client.SendGameReady();
+			client.SendGameReady();
 		} else {
 			Debug.LogError("等待所有玩家都 Ready 才可以 GO");
 		}
@@ -242,6 +240,17 @@ public class UIRoomManager : MonoBehaviour {
 			colorResName.Add(resName);
 			resWeight.Add(resName, 1);
 		}
+	}
+	/// <summary>
+	/// 傳入代表餐廳的顏色編號，取回餐廳名，錯誤回傳 null
+	/// </summary>
+	public static string GetResNameFromColor(int colorIndex) {
+		if (myInfos.colorIndex == colorIndex) return myInfos.foodSelected;
+
+		foreach (PlayerInfos pi in playersInRoom) {
+			if (pi.colorIndex == colorIndex) return pi.foodSelected;
+		}
+		return null;
 	}
 
 	private void OnApplicationQuit() {
