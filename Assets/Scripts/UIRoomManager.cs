@@ -38,13 +38,13 @@ public class UIRoomManager : MonoBehaviour {
 		//LeaveRoom();
 
 		// ***************** Test *****************
-		//roomName = "ABAB";
-		//ConnectWithRoomName();
-		//client.CreateOrJoinRoom("ABAB");
-		////CreateRoom("ABAB");
-		//myInfos.nickName = "KAI";
-		//myInfos.foodSelected = "肯德鴉";
-		////myInfos.foodSelected = "喝";
+		roomName = "ABAB";
+		ConnectWithRoomName();
+		client.CreateOrJoinRoom("ABAB");
+		//CreateRoom("ABAB");
+		myInfos.nickName = "KAI";
+		myInfos.foodSelected = "肯德鴉";
+		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
@@ -155,6 +155,9 @@ public class UIRoomManager : MonoBehaviour {
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)
 			Debug.LogError("房間不存在，請重新輸入");
+
+		} else if (status == NetworkBehaviour.RoomStatus.RoomFulled) {
+			Debug.LogError("這個房間已滿");
 
 		} else if (status == NetworkBehaviour.RoomStatus.Others) {
 			Debug.LogError("這個房間已經開始遊戲");

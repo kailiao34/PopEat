@@ -9,8 +9,9 @@ using System.Text;
 /// 此腳本才開始有房間的概念
 /// </summary>
 public class ServerActions : NetworkBehaviour {
-	Thread acceptThread;
+	protected int maxClient;
 
+	Thread acceptThread;
 	/// <summary>
 	/// 用房名找 Socket 的字典
 	/// </summary>
@@ -21,10 +22,11 @@ public class ServerActions : NetworkBehaviour {
 	protected Dictionary<Socket, string> socketDict = new Dictionary<Socket, string>();
 
 	public void StartServer(string ipAddr, int port, int maxClient = 9999) {
+		this.maxClient = maxClient;
 
 		//伺服器本身的IP和Port
 		mySocket.Bind(new IPEndPoint(IPAddress.Parse(ipAddr), port));
-		mySocket.Listen(maxClient);//最多一次接受多少人連線
+		mySocket.Listen(9999);//最多一次接受多少人連線
 
 		acceptThread = new Thread(Accept);
 		acceptThread.Start();
@@ -113,6 +115,11 @@ public class ServerActions : NetworkBehaviour {
 	/// 需先自行判斷房間是否存在，若不存在會報錯
 	/// </summary>
 	protected virtual void AddToRoom(string roomName, Socket socket, RoomStatus roomStatus) {
+		if (roomDict[roomName].Count >= maxClient) {		// 房間已滿
+			SendCommand(socket, ReciveRoomStatusCode, ((int)RoomStatus.RoomFulled).ToString());
+			return;
+		}
+
 		string oldRoom;
 		if (socketDict.TryGetValue(socket, out oldRoom)) {              // 這個連線者已經在其它房間
 			roomDict[oldRoom].Remove(socket);							// 將他換過來

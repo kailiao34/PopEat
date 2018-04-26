@@ -15,7 +15,8 @@ public class NetworkBehaviour : TcpBase {
 		// 成功訊息 (0 ~ 99)
 		Created = 0, Joined = 1,
 		// 失敗訊息 ( >= 100)
-		NoRoomName = 100, RoomExists = 101, RoomNotExists = 102, Others = 103, ParamsError = 104
+		NoRoomName = 100, ParamsError = 101, RoomExists = 102, RoomNotExists = 103,
+		RoomFulled = 104, Others = 105
 	}
 
 	// 指令表
