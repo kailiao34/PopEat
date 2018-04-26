@@ -19,13 +19,14 @@ public class FoodLis : MonoBehaviour
     public List<RectTransform> foodListRectTransform;
     public List<FoodListButton> FoodListButtonscript;
     public RectTransform eatCanvas;
-    public Animator loadingIndicatorAnimator;
+    Animator loadingIndicatorAnimator;
 
     //public static Animator UIswitcher1;
     //public Animator UIswitcher;
 
 	private void Awake() {
 		resInfos = resInfosUI;
+        loadingIndicatorAnimator = ButtonManager.loadingIndicatorAnimator1;
         //UIswitcher1 = UIswitcher;
     }
 
