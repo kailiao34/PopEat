@@ -114,7 +114,13 @@ public class UIRoomManager : MonoBehaviour {
 		resWeight.Clear();
 	}
 
-	public void StartGameButton() {
+    void MenuFadeOut()                   //切換到 GameMain 之前的畫面 fade out
+    {
+        ButtonManager.UIswitcher1.SetBool("goToGame", true);
+    }
+
+
+    public void StartGameButton() {
 		if (roomName == "") return;
 		bool canGO = true;
 

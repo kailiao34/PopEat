@@ -34,8 +34,14 @@ public class ButtonManager : MonoBehaviour {
         loadingIndicatorAnimator1 = loadingIndicatorAnimator;
         ins = this;
 	}
-	//========呼叫暱稱輸入介面=========
-	public void buttonNick() {
+
+    private void Start()
+    {
+        UIswitcher1.SetBool("goToGame", false);
+    }
+
+    //========呼叫暱稱輸入介面=========
+    public void buttonNick() {
 		if (UIswitcher1.GetBool("nick") == false) {
 			UIswitcher1.SetBool("nick", true);
 		}
@@ -137,7 +143,7 @@ public class ButtonManager : MonoBehaviour {
 		}
         else print("這不該發生! credits");
 	}
-
+    
 	public void ChangeButtonText(Text buttonText) {
 		buttonText.text = currentText;
 	}
