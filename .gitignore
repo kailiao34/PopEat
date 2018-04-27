@@ -16,6 +16,7 @@
 /BRice/2D/[Bb]uilds/
 /BRice/2D/Assets/AssetStoreTools*
 /BRice/2D/.vscode/
+Popeat.sln
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -28,7 +29,6 @@ ExportedObj/
 .consulo/
 *.csproj
 *.unityproj
-*.sln
 *.suo
 *.tmp
 *.user
