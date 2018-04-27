@@ -32,7 +32,7 @@ public class SquareManager : MonoBehaviour {
 				yield return new WaitForSeconds(overSec);
 				enabled = false;
 				Release();
-				print("GameOver");
+				//print("GameOver");
 
 				Dictionary<int, int> d = new Dictionary<int, int>();
 				foreach (GameObject g in squares) {
@@ -55,7 +55,10 @@ public class SquareManager : MonoBehaviour {
 						max = w.Value;
 					}
 				}
-				Debug.Log("本地端獲勝者: " + colorIndex + " - " + UIRoomManager.GetResNameFromColor(colorIndex));
+				//Debug.Log("本地端獲勝者: " + colorIndex + " - " + UIRoomManager.GetResNameFromColor(colorIndex));
+				UIGameManager.ins.GameResultUI();
+				UIGameManager.ins.SetLocalWinner(UIRoomManager.GetResNameFromColor(colorIndex), colorIndex);
+
 			}
 		}
 	}

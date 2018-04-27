@@ -21,30 +21,25 @@ public class UIRoomManager : MonoBehaviour {
 	public static List<PlayerInfos> playersInRoom = new List<PlayerInfos>();
 	public static TcpClient client;
 	string roomName = "";
-	static bool notInitialized = true;
 	public static AlgoClasses.Probability colorPicker = new AlgoClasses.Probability();
+
+	public static GameObject UIObject;
 
 	private void Awake() {
 		colorList = colorListAsset.colors.ToArray();
-		//colorList = new Color[colorListAsset.colors.Count];
-		//colorList = Algorithms.GetRandomArray(colorListAsset.colors.ToArray());
 	}
 
 	private void Start() {
-		if (notInitialized) {
-			DontDestroyOnLoad(gameObject);
-			notInitialized = false;
-		}
-		//LeaveRoom();
+		LeaveRoom();
 
 		// ***************** Test *****************
-		roomName = "ABAB";
-		ConnectWithRoomName();
-		client.CreateOrJoinRoom("ABAB");
-		//CreateRoom("ABAB");
-		myInfos.nickName = "KAI";
-		myInfos.foodSelected = "肯德鴉";
-		//myInfos.foodSelected = "喝";
+		//roomName = "ABAB";
+		//ConnectWithRoomName();
+		//client.CreateOrJoinRoom("ABAB");
+		////CreateRoom("ABAB");
+		//myInfos.nickName = "KAI";
+		//myInfos.foodSelected = "肯德鴉";
+		////myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
@@ -210,7 +205,7 @@ public class UIRoomManager : MonoBehaviour {
 		colorPicker.SetProb(p);
 		// 載入遊戲場景
 		ButtonManager.UIswitcher1.SetBool("goToGame", true);
-		Ticker.StartTicker(1, () => { SceneManager.LoadScene("GameMain"); });
+		Ticker.StartTicker(0, () => { SceneManager.LoadScene("GameMain"); });
 	}
 	#endregion =============================================
 	/// <summary>

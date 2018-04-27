@@ -149,7 +149,9 @@ public class TcpClient : ClientActions {
 		res = UIRoomManager.GetResNameFromColor(colorIndex);
 		if (res == null) return;
 
-		UnityEngine.Debug.Log("統計結果: " + colorIndex + " - " + res);
+		Ticker.StartTicker(0, () => { UIGameManager.ins.SetGlobalWinner(res, colorIndex); });
+		
+		//UnityEngine.Debug.Log("統計結果: " + colorIndex + " - " + res);
 	}
 	#endregion =======================================
 	/// <summary>

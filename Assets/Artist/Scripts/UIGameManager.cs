@@ -21,6 +21,11 @@ public class UIGameManager : MonoBehaviour {
     public Button error;
     public Button errorOverlay;
 
+	[SerializeField]
+	Text winnerLocalText, winnerGlobalText;
+	[SerializeField]
+	Image winnerLocalHex, winnerGlobalHex;
+
     private void Awake()  {
         UIgame1 = UIgame;
         errorUI1 = errorUI;
@@ -28,8 +33,20 @@ public class UIGameManager : MonoBehaviour {
         ins = this;
     }
 
+	public void SetLocalWinner(string resName, int colorIndex) {
+		winnerLocalText.text = resName;
+		winnerLocalHex.color = UIRoomManager.colorList[colorIndex];
+	}
+
+	public void SetGlobalWinner(string resName, int colorIndex) {
+		winnerGlobalText.text = resName;
+		winnerGlobalHex.color = UIRoomManager.colorList[colorIndex];
+	}
+
     //======呼叫遊戲結果介面=======
     public void GameResultUI() {
+		
+
         if (UIgame1.GetBool("result") == false)
         {
             UIgame1.SetBool("result", true);
