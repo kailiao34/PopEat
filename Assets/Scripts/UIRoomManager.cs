@@ -114,12 +114,6 @@ public class UIRoomManager : MonoBehaviour {
 		resWeight.Clear();
 	}
 
-    void MenuFadeOut()                   //切換到 GameMain 之前的畫面 fade out
-    {
-        ButtonManager.UIswitcher1.SetBool("goToGame", true);
-    }
-
-
     public void StartGameButton() {
 		if (roomName == "") return;
 		bool canGO = true;
@@ -215,7 +209,8 @@ public class UIRoomManager : MonoBehaviour {
 		}
 		colorPicker.SetProb(p);
 		// 載入遊戲場景
-		SceneManager.LoadScene("GameMain");
+		ButtonManager.UIswitcher1.SetBool("goToGame", true);
+		Ticker.StartTicker(1, () => { SceneManager.LoadScene("GameMain"); });
 	}
 	#endregion =============================================
 	/// <summary>
