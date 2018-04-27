@@ -149,14 +149,16 @@ public class UIRoomManager : MonoBehaviour {
 	void JoinRoomCallback(TcpClient.RoomStatus status) {
 
 		if (status == NetworkBehaviour.RoomStatus.Created) {                // 成功創建房間 (CreateRoom)
-			Debug.Log("創建成功");
+			//Debug.Log("創建成功");
+			Ticker.StartTicker(0, ()=> { ButtonManager.ins.EnterRoomCallback(true); });
 			myInfos.roomName = roomName;
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomExists) {      // 房間已存在 (CreateRoom)
 			Debug.LogError("房間已存在，請重新輸入");
 
 		} else if (status == NetworkBehaviour.RoomStatus.Joined) {          // 成功加入房間 (JoinRoom)
-			Debug.Log("加入成功");
+																			//Debug.Log("加入成功");
+			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterRoomCallback(false); });
 			myInfos.roomName = roomName;
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)

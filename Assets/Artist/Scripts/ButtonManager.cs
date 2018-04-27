@@ -20,6 +20,7 @@ public class ButtonManager : MonoBehaviour {
     public Text roomNameText, waitRoomDisplayNameText;
 //=======
 	string currentText;
+	public GameObject resOK, createRoomOK, enterRoomOK;
 //>>>>>>> 1114a1a7147f193846bb5505d0b03d508c517292
 
 	public Button[] buttons;
@@ -39,9 +40,16 @@ public class ButtonManager : MonoBehaviour {
     {
         UIswitcher1.SetBool("goToGame", false);
     }
+	/// <summary>
+	/// True: Create Room, False: Enter Room
+	/// </summary>
+	public void EnterRoomCallback(bool createOrEnter) {
+		createRoomOK.SetActive(createOrEnter);
+		enterRoomOK.SetActive(!createOrEnter);
+	}
 
-    //========呼叫暱稱輸入介面=========
-    public void buttonNick() {
+	//========呼叫暱稱輸入介面=========
+	public void buttonNick() {
 		if (UIswitcher1.GetBool("nick") == false) {
 			UIswitcher1.SetBool("nick", true);
 		}
@@ -61,6 +69,7 @@ public class ButtonManager : MonoBehaviour {
         else {
 			UIswitcher1.SetBool("eat", true);
 		}
+		resOK.SetActive(UIRoomManager.myInfos.foodSelected != "");
 	}
 
 	//=======呼叫進入/創立房間介面==========

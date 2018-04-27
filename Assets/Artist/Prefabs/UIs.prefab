@@ -2422,7 +2422,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1477714753290372}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.200602, y: 1.1563607, z: 0.08133079}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224215659898410210}
@@ -3315,6 +3315,9 @@ MonoBehaviour:
   loadingIndicatorAnimator: {fileID: 95391074194219946}
   roomNameText: {fileID: 114065340439223660}
   waitRoomDisplayNameText: {fileID: 114367149266321190}
+  resOK: {fileID: 1979003063652664}
+  createRoomOK: {fileID: 1128450486512736}
+  enterRoomOK: {fileID: 1988005441047616}
   buttons:
   - {fileID: 114147676090766882}
   - {fileID: 114890008296586564}
