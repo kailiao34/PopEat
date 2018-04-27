@@ -5,3 +5,10 @@ D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.csprojResolveAssemblyRefer
 D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.csproj.CoreCompileInputs.cache
 D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.exe
 D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.pdb
+C:\Users\BlackRice\Desktop\AngryRou\TcpServer\bin\Debug\TcpServer.exe.config
+C:\Users\BlackRice\Desktop\AngryRou\TcpServer\bin\Debug\TcpServer.exe
+C:\Users\BlackRice\Desktop\AngryRou\TcpServer\bin\Debug\TcpServer.pdb
+C:\Users\BlackRice\Desktop\AngryRou\TcpServer\obj\Debug\TcpServer.csprojResolveAssemblyReference.cache
+C:\Users\BlackRice\Desktop\AngryRou\TcpServer\obj\Debug\TcpServer.csproj.CoreCompileInputs.cache
+C:\Users\BlackRice\Desktop\AngryRou\TcpServer\obj\Debug\TcpServer.exe
+C:\Users\BlackRice\Desktop\AngryRou\TcpServer\obj\Debug\TcpServer.pdb
