@@ -33,13 +33,13 @@ public class UIRoomManager : MonoBehaviour {
 		LeaveRoom();
 
 		// ***************** Test *****************
-		//roomName = "ABAB";
+		//roomName = "nasty";
 		//ConnectWithRoomName();
 		//client.CreateOrJoinRoom("ABAB");
-		////CreateRoom("ABAB");
+		//CreateRoom("ABAB");
 		//myInfos.nickName = "KAI";
 		//myInfos.foodSelected = "肯德鴉";
-		////myInfos.foodSelected = "喝";
+		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 

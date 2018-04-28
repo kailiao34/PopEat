@@ -73,7 +73,7 @@ class Room {
 
 public class TcpServer : ServerActions {
 
-	int resultSec = 10000;
+	int resultSec;
 
 	Dictionary<Socket, PlayerInfos> infosDict = new Dictionary<Socket, PlayerInfos>();
 	Dictionary<string, Room> inWaitRoom = new Dictionary<string, Room>();
@@ -90,13 +90,16 @@ public class TcpServer : ServerActions {
 	const string StartGameCode = "StartGame";
 	const string GameResultCode = "GameResult";
 
-	public TcpServer() {
+	/// <param name="endResultSec">最大的等待玩家結果秒數</param>
+	public TcpServer(int endResultSec) {
 		// 註冊指令對應的函數
 		methods.Add(PlayerInfosCode, RECPlayerInfos);
 		methods.Add(ReadyCode, RECReady);
 		methods.Add(LeaveRoomCode, RECLeaveRoom);
 		methods.Add(GameReadyCode, RECGameReady);
 		methods.Add(GameResultCode, RECGameResult);
+
+		resultSec = endResultSec * 1000;
 	}
 	/// <summary>
 	/// 玩家按下 Go 按鈕後會發送 (加入等待室請求)
@@ -235,9 +238,9 @@ public class TcpServer : ServerActions {
 		}
 
 		// ************* Test *************
-		//foreach (KeyValuePair<string, int> dd in d) {
-		//	System.Console.WriteLine(dd.Key + ": " + dd.Value);
-		//}
+		foreach (KeyValuePair<string, int> dd in d) {
+			System.Console.WriteLine(dd.Key + ": " + dd.Value);
+		}
 		// *********************************
 
 		room.resultReturned++;

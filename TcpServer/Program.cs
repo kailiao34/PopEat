@@ -12,7 +12,7 @@ class Program {
 	static void Main(string[] args) {
 		new Thread(UserInput).Start();                  // 接收指令的 Thread
 
-		server = new TcpServer();
+		server = new TcpServer(20);
 		server.StartServer("127.0.0.1", 8056, 30);
 
 		//string[] ss = str.Split(new char[] { ' ' }, -1);
