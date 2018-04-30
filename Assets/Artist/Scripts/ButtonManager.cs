@@ -56,8 +56,6 @@ public class ButtonManager : MonoBehaviour {
 
 	//========呼叫暱稱輸入介面=========
 	public void buttonNick() {
-
-
 		if (UIswitcher1.GetBool("nick") == false) {
 			UIswitcher1.SetBool("nick", true);
 		}

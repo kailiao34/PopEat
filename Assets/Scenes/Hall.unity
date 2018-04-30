@@ -244,6 +244,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f32a562c4908f41af18f1324eb17e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &615610489 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114147676090766882, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+    type: 2}
+  m_PrefabInternal: {fileID: 1823688311}
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!114 &700410550 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114585842646390784, guid: 6a0b48ba77f5f2344b90eae050a646a4,
@@ -376,6 +382,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114099649159071174, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 700410550}
     - target: {fileID: 223184535781285760, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_Camera
@@ -419,6 +430,11 @@ Prefab:
     - target: {fileID: 114155773190397936, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 700410550}
+    - target: {fileID: 114155773190397936, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
       objectReference: {fileID: 700410550}
     - target: {fileID: 223552576992843404, guid: 74d3b26374e88fc46a37ad34cd4fced2,
@@ -509,6 +525,11 @@ Prefab:
       value: 
       objectReference: {fileID: 11400000, guid: 96408bbd149ffb241b4e1c40fe24f752,
         type: 2}
+    - target: {fileID: 114585842646390784, guid: 6a0b48ba77f5f2344b90eae050a646a4,
+        type: 2}
+      propertyPath: goButton
+      value: 
+      objectReference: {fileID: 615610489}
     m_RemovedComponents:
     - {fileID: 114953937483453116, guid: 6a0b48ba77f5f2344b90eae050a646a4, type: 2}
     - {fileID: 114121322847392992, guid: 6a0b48ba77f5f2344b90eae050a646a4, type: 2}

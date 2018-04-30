@@ -11,7 +11,6 @@ public class FoodListButton : MonoBehaviour {
     {
 		//print("您選擇了: " + UItext.text);
 		UIRoomManager.myInfos.foodSelected = UItext.text;
-		//ButtonManager.ins.buttonEat();
 	}
     public void Info()
     {

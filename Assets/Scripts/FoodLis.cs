@@ -15,7 +15,8 @@ public class FoodLis : MonoBehaviour
     public GameObject FoodListUI_ScrollView_Content, FoodListButtonParentobject;
     public GameObject foodListButton;
     public FoodListButton EnterFoodListButton;
-    public Animator EnterFoodListButtonAnimator;
+	[SerializeField]
+    Animator EnterFoodListButtonAnimator;
     public List<RectTransform> foodListRectTransform;
     public List<FoodListButton> FoodListButtonscript;
     public RectTransform eatCanvas;
@@ -59,15 +60,13 @@ public class FoodLis : MonoBehaviour
 		}
     }
 
-    public void aa1()
+	private void OnEnable() {
+		OnValueChanged();
+	}
+
+	public void OnValueChanged()
     {
-        Debug.Log("正在輸入");
-        EnterFoodListButtonAnimator.SetBool("switch", true);
-        if (FoodInputField.text == "")
-        {
-            EnterFoodListButtonAnimator.SetBool("switch", false);
-            Debug.Log("目前沒有文字");
-        }
-        EnterFoodListButton.UItext.text = FoodInputField.text;
-    }
+		EnterFoodListButtonAnimator.SetBool("switch", FoodInputField.text != "");
+		EnterFoodListButton.UItext.text = FoodInputField.text;
+	}
 }

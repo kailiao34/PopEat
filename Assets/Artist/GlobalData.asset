@@ -13,6 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ServerIP: 127.0.0.1
   ServerPort: 8056
+  startSec: 8
+  overSec: 8
+  hexLayers: 9
   colors:
   - {r: 0.9852941, g: 0.072448105, b: 0.072448105, a: 1}
   - {r: 0.23924091, g: 0.27503946, b: 0.43382353, a: 1}

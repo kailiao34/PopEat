@@ -4,11 +4,11 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class UIRoomManager : MonoBehaviour {
-
-	#region ========== Colors Variables ==========
 	[SerializeField]
 	GlobalData GlocalDataAsset;
 	public static GlobalData gData;
+
+	#region ========== Colors Variables ==========
 	// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
 	public static List<string> colorResName = new List<string>();
 	public static Dictionary<string, int> resWeight = new Dictionary<string, int>();         // 這間餐廳有幾人選
@@ -17,8 +17,11 @@ public class UIRoomManager : MonoBehaviour {
 	public static PlayerInfos myInfos = new PlayerInfos();
 	public static List<PlayerInfos> playersInRoom = new List<PlayerInfos>();
 	public static TcpClient client;
-	string roomName = "";
 	public static AlgoClasses.Probability colorPicker = new AlgoClasses.Probability();
+
+	string roomName = "";
+	[SerializeField]
+	Button goButton;
 
 	public static GameObject UIObject;
 
@@ -29,13 +32,15 @@ public class UIRoomManager : MonoBehaviour {
 	private void Start() {
 		LeaveRoom();
 
+		goButton.interactable = false;
+
 		// ***************** Test *****************
 		//roomName = "ABAB";
 		//ConnectWithRoomName();
 		//client.CreateOrJoinRoom("ABAB");
 		////CreateRoom("ABAB");
-		////myInfos.nickName = "KAI";
-		////myInfos.foodSelected = "肯德鴉";
+		//myInfos.nickName = "KAI";
+		//myInfos.foodSelected = "肯德鴉";
 		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
@@ -64,20 +69,7 @@ public class UIRoomManager : MonoBehaviour {
 			Debug.LogError("已經在等待室");
 			return;
 		}
-
-		if (client == null || !client.isConnected || myInfos.roomName == "") {
-			Debug.LogError("尚未加入房間或建立房間");
-			return;
-		}
-		if (myInfos.nickName == "") {
-			Debug.LogError("請輸入暱稱");
-			return;
-		}
-		if (myInfos.foodSelected == "") {
-			Debug.LogError("選擇一個餐廳");
-			return;
-		}
-
+		
 		myInfos.ready = false;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
 		ButtonManager.ins.buttonWait();     // 打開等待室UI
@@ -138,6 +130,7 @@ public class UIRoomManager : MonoBehaviour {
 			//Debug.Log("創建成功");
 			Ticker.StartTicker(0, ()=> { ButtonManager.ins.EnterRoomCallback(true); });
 			myInfos.roomName = roomName;
+			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomExists) {      // 房間已存在 (CreateRoom)
 			Debug.LogError("房間已存在，請重新輸入");
@@ -146,6 +139,7 @@ public class UIRoomManager : MonoBehaviour {
 																			//Debug.Log("加入成功");
 			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterRoomCallback(false); });
 			myInfos.roomName = roomName;
+			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)
 			Debug.LogError("房間不存在，請重新輸入");
@@ -239,6 +233,18 @@ public class UIRoomManager : MonoBehaviour {
 			resWeight.Add(resName, 1);
 		}
 	}
+	/// <summary>
+	/// 確認 暱稱、餐廳、房間都已輸入好後，開放 Go Button
+	/// </summary>
+	public void CheckAllSet() {
+		if (client == null || !client.isConnected || myInfos.roomName == ""
+			|| myInfos.nickName == "" ||
+			myInfos.foodSelected == "") {
+			return;
+		}
+		goButton.interactable = true;
+	}
+
 	/// <summary>
 	/// 傳入代表餐廳的顏色編號，取回餐廳名，錯誤回傳 null
 	/// </summary>
