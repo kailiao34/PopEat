@@ -40,6 +40,12 @@ public class ButtonManager : MonoBehaviour {
     {
         UIswitcher1.SetBool("goToGame", false);
     }
+
+	//private void Update() {
+	//	if (Input.GetKeyDown(KeyCode.A)) {
+	//		buttonEat();
+	//	}
+	//}
 	/// <summary>
 	/// True: Create Room, False: Enter Room
 	/// </summary>

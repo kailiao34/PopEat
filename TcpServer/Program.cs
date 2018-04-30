@@ -12,8 +12,8 @@ class Program {
 	static void Main(string[] args) {
 		new Thread(UserInput).Start();                  // 接收指令的 Thread
 
-		server = new TcpServer(20);
-		server.StartServer("192.168.1.112", 8056, 30);
+		server = new TcpServer(20);             // 最大的等待玩家結果秒數
+		server.StartServer("127.0.0.1", 8056, 30);
 
 		//string[] ss = str.Split(new char[] { ' ' }, -1);
 		//foreach (string s in ss) {

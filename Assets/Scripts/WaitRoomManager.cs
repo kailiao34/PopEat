@@ -28,10 +28,12 @@ public class WaitRoomManager : MonoBehaviour {
 		}
 	}
 
-	public void PlayerJoin(int index) {
-		WaitRoomPlayer g = Instantiate(playerInfoPrefab, playersContent).GetComponent<WaitRoomPlayer>();
-		FeedInfo(g, UIRoomManager.playersInRoom[index]);
-		players.Add(g);
+	public void PlayerJoin(PlayerInfos pi) {
+		Ticker.StartTicker(0, () => {
+			WaitRoomPlayer g = Instantiate(playerInfoPrefab, playersContent).GetComponent<WaitRoomPlayer>();
+			FeedInfo(g, pi);
+			players.Add(g);
+		});
 	}
 
 	public void PlayerLeave(int index) {

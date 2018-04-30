@@ -7,15 +7,12 @@ public class UIRoomManager : MonoBehaviour {
 
 	#region ========== Colors Variables ==========
 	[SerializeField]
-	ColorList colorListAsset;
-	public static Color[] colorList;        // 每一次的顏色順序都會不一樣 (在 Awake 裡打亂) -- 已取消打亂功能
+	GlobalData GlocalDataAsset;
+	public static GlobalData gData;
 	// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
 	public static List<string> colorResName = new List<string>();
 	public static Dictionary<string, int> resWeight = new Dictionary<string, int>();         // 這間餐廳有幾人選
 	#endregion ===================================
-
-	public string ServerIP = "127.0.0.1";
-	public int port = 8056;
 
 	public static PlayerInfos myInfos = new PlayerInfos();
 	public static List<PlayerInfos> playersInRoom = new List<PlayerInfos>();
@@ -26,20 +23,20 @@ public class UIRoomManager : MonoBehaviour {
 	public static GameObject UIObject;
 
 	private void Awake() {
-		colorList = colorListAsset.colors.ToArray();
+		if (gData == null) gData = GlocalDataAsset;
 	}
 
 	private void Start() {
 		LeaveRoom();
 
 		// ***************** Test *****************
-		//roomName = "nasty";
+		//roomName = "ABAB";
 		//ConnectWithRoomName();
 		//client.CreateOrJoinRoom("ABAB");
-		//CreateRoom("ABAB");
-		//myInfos.nickName = "KAI";
-		//myInfos.foodSelected = "肯德鴉";
-		myInfos.foodSelected = "喝";
+		////CreateRoom("ABAB");
+		////myInfos.nickName = "KAI";
+		////myInfos.foodSelected = "肯德鴉";
+		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
@@ -170,13 +167,13 @@ public class UIRoomManager : MonoBehaviour {
 		AddRes(myInfos.foodSelected);
 	}
 	/// <summary>
-	/// pi = null 時代表玩家退出房間
+	/// pi = null 時代表玩家退出房間，此時 index 代表退出的玩家的 index
 	/// </summary>
 	void ListChangedCallback(PlayerInfos pi, int index) {
 		if (pi != null) {                                       // 玩家加入
 			playersInRoom.Add(pi);
 			AddRes(pi.foodSelected);
-			Ticker.StartTicker(0, () => { WaitRoomManager.ins.PlayerJoin(playersInRoom.Count - 1); });
+			WaitRoomManager.ins.PlayerJoin(pi);
 
 		} else if (index >= 0 && index < playersInRoom.Count) {  // 玩家退出
 			pi = playersInRoom[index];
@@ -221,7 +218,7 @@ public class UIRoomManager : MonoBehaviour {
 			myInfos.roomName = "";
 			try {
 				client = new TcpClient();
-				client.ConnectToServer(ServerIP, port);
+				client.ConnectToServer(gData.ServerIP, gData.ServerPort);
 				client.OnJoinedRoom = JoinRoomCallback;
 				client.OnPlayerListChanged = ListChangedCallback;
 				client.OnStartGame = StartGameCallback;

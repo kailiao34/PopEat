@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4217878476872010}
   - component: {fileID: 114337046827395632}
-  - component: {fileID: 114438441762759506}
   m_Layer: 0
   m_Name: ArragingHexagonTest
   m_TagString: Untagged
@@ -56,14 +55,3 @@ MonoBehaviour:
   maxX: 15
   maxY: 15
   centers: []
---- !u!114 &114438441762759506
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1214450271115832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ad6dc78803f4e444992e842cd370df0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

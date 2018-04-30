@@ -37,3 +37,12 @@ UI Buttons:
 		5. (Server)  a 挡参璸┮Τ硂琿戳丁ずΜ计秖癳 GameResultCode 倒┮Τ
 			(把计: 计秖程肅︹絪腹)挡硂┬丁
 		6. (Client) Μ GameResultCode 陪ボ挡狦
+	=======================================================================================================
+	3. 秈单秙
+		1. (Client) ノめA Go 秙癳 PlayerInfosCode  (把计: ノめA块际嘿㎝繺芔)
+		2. (Server) Μ PlayerInfosCode 盢ノめA┮匡┬丁单癘肚ㄓ戈癟だ皌
+			ID ㎝ resIndex癳 GetInfosInRoomCode 倒ノめA (把计ヘ玡竒单ず┮Τ產戈癟程
+			ノめAだ皌 ID ㎝ resIndex)癳 AddNewPlayerCode 倒埃 A ㄤウ单ず產 (把计:
+			ノめ A 戈癟)
+		3. (Client) ノめAΜ GetInfosInRoomCode 穦单ネㄤウ產せà㎝嘿
+		4. (Others) ㄤウ单ずノめ穦Μ AddNewPlayerCode Μノめ A 戈癟盢单

@@ -13,7 +13,7 @@ public class Square : MonoBehaviour {
 
 		colorIndex = UIRoomManager.colorPicker.Get();
 		if (ren != null) {
-			ren.material.color = UIRoomManager.colorList[colorIndex];
+			ren.material.color = UIRoomManager.gData.colors[colorIndex];
 		}
 	}
 

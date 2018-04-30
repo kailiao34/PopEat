@@ -123,7 +123,6 @@ public class TcpServer : ServerActions {
 			};
 
 			if (inWaitRoom.TryGetValue(roomName, out room)) {
-				// 回傳已在房間裡的人的資訊給新進的這位 (為節省網路流量，不連自己的資訊一起傳回)
 				List<Socket> sList = room.sockets;
 				string[] paramsStr = new string[sList.Count + 1];
 				int ii = 0;
@@ -142,7 +141,7 @@ public class TcpServer : ServerActions {
 					pi.resIndex}).ToString();
 				SendCommand(inSocket, GetInfosInRoomCode, paramsStr);
 
-				// 回傳給已在房間裡的人這位新進的人的資訊
+				// 回傳給已在房間裡的人這位新進的人的資訊 (為節省網路流量，不連自己的資訊一起傳回)
 				SendCommand(sList.ToArray(), AddNewPlayerCode, InfosStr(pi));
 			} else {                                // 第一位進等待室的
 				room = new Room(roomName, pi.foodSelected);

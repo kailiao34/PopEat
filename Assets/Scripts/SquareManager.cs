@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SquareManager : MonoBehaviour {
-	[Header("開始前倒數幾秒")]
-	public int startSec = 3;
-	[Header("開始後幾秒結束")]
-	public int overSec = 3;
-
 	public LineRenderer L1;
 	int I1;
 	List<Square> Inseries = new List<Square>() { null };
 	bool Startbool = true;
 	Square selected, preSelected;
 	// For Hex Arrangement
-	public int size;
-	public GameObject center, squarePrefab;
+	public GameObject squarePrefab;
 	HashSet<GameObject> squares = new HashSet<GameObject>();
 
 	private void Start() {
@@ -23,13 +17,13 @@ public class SquareManager : MonoBehaviour {
 	}
 
 	IEnumerator StartTicker() {
-		for (int i = 1; i <= startSec; i++) {
+		for (int i = 1; i <= UIRoomManager.gData.startSec; i++) {
 			yield return new WaitForSeconds(1f);
-			if (i != startSec) {
+			if (i != UIRoomManager.gData.startSec) {
 				print(i);
 			} else {
 				ArrangeHex();
-				yield return new WaitForSeconds(overSec);
+				yield return new WaitForSeconds(UIRoomManager.gData.overSec);
 				enabled = false;
 				Release();
 				//print("GameOver");
@@ -129,9 +123,9 @@ public class SquareManager : MonoBehaviour {
 		squares.Add(Instantiate(squarePrefab));
 
 		for (int j = 0; j < 6; j++) {
-			GameObject tt1 = Instantiate(center);
+			GameObject tt1 = new GameObject();
 			tt1.gameObject.name = "j=====>" + j;
-			for (int i = 1; i < size; i++) {
+			for (int i = 1; i < UIRoomManager.gData.hexLayers; i++) {
 				float z = i * 0.84f;
 				for (int k = 1; k < i + 1; k++) {
 					GameObject gg2 = Instantiate(squarePrefab);
