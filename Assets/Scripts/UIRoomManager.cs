@@ -41,7 +41,7 @@ public class UIRoomManager : MonoBehaviour {
 		////CreateRoom("ABAB");
 		//myInfos.nickName = "KAI";
 		//myInfos.foodSelected = "肯德鴉";
-		//myInfos.foodSelected = "喝";
+		////myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
