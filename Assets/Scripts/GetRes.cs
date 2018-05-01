@@ -94,7 +94,7 @@ public class GetRes : MonoBehaviour {
                 {
                     d.opNow = "營業中";
                 }
-                else d.opNow = "閉店中";
+                else d.opNow = "已打烊";
             }
             else d.opNow = "無營業時段資訊";
 

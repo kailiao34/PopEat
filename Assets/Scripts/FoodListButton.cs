@@ -59,7 +59,7 @@ public class FoodListButton : MonoBehaviour {
 			str.AppendLine("評價者: " + s.name);
 			str.AppendLine("評價分數: " + s.rating);
 			str.AppendLine("留言: " + s.text);
-			str.AppendLine("留言時間: " + s.time.ToString("yyyy-MM-dd HH:mm:ss"));
+			str.AppendLine("留言時間: " + s.time.ToString("yyyy-MM-dd HH:mm:ss \n\n\n"));
 		}
 		FoodLis.resInfos[6].text = str.ToString();
         FoodLis.resInfos[7].text = d.opNow;
