@@ -1202,6 +1202,7 @@ GameObject:
   - component: {fileID: 114066935407266288}
   - component: {fileID: 114651195252206212}
   - component: {fileID: 95855263953033410}
+  - component: {fileID: 114299116007784612}
   m_Layer: 5
   m_Name: CanvasError
   m_TagString: Untagged
@@ -3356,7 +3357,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIswitcher: {fileID: 95719168249027812}
-  errorUI: {fileID: 95855263953033410}
   loadingIndicatorAnimator: {fileID: 95391074194219946}
   roomNameText: {fileID: 114065340439223660}
   waitRoomDisplayNameText: {fileID: 114367149266321190}
@@ -3377,7 +3377,6 @@ MonoBehaviour:
   - {fileID: 114155773190397936}
   - {fileID: 114702595349141102}
   - {fileID: 114918886002514186}
-  errorText: {fileID: 114957565485705496}
   roomManager: {fileID: 0}
 --- !u!114 &114114124799047126
 MonoBehaviour:
@@ -4680,6 +4679,17 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114299116007784612
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1530822516259912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d555a9e719714864080dc9e5c00d94db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114312454881049344
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10774,8 +10784,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540.08905, y: -140}
-  m_SizeDelta: {x: 880.1781, y: 200}
+  m_AnchoredPosition: {x: 540, y: -140}
+  m_SizeDelta: {x: 880, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224734530065291966
 RectTransform:

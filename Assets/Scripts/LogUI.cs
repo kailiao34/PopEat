@@ -12,8 +12,11 @@ public class LogUI : MonoBehaviour {
 	}
 
 	public static void Show(string msg) {
-		text.text = msg;
-		anim.SetBool(hash, true);
+		Ticker.StartTicker(0, ()=> {
+			text.text = msg;
+			anim.SetBool(hash, true);
+		});
+		Ticker.StartTicker(1, Hide);
 	}
 
 	public static void Hide() {

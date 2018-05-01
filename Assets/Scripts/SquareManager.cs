@@ -20,7 +20,7 @@ public class SquareManager : MonoBehaviour {
 		for (int i = 1; i <= UIRoomManager.gData.startSec; i++) {
 			yield return new WaitForSeconds(1f);
 			if (i != UIRoomManager.gData.startSec) {
-				print(i);
+				//print(i);
 			} else {
 				ArrangeHex();
 				yield return new WaitForSeconds(UIRoomManager.gData.overSec);

@@ -43,7 +43,7 @@ public class ClientActions : NetworkBehaviour {
 
 	protected override void OnDisconnected(Socket socket) {
 		base.OnDisconnected(socket);
-		UnityEngine.Debug.Log("Server Offline");
+		//UnityEngine.Debug.Log("Server Offline");
 		if (socket == mySocket) isConnected = false;
 	}
 	

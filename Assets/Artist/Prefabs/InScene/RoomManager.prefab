@@ -20,8 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4336068632719666}
   - component: {fileID: 114585842646390784}
-  - component: {fileID: 114953937483453116}
-  - component: {fileID: 114121322847392992}
   m_Layer: 0
   m_Name: RoomManager
   m_TagString: Untagged
@@ -42,21 +40,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114121322847392992
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1064296455051100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dda484edb944084aa0ee6fd3734c0c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  localPlayer: {fileID: 0}
-  playersContent: {fileID: 0}
-  playerInfoPrefab: {fileID: 1218991726867190, guid: d9d76e9c508f3d44fa196d84abaf2894,
-    type: 2}
 --- !u!114 &114585842646390784
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -68,16 +51,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ca31321fb9717408261b9e7e814be5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlocalDataAsset: {fileID: 0}
---- !u!114 &114953937483453116
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1064296455051100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07ec508cbf8da444a8f22bcd272c8fbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  autoEnabled: 0
+  GlocalDataAsset: {fileID: 11400000, guid: 96408bbd149ffb241b4e1c40fe24f752, type: 2}
+  goButton: {fileID: 0}

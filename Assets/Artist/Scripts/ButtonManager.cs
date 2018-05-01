@@ -18,7 +18,8 @@ public class ButtonManager : MonoBehaviour {
 	public Text roomNameText, waitRoomDisplayNameText;
 	//=======
 	string currentText;
-	public GameObject resOK, createRoomOK, enterRoomOK;
+	[SerializeField]
+	GameObject resOK, createRoomOK, enterRoomOK;
 	//>>>>>>> 1114a1a7147f193846bb5505d0b03d508c517292
 
 	public Button[] buttons;
@@ -48,6 +49,11 @@ public class ButtonManager : MonoBehaviour {
 		enterRoomOK.SetActive(!createOrEnter);
 	}
 
+	public void TurnOffRoomOKs() {
+		createRoomOK.SetActive(false);
+		enterRoomOK.SetActive(false);
+	}
+
 	//========呼叫暱稱輸入介面=========
 	public void buttonNick() {
 		UIswitcher1.SetBool("nick", !UIswitcher1.GetBool("nick"));
@@ -58,7 +64,6 @@ public class ButtonManager : MonoBehaviour {
 		if (UIswitcher1.GetBool("eat")) {
 			UIswitcher1.SetBool("eat", false);
 			loadingIndicatorAnimator1.SetBool("Enabled", false); // used for loading animator
-																 //print("eat disabled");
 		} else {
 			UIswitcher1.SetBool("eat", true);
 		}
@@ -76,10 +81,8 @@ public class ButtonManager : MonoBehaviour {
 
 	public void ButtonCreateOrJoinRoomOkay() {
 		if (CreateOrJoinRoom) {
-			//print("Create");
 			roomManager.CreateRoom(roomNameText.text);
 		} else {
-			//print("Join");
 			roomManager.JoinRoom(roomNameText.text);
 		}
 		ShowCreateOrJoinRoomUI();

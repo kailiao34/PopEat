@@ -66,7 +66,7 @@ public class UIRoomManager : MonoBehaviour {
 
 	public void GoButton() {
 		if (playersInRoom.Count > 0) {              // 已經進入等待室，不能再按這個按鈕 (實際在UI時，這情況不會發生)
-			Debug.LogError("已經在等待室");
+			LogUI.Show("已經在等待室");
 			return;
 		}
 		
@@ -77,6 +77,9 @@ public class UIRoomManager : MonoBehaviour {
 
 	public void NickNameButton(Text nameText) {
 		myInfos.nickName = nameText.text;
+		if (nameText.text == "") {
+			LogUI.Show("請輸入暱稱");
+		}
 	}
 
 	public void ReadyButton() {
@@ -96,6 +99,7 @@ public class UIRoomManager : MonoBehaviour {
 
 		colorResName.Clear();
 		resWeight.Clear();
+		ButtonManager.ins.TurnOffRoomOKs();
 	}
 
     public void StartGameButton() {
@@ -117,7 +121,7 @@ public class UIRoomManager : MonoBehaviour {
 		if (canGO) {
 			client.SendGameReady();
 		} else {
-			Debug.LogError("等待所有玩家都 Ready 才可以 GO");
+			LogUI.Show("等待所有玩家都 Ready 才可以 GO");
 		}
 
 	}
@@ -133,7 +137,7 @@ public class UIRoomManager : MonoBehaviour {
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomExists) {      // 房間已存在 (CreateRoom)
-			Debug.LogError("房間已存在，請重新輸入");
+			LogUI.Show("房間已存在，請重新輸入");
 
 		} else if (status == NetworkBehaviour.RoomStatus.Joined) {          // 成功加入房間 (JoinRoom)
 																			//Debug.Log("加入成功");
@@ -142,18 +146,17 @@ public class UIRoomManager : MonoBehaviour {
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)
-			Debug.LogError("房間不存在，請重新輸入");
+			LogUI.Show("房間不存在，請重新輸入");
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomFulled) {
-			Debug.LogError("這個房間已滿");
+			LogUI.Show("這個房間已滿");
 
 		} else if (status == NetworkBehaviour.RoomStatus.Others) {
-			Debug.LogError("這個房間已經開始遊戲");
+			LogUI.Show("這個房間已經開始遊戲");
 
 		} else {                                                            // 未知錯誤
-			Debug.LogError("錯誤");
+			LogUI.Show("錯誤");
 		}
-
 	}
 
 	void MyInfoChanged() {
@@ -204,7 +207,7 @@ public class UIRoomManager : MonoBehaviour {
 	/// </summary>
 	bool ConnectWithRoomName() {
 		if (roomName == "") {
-			Debug.LogError("請輸入房名");
+			LogUI.Show("請輸入房名");
 			return false;
 		}
 
@@ -218,7 +221,7 @@ public class UIRoomManager : MonoBehaviour {
 				client.OnStartGame = StartGameCallback;
 				client.OnMyInfoChanged = MyInfoChanged;
 			} catch {
-				Debug.LogError("伺服器未開啟");
+				LogUI.Show("伺服器未開啟");
 				return false;
 			}
 		}

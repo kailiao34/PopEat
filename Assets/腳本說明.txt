@@ -6,6 +6,8 @@ UI Buttons:
 	暱稱: btnNickOkay
 	選餐: btnFindEat
 
+
+
 客戶端與伺服端互動說明:
 	1. 顏色列表的傳遞:
 		伺服器:
