@@ -3240,8 +3240,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UItext: {fileID: 0}
-  resIndex: 0
   button: {fileID: 0}
+  buttonIndex: 0
 --- !u!114 &114104160512729498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7438,8 +7438,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UItext: {fileID: 114888646682863780}
-  resIndex: 0
   button: {fileID: 0}
+  buttonIndex: 0
 --- !u!114 &114862651627383824
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7922,14 +7922,11 @@ MonoBehaviour:
   - {fileID: 114645516199880042}
   reviewListUI: {fileID: 114455492397970674}
   FoodInputField: {fileID: 114235263979178132}
-  FoodListUI_ScrollView_Content: {fileID: 1525452894140790}
-  FoodListButtonParentobject: {fileID: 1502926514760540}
+  buttonsParent: {fileID: 224431627682102250}
   foodListButton: {fileID: 1000732580914918, guid: 1d435b83bc5f14643a8906f443d73a57,
     type: 2}
   EnterFoodListButton: {fileID: 114855613010100484}
   EnterFoodListButtonAnimator: {fileID: 95568546064727144}
-  foodListRectTransform: []
-  FoodListButtonscript: []
   eatCanvas: {fileID: 224560244164985054}
 --- !u!114 &114950366495875024
 MonoBehaviour:

@@ -15,7 +15,7 @@ public class GetRes : MonoBehaviour {
 	public delegate void GetResNamesDel(List<string> resNames);
 	public delegate void GetResDetailDel(Details details);
 
-	Dictionary<string, Details> resDetailDict = new Dictionary<string, Details>();
+	static Dictionary<string, Details> resDetailDict = new Dictionary<string, Details>();
 
 	private void Awake() {
 		ins = this;
@@ -65,6 +65,7 @@ public class GetRes : MonoBehaviour {
 			names.Add(name);
 			resDetailDict[name] = d;
 		}
+		print("GetNames");
 		#endregion ==================================================================
 
 		if (callBackEvent != null) callBackEvent(names);
@@ -76,6 +77,7 @@ public class GetRes : MonoBehaviour {
 
 		if (resDetailDict.TryGetValue(resName, out d)) {
 			if (!d.visited) {                       // 如果這間餐廳還沒有向Google要過資料
+				print("Visit");
 				StringBuilder url = new StringBuilder();
 				url.Append("https://maps.googleapis.com/maps/api/place/details/json?placeid=")
 					.Append(d.placeID).Append("&language=zh-TW&key=").Append(googlePlaceKey);

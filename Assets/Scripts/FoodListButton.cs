@@ -3,6 +3,7 @@ using UnityEngine.UI;
 public class FoodListButton : MonoBehaviour {
 	public Text UItext;
 	public Button button;
+	public int buttonIndex;
 
 	private void Start() {
 		button = GetComponent<Button>();
@@ -14,9 +15,7 @@ public class FoodListButton : MonoBehaviour {
 		UIRoomManager.myInfos.foodSelected = UItext.text;
 
 		// Highlight Selected
-		if (FoodLis.preResSelected != null) FoodLis.preResSelected.colors = FoodLis.resNormalCB;
-		button.colors = FoodLis.resHCB;
-		FoodLis.preResSelected = button;
+		FoodLis.HighlightButton(buttonIndex);
 	}
 	public void Info() {
 		ButtonManager.UIswitcher1.SetBool("ResInfo", true);

@@ -101,6 +101,7 @@ public class UIRoomManager : MonoBehaviour {
 		resWeight.Clear();
 		ButtonManager.ins.TurnOffRoomOKs();
 		ButtonManager.ins.ResSelecteOK();
+		CheckAllSet();
 	}
 
     public void StartGameButton() {
@@ -244,6 +245,7 @@ public class UIRoomManager : MonoBehaviour {
 		if (client == null || !client.isConnected || myInfos.roomName == ""
 			|| myInfos.nickName == "" ||
 			myInfos.foodSelected == "") {
+			goButton.interactable = false;
 			return;
 		}
 		goButton.interactable = true;
