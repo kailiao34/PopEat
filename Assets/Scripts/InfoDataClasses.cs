@@ -20,6 +20,10 @@ public class Details {
 	public List<Reviews> reviews = new List<Reviews>();             // 網友評價
 	public bool permanentlyClosed;                                  // 如果 True 則此餐廳已永久停業
     public string opNow;                                              //是否營業中 - BR
+
+	public string placeID;                                  // 用來向Google取得更詳細的餐廳資料 (內部使用)
+	public bool visited;									// 用來標記這間餐廳是否己向Google取得過詳細資料，避免重複讀取
+
 }
 
 public class Reviews {

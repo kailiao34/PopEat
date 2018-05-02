@@ -100,6 +100,7 @@ public class UIRoomManager : MonoBehaviour {
 		colorResName.Clear();
 		resWeight.Clear();
 		ButtonManager.ins.TurnOffRoomOKs();
+		ButtonManager.ins.ResSelecteOK();
 	}
 
     public void StartGameButton() {
@@ -132,7 +133,7 @@ public class UIRoomManager : MonoBehaviour {
 
 		if (status == NetworkBehaviour.RoomStatus.Created) {                // 成功創建房間 (CreateRoom)
 			//Debug.Log("創建成功");
-			Ticker.StartTicker(0, ()=> { ButtonManager.ins.EnterRoomCallback(true); });
+			Ticker.StartTicker(0, ()=> { ButtonManager.ins.EnterOrCreateRoomOK(true); });
 			myInfos.roomName = roomName;
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
@@ -141,7 +142,7 @@ public class UIRoomManager : MonoBehaviour {
 
 		} else if (status == NetworkBehaviour.RoomStatus.Joined) {          // 成功加入房間 (JoinRoom)
 																			//Debug.Log("加入成功");
-			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterRoomCallback(false); });
+			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterOrCreateRoomOK(false); });
 			myInfos.roomName = roomName;
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WWWTest : MonoBehaviour {
     void Start() {
-		GetRes.ins.GetAllRes(24.99579212, 121.48876185, 500, PrintDetails);
+		//GetRes.ins.GetAllRes(24.99579212, 121.48876185, 500, PrintDetails);
 	}
 
 	public static void PrintDetails(List<Details> d) {

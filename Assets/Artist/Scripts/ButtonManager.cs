@@ -42,9 +42,10 @@ public class ButtonManager : MonoBehaviour {
 		}
 	}
 	/// <summary>
+	/// EnterRoom or CreateRoom Callback
 	/// True: Create Room, False: Enter Room
 	/// </summary>
-	public void EnterRoomCallback(bool createOrEnter) {
+	public void EnterOrCreateRoomOK(bool createOrEnter) {
 		createRoomOK.SetActive(createOrEnter);
 		enterRoomOK.SetActive(!createOrEnter);
 	}
@@ -52,6 +53,10 @@ public class ButtonManager : MonoBehaviour {
 	public void TurnOffRoomOKs() {
 		createRoomOK.SetActive(false);
 		enterRoomOK.SetActive(false);
+	}
+
+	public void ResSelecteOK() {
+		resOK.SetActive(UIRoomManager.myInfos.foodSelected != "");
 	}
 
 	//========呼叫暱稱輸入介面=========
@@ -67,7 +72,7 @@ public class ButtonManager : MonoBehaviour {
 		} else {
 			UIswitcher1.SetBool("eat", true);
 		}
-		resOK.SetActive(UIRoomManager.myInfos.foodSelected != "");
+		ResSelecteOK();
 	}
 
 	//=======呼叫進入/創立房間介面==========

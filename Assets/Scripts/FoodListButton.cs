@@ -2,8 +2,6 @@
 using UnityEngine.UI;
 public class FoodListButton : MonoBehaviour {
     public Text UItext;
-	[HideInInspector]
-	public int resIndex;
 	public Button button;
 
 	private void Start() {
@@ -24,46 +22,51 @@ public class FoodListButton : MonoBehaviour {
     public void Info()
     {
         ButtonManager.UIswitcher1.SetBool("ResInfo", true);
+
+		GetRes.ins.GetResDetail(UItext.text, ShowResDetailInfo);
+	}
+	
+    public void InfoOff()
+    {
+        ButtonManager.UIswitcher1.SetBool("ResInfo", false);
+    }
+
+	void ShowResDetailInfo(Details d) {
+		if (d == null) {
+			LogUI.Show("無法取得這間餐廳的資料");
+			return;
+		}
+
 		string closed = "";
-
-		Details d = FoodLis.resList[resIndex];
-
 		System.Text.StringBuilder str = new System.Text.StringBuilder();
 
-		FoodLis.resInfos[0].text = d.name;
-		FoodLis.resInfos[1].text = d.phoneNum;
-		FoodLis.resInfos[2].text = d.address;
+		FoodLis.resInfoText[0].text = d.name;
+		FoodLis.resInfoText[1].text = d.phoneNum;
+		FoodLis.resInfoText[2].text = d.address;
 
-        if (d.openingHours == null)
-        {
-            str = new System.Text.StringBuilder("無資料 _(´ཀ`」 ∠)_");            
-        }
-        else {
-            foreach (string s in d.openingHours)
-            {
-                str.AppendLine(s);
-            }
-        }
+		if (d.openingHours == null) {
+			str = new System.Text.StringBuilder("無資料 _(´ཀ`」 ∠)_");
+		} else {
+			foreach (string s in d.openingHours) {
+				str.AppendLine(s);
+			}
+		}
 
-        if (str.ToString().Length <= 1)
-        {
-            FoodLis.resInfos[3].text = "無資料 _(´ཀ`」 ∠)_";
-        }
-        else FoodLis.resInfos[3].text = str.ToString();
+		if (str.ToString().Length <= 1) {
+			FoodLis.resInfoText[3].text = "無資料 _(´ཀ`」 ∠)_";
+		} else FoodLis.resInfoText[3].text = str.ToString();
 
-        FoodLis.resInfos[4].text = "評價：" + d.rating.ToString() + "/5";
+		FoodLis.resInfoText[4].text = "評價：" + d.rating.ToString() + "/5";
 
-        if (d.permanentlyClosed){
-            closed = "已歇業";
-        }
-        else if (!d.permanentlyClosed)
-        {
-            closed = "";
-        }
+		if (d.permanentlyClosed) {
+			closed = "已歇業";
+		} else if (!d.permanentlyClosed) {
+			closed = "";
+		}
 
-        FoodLis.resInfos[5].text = closed;
+		FoodLis.resInfoText[5].text = closed;
 
-        str = new System.Text.StringBuilder();
+		str = new System.Text.StringBuilder();
 
 		foreach (Reviews s in d.reviews) {
 			str.AppendLine("評價者: " + s.name);
@@ -71,12 +74,7 @@ public class FoodListButton : MonoBehaviour {
 			str.AppendLine("留言: " + s.text);
 			str.AppendLine("留言時間: " + s.time.ToString("yyyy-MM-dd HH:mm:ss \n\n\n"));
 		}
-		FoodLis.resInfos[6].text = str.ToString();
-        FoodLis.resInfos[7].text = d.opNow;
-    }
-
-    public void InfoOff()
-    {
-        ButtonManager.UIswitcher1.SetBool("ResInfo", false);
-    }
+		FoodLis.resInfoText[6].text = str.ToString();
+		FoodLis.resInfoText[7].text = d.opNow;
+	}
 }
