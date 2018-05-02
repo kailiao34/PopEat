@@ -14,6 +14,8 @@ public class GlobalData : ScriptableObject {
 	public int overSec = 8;
 	[Header("六角排列層數")]
 	public int hexLayers = 9;
-
+	[Header("餐廳被選擇時")]
+	public Color resHighlighted;
+	[Space]
 	public Color[] colors;
 }

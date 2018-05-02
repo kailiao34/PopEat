@@ -4,19 +4,29 @@ public class FoodListButton : MonoBehaviour {
     public Text UItext;
 	[HideInInspector]
 	public int resIndex;
-    string closed;
-    string closed2;
+	public Button button;
 
-    public void Select()
+	private void Start() {
+		button = GetComponent<Button>();
+		//button.colors = FoodLis.resHC;
+	}
+
+	public void Select()
     {
 		//print("您選擇了: " + UItext.text);
 		UIRoomManager.myInfos.foodSelected = UItext.text;
+
+		// Highlight Selected
+		if (FoodLis.preResSelected != null) FoodLis.preResSelected.colors = FoodLis.resNormalCB;
+		button.colors = FoodLis.resHCB;
+		FoodLis.preResSelected = button;
 	}
     public void Info()
     {
         ButtonManager.UIswitcher1.SetBool("ResInfo", true);
+		string closed = "";
 
-        Details d = FoodLis.resList[resIndex];
+		Details d = FoodLis.resList[resIndex];
 
 		System.Text.StringBuilder str = new System.Text.StringBuilder();
 

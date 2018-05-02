@@ -21,14 +21,21 @@ public class FoodLis : MonoBehaviour
     public List<FoodListButton> FoodListButtonscript;
     public RectTransform eatCanvas;
     Animator loadingIndicatorAnimator;
-
-    //public static Animator UIswitcher1;
-    //public Animator UIswitcher;
+	// 餐廳按鈕正常的顏色
+	public static ColorBlock resNormalCB;
+	//餐廳按鈕被按下時改成這個顏色
+	public static ColorBlock resHCB;
+	// 記錄上一個被選到的餐廳按鈕
+	public static Button preResSelected;
 
 	private void Awake() {
 		resInfos = resInfosUI;
         loadingIndicatorAnimator = ButtonManager.loadingIndicatorAnimator1;
-        //UIswitcher1 = UIswitcher;
+
+		resNormalCB = foodListButton.GetComponent<Button>().colors;
+		resHCB = resNormalCB;
+		resHCB.normalColor = UIRoomManager.gData.resHighlighted;
+		resHCB.highlightedColor = UIRoomManager.gData.resHighlighted;
     }
 
 	private void Start()

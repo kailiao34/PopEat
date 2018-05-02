@@ -8,6 +8,7 @@ public class ClientActions : NetworkBehaviour {
 	
 	public void ConnectToServer(string ipAddr, int port) {
 		mySocket.Connect(ipAddr, port);
+		
 		Receive(mySocket);
 		isConnected = true;
 
