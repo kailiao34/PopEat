@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 public class FoodListButton : MonoBehaviour {
-    public Text UItext;
+	public Text UItext;
 	public Button button;
 
 	private void Start() {
@@ -9,8 +9,7 @@ public class FoodListButton : MonoBehaviour {
 		//button.colors = FoodLis.resHC;
 	}
 
-	public void Select()
-    {
+	public void Select() {
 		//print("您選擇了: " + UItext.text);
 		UIRoomManager.myInfos.foodSelected = UItext.text;
 
@@ -19,17 +18,15 @@ public class FoodListButton : MonoBehaviour {
 		button.colors = FoodLis.resHCB;
 		FoodLis.preResSelected = button;
 	}
-    public void Info()
-    {
-        ButtonManager.UIswitcher1.SetBool("ResInfo", true);
+	public void Info() {
+		ButtonManager.UIswitcher1.SetBool("ResInfo", true);
 
 		GetRes.ins.GetResDetail(UItext.text, ShowResDetailInfo);
 	}
-	
-    public void InfoOff()
-    {
-        ButtonManager.UIswitcher1.SetBool("ResInfo", false);
-    }
+
+	public void InfoOff() {
+		ButtonManager.UIswitcher1.SetBool("ResInfo", false);
+	}
 
 	void ShowResDetailInfo(Details d) {
 		if (d == null) {
@@ -75,6 +72,13 @@ public class FoodListButton : MonoBehaviour {
 			str.AppendLine("留言時間: " + s.time.ToString("yyyy-MM-dd HH:mm:ss \n\n\n"));
 		}
 		FoodLis.resInfoText[6].text = str.ToString();
-		FoodLis.resInfoText[7].text = d.opNow;
+
+		if (d.openNow == 0) {
+			FoodLis.resInfoText[7].text = "營業中";
+		} else if (d.openNow == 1) {
+			FoodLis.resInfoText[7].text = "已打烊/休息中";
+		} else {
+			FoodLis.resInfoText[7].text = "無營業時段資訊";
+		}
 	}
 }
