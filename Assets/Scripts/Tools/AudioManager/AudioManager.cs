@@ -147,9 +147,9 @@ public class AudioManager : MonoBehaviour {
 			streamWriter.WriteLine("public enum " + enumName);
 			streamWriter.WriteLine("{");
 			for (int i = 0; i < enumEntries.Count; i++) {
-				string name = enumEntries[i].Substring(enumEntries[i].LastIndexOf(' ') + 1);
+				string name = RemoveSymbols(enumEntries[i]);
 
-				if (name == "" || name == " ") {
+				if (name == "") {
 					name = "UnknownFileName" + unKnowFileCount.ToString();
 				}
 				streamWriter.WriteLine("\t" + name + " = " + i.ToString() + ",");
@@ -158,6 +158,18 @@ public class AudioManager : MonoBehaviour {
 		}
 		AssetDatabase.Refresh();
 
+	}
+
+	string RemoveSymbols(string str) {
+
+		List<char> chars = new List<char>();
+
+		foreach (char c in str) {
+			if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c > 10000)
+				//print(c);
+				chars.Add(c);
+		}
+		return new string(chars.ToArray());
 	}
 #endif
 }

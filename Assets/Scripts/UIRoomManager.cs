@@ -35,13 +35,13 @@ public class UIRoomManager : MonoBehaviour {
 		goButton.interactable = false;
 
 		// ***************** Test *****************
-		//roomName = "ABAB";
-		//ConnectWithRoomName();
-		//client.CreateOrJoinRoom("ABAB");
-		////CreateRoom("ABAB");
-		//myInfos.nickName = "KAI";
-		//myInfos.foodSelected = "肯德鴉";
-		////myInfos.foodSelected = "喝";
+		roomName = "ABAB";
+		ConnectWithRoomName();
+		client.CreateOrJoinRoom("ABAB");
+		//CreateRoom("ABAB");
+		myInfos.nickName = "KAI";
+		myInfos.foodSelected = "肯德鴉";
+		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 

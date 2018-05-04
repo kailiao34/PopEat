@@ -258,8 +258,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233a28073fb8d684aa9730370fdf46ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundsEditor: []
-  preAudios: []
+  soundsEditor:
+  - {fileID: 8300000, guid: 14d2f4342f793e744bbc3b8eb43124ed, type: 3}
+  - {fileID: 8300000, guid: ad987af358fc5c942ae29e57f2d9b288, type: 3}
+  - {fileID: 8300000, guid: 3eb0fba31f3e972498efd84e3898246e, type: 3}
+  - {fileID: 8300000, guid: 7148d7274f3d43944ba08d5636c14ad7, type: 3}
+  - {fileID: 8300000, guid: e7eab53b2eac116429f052aab5ef9b37, type: 3}
+  preAudios:
+  - Angel
+  - "\u4E0A\u7DDA"
+  - "\u4E0B\u7DDA"
+  - "\u53EE\u549A"
+  - "\u904A\u6232\u738B\u914D\u6A02-\u795E\u7684\u61A4\u6012"
 --- !u!114 &555045680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,7 +513,7 @@ Prefab:
     - target: {fileID: 224799441884395392, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 496.1266
+      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 224799441884395392, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
@@ -513,7 +523,7 @@ Prefab:
     - target: {fileID: 224799441884395392, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 992.2532
+      value: 1080
       objectReference: {fileID: 0}
     - target: {fileID: 224799441884395392, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}

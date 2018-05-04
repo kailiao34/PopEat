@@ -9,7 +9,8 @@ public class SquareManager : MonoBehaviour {
 	bool Startbool = true;
 	Square selected, preSelected;
 	// For Hex Arrangement
-	public GameObject squarePrefab;
+	[SerializeField]
+	GameObject squarePrefab, hexFXPrefab;
 	HashSet<GameObject> squares = new HashSet<GameObject>();
 
 	private void Start() {

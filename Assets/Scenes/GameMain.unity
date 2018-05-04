@@ -306,6 +306,8 @@ MonoBehaviour:
   L1: {fileID: 1201128737}
   squarePrefab: {fileID: 1605801640786788, guid: debca01f965b9ea499efb44cbff1396b,
     type: 2}
+  hexFXPrefab: {fileID: 1040963702194990, guid: 84c4bb7285247af42ada33c5453ad1d0,
+    type: 2}
 --- !u!1 &194768718
 GameObject:
   m_ObjectHideFlags: 0
@@ -1902,10 +1904,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIgame: {fileID: 949142849}
-  errorUI: {fileID: 1330565782}
   loadingUI: {fileID: 1634789913}
   goToMenu: {fileID: 194768719}
-  errorText: {fileID: 2145739757}
   error: {fileID: 1777975372}
   errorOverlay: {fileID: 2006692456}
   winnerLocalText: {fileID: 1491237847}
@@ -2458,11 +2458,6 @@ CanvasRenderer:
 --- !u!224 &1330565778 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224755077581384688, guid: ffe4718a756d3814f898e1b8e91e2497,
-    type: 2}
-  m_PrefabInternal: {fileID: 255901801}
---- !u!95 &1330565782 stripped
-Animator:
-  m_PrefabParentObject: {fileID: 95337285105245670, guid: ffe4718a756d3814f898e1b8e91e2497,
     type: 2}
   m_PrefabInternal: {fileID: 255901801}
 --- !u!1 &1349557684
@@ -3202,9 +3197,3 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2133525738}
---- !u!114 &2145739757 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114033735181484490, guid: ffe4718a756d3814f898e1b8e91e2497,
-    type: 2}
-  m_PrefabInternal: {fileID: 255901801}
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
