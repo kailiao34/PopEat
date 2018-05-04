@@ -14,8 +14,8 @@ MonoBehaviour:
   ServerIP: 127.0.0.1
   ServerPort: 8056
   radius: 500
-  startSec: 1
-  overSec: 1
+  startSec: 8
+  overSec: 8
   hexLayers: 9
   resHighlighted: {r: 0.22745098, g: 0.5372549, b: 0.9647059, a: 0.3647059}
   colors:

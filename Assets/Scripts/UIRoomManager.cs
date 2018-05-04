@@ -80,6 +80,7 @@ public class UIRoomManager : MonoBehaviour {
 		if (nameText.text == "") {
 			LogUI.Show("請輸入暱稱");
 		}
+		CheckAllSet();
 	}
 
 	public void ReadyButton() {
