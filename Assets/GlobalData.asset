@@ -11,10 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89b4d3a35fa733246a925943f362b9ff, type: 3}
   m_Name: GlobalData
   m_EditorClassIdentifier: 
-  ServerIP: 127.0.0.1
+  ServerIP: 36.226.122.86
   ServerPort: 8056
   radius: 500
-  startSec: 8
+  startSec: 1
   overSec: 8
   hexLayers: 9
   resHighlighted: {r: 0.22745098, g: 0.5372549, b: 0.9647059, a: 0.3647059}

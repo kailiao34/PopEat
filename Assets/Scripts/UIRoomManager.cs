@@ -24,6 +24,7 @@ public class UIRoomManager : MonoBehaviour {
 	Button goButton;
 	[SerializeField]
 	Text nickNameText;
+	string nickNameSaveStr = "NickName";
 
 	public static GameObject UIObject;
 
@@ -32,12 +33,13 @@ public class UIRoomManager : MonoBehaviour {
 	}
 
 	private void Start() {
-		LeaveRoom();
 
-		goButton.interactable = false;
-		//print(PlayerPrefs.GetString("NickName"));
-		//nickNameText.text = "234";
-		
+		string s = PlayerPrefs.GetString(nickNameSaveStr);
+		if (s != "") {
+			nickNameText.text = s;
+			myInfos.nickName = s;
+		}
+		LeaveRoom();
 
 		// ***************** Test *****************
 		//roomName = "ABAB";
@@ -74,19 +76,22 @@ public class UIRoomManager : MonoBehaviour {
 			LogUI.Show("已經在等待室");
 			return;
 		}
-		
+
 		myInfos.ready = false;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
 		ButtonManager.ins.buttonWait();     // 打開等待室UI
 	}
 
-	public void NickNameButton() {
-		myInfos.nickName = nickNameText.text;
+	public void NickNameButton(Text inputField) {
+		string name = inputField.text;
+		myInfos.nickName = name;
+		PlayerPrefs.SetString(nickNameSaveStr, name);
 
-		if (nickNameText.text == "") {
+		if (name == "") {
 			LogUI.Show("請輸入暱稱");
+		} else {
+			CheckAllSet();
 		}
-		CheckAllSet();
 	}
 
 	public void ReadyButton() {
@@ -111,7 +116,7 @@ public class UIRoomManager : MonoBehaviour {
 		CheckAllSet();
 	}
 
-    public void StartGameButton() {
+	public void StartGameButton() {
 		if (roomName == "") return;
 		bool canGO = true;
 
@@ -140,8 +145,8 @@ public class UIRoomManager : MonoBehaviour {
 	void JoinRoomCallback(TcpClient.RoomStatus status) {
 
 		if (status == NetworkBehaviour.RoomStatus.Created) {                // 成功創建房間 (CreateRoom)
-			//Debug.Log("創建成功");
-			Ticker.StartTicker(0, ()=> { ButtonManager.ins.EnterOrCreateRoomOK(true); });
+																			//Debug.Log("創建成功");
+			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterOrCreateRoomOK(true); });
 			myInfos.roomName = roomName;
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
