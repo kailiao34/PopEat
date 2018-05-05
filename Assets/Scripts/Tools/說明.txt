@@ -9,4 +9,3 @@
 	AudioManager.Stop();
 	
 Audios 是個 Enum，會自動被 Arist/Sounds 下的檔名同步更新
-(註: 檔名只能是: 中文, 英文, 數字，不能帶有任何符號)

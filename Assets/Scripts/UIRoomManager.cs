@@ -22,6 +22,8 @@ public class UIRoomManager : MonoBehaviour {
 	string roomName = "";
 	[SerializeField]
 	Button goButton;
+	[SerializeField]
+	Text nickNameText;
 
 	public static GameObject UIObject;
 
@@ -33,15 +35,18 @@ public class UIRoomManager : MonoBehaviour {
 		LeaveRoom();
 
 		goButton.interactable = false;
+		//print(PlayerPrefs.GetString("NickName"));
+		//nickNameText.text = "234";
+		
 
 		// ***************** Test *****************
-		roomName = "ABAB";
-		ConnectWithRoomName();
-		client.CreateOrJoinRoom("ABAB");
-		//CreateRoom("ABAB");
-		myInfos.nickName = "KAI";
-		myInfos.foodSelected = "肯德鴉";
-		//myInfos.foodSelected = "喝";
+		//roomName = "ABAB";
+		//ConnectWithRoomName();
+		//client.CreateOrJoinRoom("ABAB");
+		////CreateRoom("ABAB");
+		//myInfos.nickName = "KAI";
+		//myInfos.foodSelected = "肯德鴉";
+		////myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
@@ -75,9 +80,10 @@ public class UIRoomManager : MonoBehaviour {
 		ButtonManager.ins.buttonWait();     // 打開等待室UI
 	}
 
-	public void NickNameButton(Text nameText) {
-		myInfos.nickName = nameText.text;
-		if (nameText.text == "") {
+	public void NickNameButton() {
+		myInfos.nickName = nickNameText.text;
+
+		if (nickNameText.text == "") {
 			LogUI.Show("請輸入暱稱");
 		}
 		CheckAllSet();

@@ -110,6 +110,8 @@ public class SquareManager : MonoBehaviour {
 		if (Inseries[0] != null) {
 			for (int i = 0; i < Inseries.Count; i++) {
 				squares.Remove(Inseries[i].gameObject);
+				Instantiate(hexFXPrefab, Inseries[i].transform.position, Quaternion.identity);		// 爆破效果
+
 				Destroy(Inseries[i].gameObject);
 			}
 			Inseries.Clear();

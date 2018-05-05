@@ -6,7 +6,7 @@ public class PlayAudioTest : MonoBehaviour {
 
 	private void Update() {
 		if (Input.GetKeyDown(KeyCode.Q)) {
-			//AudioManager.Play(Audios.);
+			//AudioManager.Play(Audios.遊戲王配樂決鬥之歌);
 		}
 		if (Input.GetKeyDown(KeyCode.W)) {
 
