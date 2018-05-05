@@ -12,6 +12,7 @@ public class AudioManager : MonoBehaviour {
 	[HideInInspector]
 	List<AudioClip> soundsEditor;
 
+	static AudioListener listener;
 	static AudioSource source;
 	static AudioClip[] sounds;
 
@@ -57,6 +58,15 @@ public class AudioManager : MonoBehaviour {
 	public static void Stop() {
 		CreateAudioSource();
 		source.Stop();
+	}
+	/// <summary>
+	/// 全遊戲靜音 (原本是開聲音的，呼叫後靜音，原本是靜音的，呼叫後開啟聲音)
+	/// </summary>
+	public static void Mute() {
+		if (listener == null) {
+			listener = FindObjectOfType<AudioListener>();
+		}
+		listener.enabled = !listener.enabled;
 	}
 
 	static void CreateAudioSource() {

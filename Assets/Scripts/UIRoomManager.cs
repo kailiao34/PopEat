@@ -31,7 +31,7 @@ public class UIRoomManager : MonoBehaviour {
 	private void Awake() {
 		if (gData == null) gData = GlocalDataAsset;
 	}
-
+	
 	private void Start() {
 
 		string s = PlayerPrefs.GetString(nickNameSaveStr);
@@ -42,13 +42,13 @@ public class UIRoomManager : MonoBehaviour {
 		LeaveRoom();
 
 		// ***************** Test *****************
-		//roomName = "ABAB";
-		//ConnectWithRoomName();
-		//client.CreateOrJoinRoom("ABAB");
-		////CreateRoom("ABAB");
-		//myInfos.nickName = "KAI";
-		//myInfos.foodSelected = "肯德鴉";
-		////myInfos.foodSelected = "喝";
+		roomName = "ABAB";
+		ConnectWithRoomName();
+		client.CreateOrJoinRoom("ABAB");
+		//CreateRoom("ABAB");
+		myInfos.nickName = "KAI";
+		myInfos.foodSelected = "肯德鴉";
+		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 

@@ -11,6 +11,8 @@ public class SquareManager : MonoBehaviour {
 	// For Hex Arrangement
 	[SerializeField]
 	GameObject squarePrefab, hexFXPrefab;
+	[SerializeField]
+	UnityEngine.UI.Text tickerText;
 	HashSet<GameObject> squares = new HashSet<GameObject>();
 
 	private void Start() {
@@ -18,47 +20,49 @@ public class SquareManager : MonoBehaviour {
 	}
 
 	IEnumerator StartTicker() {
-		for (int i = 1; i <= UIRoomManager.gData.startSec; i++) {
+		for (int i = UIRoomManager.gData.startSec; i > 0; i--) {	// 教學動畫倒數
 			yield return new WaitForSeconds(1f);
-			if (i != UIRoomManager.gData.startSec) {
-				//print(i);
+		}
+
+		ArrangeHex();
+		for (int i = UIRoomManager.gData.overSec; i >= 0; i--) {     // 遊戲時間倒數
+			tickerText.text = "剩餘時間: " + i.ToString();
+			yield return new WaitForSeconds(1f);
+		}
+		#region ================== 時間到後的工作 ==================
+		enabled = false;										// 不能再消六角
+		Release();												// 消除正在連的
+		//print("GameOver");
+		
+		Dictionary<int, int> d = new Dictionary<int, int>();	
+		foreach (GameObject g in squares) {						// 計算各顏色剩餘數量
+			int n;
+			int ii = g.GetComponent<Square>().colorIndex;
+			if (d.TryGetValue(ii, out n)) {
+				d[ii] = n + 1;
 			} else {
-				ArrangeHex();
-				yield return new WaitForSeconds(UIRoomManager.gData.overSec);
-				enabled = false;
-				Release();
-				//print("GameOver");
-
-				Dictionary<int, int> d = new Dictionary<int, int>();
-				foreach (GameObject g in squares) {
-					int n;
-					int ii = g.GetComponent<Square>().colorIndex;
-					if (d.TryGetValue(ii, out n)) {
-						d[ii] = n + 1;
-					} else {
-						d.Add(ii, 1);
-					}
-				}
-
-				UIRoomManager.client.SendGameResult(d);         // 傳送本地端統計結果給伺服器
-
-				int colorIndex = 0, max = int.MinValue;
-				// 計算本地端獲勝者
-				foreach (KeyValuePair<int, int> w in d) {
-					if (w.Value > max) {
-						colorIndex = w.Key;
-						max = w.Value;
-					}
-				}
-				//Debug.Log("本地端獲勝者: " + colorIndex + " - " + UIRoomManager.GetResNameFromColor(colorIndex));
-				UIGameManager.ins.GameResultUI();
-				UIGameManager.ins.SetLocalWinner(UIRoomManager.GetResNameFromColor(colorIndex), colorIndex);
-
+				d.Add(ii, 1);
 			}
 		}
+
+		UIRoomManager.client.SendGameResult(d);					// 傳送本地端統計結果給伺服器
+
+		int colorIndex = 0, max = int.MinValue;
+		// 計算本地端獲勝者
+		foreach (KeyValuePair<int, int> w in d) {
+			if (w.Value > max) {
+				colorIndex = w.Key;
+				max = w.Value;
+			}
+		}
+		//Debug.Log("本地端獲勝者: " + colorIndex + " - " + UIRoomManager.GetResNameFromColor(colorIndex));
+		UIGameManager.ins.GameResultUI();
+		UIGameManager.ins.SetLocalWinner(UIRoomManager.GetResNameFromColor(colorIndex), colorIndex);
+		#endregion ========================================================
 	}
 
 	void Update() {
+
 		if (Input.GetMouseButton(0)) {           // 按住，連連看
 			if (Startbool) eliminateSquare();
 		}
@@ -110,7 +114,7 @@ public class SquareManager : MonoBehaviour {
 		if (Inseries[0] != null) {
 			for (int i = 0; i < Inseries.Count; i++) {
 				squares.Remove(Inseries[i].gameObject);
-				Instantiate(hexFXPrefab, Inseries[i].transform.position, Quaternion.identity);		// 爆破效果
+				Instantiate(hexFXPrefab, Inseries[i].transform.position, Quaternion.identity);      // 爆破效果
 
 				Destroy(Inseries[i].gameObject);
 			}
