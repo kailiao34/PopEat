@@ -15,11 +15,11 @@ public class ServerActions : NetworkBehaviour {
 	/// <summary>
 	/// 用房名找 Socket 的字典
 	/// </summary>
-	protected Dictionary<string, HashSet<Socket>> roomDict = new Dictionary<string, HashSet<Socket>>();
+	protected Dictionary<string, HashSet<Socket>> roomSocketDict = new Dictionary<string, HashSet<Socket>>();
 	/// <summary>
 	/// 用 Socket 找房名的字典
 	/// </summary>
-	protected Dictionary<Socket, string> socketDict = new Dictionary<Socket, string>();
+	protected Dictionary<Socket, string> socketRoomDict = new Dictionary<Socket, string>();
 
 	public void StartServer(string ipAddr, int port, int maxClient = 9999) {
 		this.maxClient = maxClient;
@@ -51,13 +51,13 @@ public class ServerActions : NetworkBehaviour {
 	}
 
 	protected void ClientLeaveRoom(Socket socket) {
-		if (!socketDict.ContainsKey(socket)) return;
-		string roomName = socketDict[socket];
-		if (roomDict.ContainsKey(roomName)) {
-			roomDict[roomName].Remove(socket);
-			if (roomDict[roomName].Count == 0) roomDict.Remove(roomName);
+		if (!socketRoomDict.ContainsKey(socket)) return;
+		string roomName = socketRoomDict[socket];
+		if (roomSocketDict.ContainsKey(roomName)) {
+			roomSocketDict[roomName].Remove(socket);
+			if (roomSocketDict[roomName].Count == 0) roomSocketDict.Remove(roomName);
 		}
-		socketDict.Remove(socket);
+		socketRoomDict.Remove(socket);
 	}
 
 	public override void ApplicationQuit() {
@@ -74,8 +74,8 @@ public class ServerActions : NetworkBehaviour {
 
 		RoomStatus status;
 
-		if (!roomDict.ContainsKey(inParams[0])) {                   // 房間不存在的話創建一個房間
-			roomDict.Add(inParams[0], new HashSet<Socket>());
+		if (!roomSocketDict.ContainsKey(inParams[0])) {                   // 房間不存在的話創建一個房間
+			roomSocketDict.Add(inParams[0], new HashSet<Socket>());
 			status = RoomStatus.Created;
 		} else {
 			status = RoomStatus.Joined;
@@ -89,10 +89,10 @@ public class ServerActions : NetworkBehaviour {
 			return;
 		}
 
-		if (roomDict.ContainsKey(inParams[0])) {                   // 房間已存在，回傳錯誤
+		if (roomSocketDict.ContainsKey(inParams[0])) {                   // 房間已存在，回傳錯誤
 			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.RoomExists).ToString());
 		} else {                                                    // 房間不存在，成功創建				
-			roomDict.Add(inParams[0], new HashSet<Socket>());
+			roomSocketDict.Add(inParams[0], new HashSet<Socket>());
 			AddToRoom(inParams[0], inSocket, RoomStatus.Created);                        // 加入此房間
 		}
 	}
@@ -103,7 +103,7 @@ public class ServerActions : NetworkBehaviour {
 			return;
 		}
 
-		if (roomDict.ContainsKey(inParams[0])) {                   // 房間存在，成功加入
+		if (roomSocketDict.ContainsKey(inParams[0])) {                   // 房間存在，成功加入
 			AddToRoom(inParams[0], inSocket, RoomStatus.Joined);                    // 加入此房間
 		} else {                                                    // 房間不存在，回傳錯誤		
 			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.RoomNotExists).ToString());
@@ -115,18 +115,20 @@ public class ServerActions : NetworkBehaviour {
 	/// 需先自行判斷房間是否存在，若不存在會報錯
 	/// </summary>
 	protected virtual void AddToRoom(string roomName, Socket socket, RoomStatus roomStatus) {
-		if (roomDict[roomName].Count >= maxClient) {		// 房間已滿
+		if (roomSocketDict[roomName].Count >= maxClient) {		// 房間已滿
 			SendCommand(socket, ReciveRoomStatusCode, ((int)RoomStatus.RoomFulled).ToString());
 			return;
 		}
 
 		string oldRoom;
-		if (socketDict.TryGetValue(socket, out oldRoom)) {              // 這個連線者已經在其它房間
-			roomDict[oldRoom].Remove(socket);							// 將他換過來
-			if (roomDict[oldRoom].Count == 0) roomDict.Remove(oldRoom);
+		if (socketRoomDict.TryGetValue(socket, out oldRoom)) {              // 這個連線者已經在其它房間
+			if (oldRoom != roomName) {
+				roomSocketDict[oldRoom].Remove(socket);                         // 將他換過來
+				if (roomSocketDict[oldRoom].Count == 0) roomSocketDict.Remove(oldRoom);
+			}
 		}
-		roomDict[roomName].Add(socket);                    // 加入此房間
-		socketDict[socket] = roomName;
+		roomSocketDict[roomName].Add(socket);                    // 加入此房間
+		socketRoomDict[socket] = roomName;
 		SendCommand(socket, ReciveRoomStatusCode, ((int)roomStatus).ToString());	// 回傳房間狀態
 	}
 }

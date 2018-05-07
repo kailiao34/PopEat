@@ -27,11 +27,18 @@ public class UIRoomManager : MonoBehaviour {
 	string nickNameSaveStr = "NickName";
 
 	public static GameObject UIObject;
+	/// <summary>
+	/// 1. 起始 UI
+	/// 2. 按下 Go 後，收到伺服器傳來的等待室玩家列表前
+	/// 3. 在等待室內，收到玩家列表後
+	/// 4. 進入遊戲場景
+	/// </summary>
+	public static byte curStage;                            // 目前所處階段
 
 	private void Awake() {
 		if (gData == null) gData = GlocalDataAsset;
 	}
-	
+
 	private void Start() {
 
 		string s = PlayerPrefs.GetString(nickNameSaveStr);
@@ -40,15 +47,16 @@ public class UIRoomManager : MonoBehaviour {
 			myInfos.nickName = s;
 		}
 		LeaveRoom();
+		curStage = 1;
 
 		// ***************** Test *****************
-		roomName = "ABAB";
-		ConnectWithRoomName();
-		client.CreateOrJoinRoom("ABAB");
-		//CreateRoom("ABAB");
-		myInfos.nickName = "KAI";
-		myInfos.foodSelected = "肯德鴉";
-		//myInfos.foodSelected = "喝";
+		//roomName = "ABAB";
+		//ConnectWithRoomName();
+		//client.CreateOrJoinRoom("ABAB");
+		////CreateRoom("ABAB");
+		//myInfos.nickName = "KAI";
+		//myInfos.foodSelected = "肯德鴉";
+		////myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
@@ -78,8 +86,8 @@ public class UIRoomManager : MonoBehaviour {
 		}
 
 		myInfos.ready = false;
+		curStage = 2;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
-		ButtonManager.ins.buttonWait();     // 打開等待室UI
 	}
 
 	public void NickNameButton(Text inputField) {
@@ -114,6 +122,9 @@ public class UIRoomManager : MonoBehaviour {
 		ButtonManager.ins.TurnOffRoomOKs();
 		ButtonManager.ins.ResSelecteOK();
 		CheckAllSet();
+
+		ButtonManager.ins.UIswitcher.SetBool("wait", false);            // 關掉等待室 UI
+		curStage = 1;
 	}
 
 	public void StartGameButton() {
@@ -146,27 +157,34 @@ public class UIRoomManager : MonoBehaviour {
 
 		if (status == NetworkBehaviour.RoomStatus.Created) {                // 成功創建房間 (CreateRoom)
 																			//Debug.Log("創建成功");
+			if (curStage > 1) return;               // 只能是階段 1
 			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterOrCreateRoomOK(true); });
 			myInfos.roomName = roomName;
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomExists) {      // 房間已存在 (CreateRoom)
+			if (curStage > 1) return;               // 只能是階段 1
 			LogUI.Show("房間已存在，請重新輸入");
 
 		} else if (status == NetworkBehaviour.RoomStatus.Joined) {          // 成功加入房間 (JoinRoom)
 																			//Debug.Log("加入成功");
+			if (curStage > 1) return;               // 只能是階段 1
 			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterOrCreateRoomOK(false); });
 			myInfos.roomName = roomName;
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)
+			if (curStage > 1) return;               // 只能是階段 1
 			LogUI.Show("房間不存在，請重新輸入");
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomFulled) {
+			if (curStage > 1) return;               // 只能是階段 1
 			LogUI.Show("這個房間已滿");
 
 		} else if (status == NetworkBehaviour.RoomStatus.Others) {
+			if (curStage == 4) return;               // 開始遊戲後不再接收這個指令
 			LogUI.Show("這個房間已經開始遊戲");
+			Ticker.StartTicker(0, LeaveRoom);
 
 		} else {                                                            // 未知錯誤
 			LogUI.Show("錯誤");
@@ -176,6 +194,7 @@ public class UIRoomManager : MonoBehaviour {
 	void MyInfoChanged() {
 		Ticker.StartTicker(0, WaitRoomManager.ins.LocalPlayer);
 		AddRes(myInfos.foodSelected);
+		Ticker.StartTicker(0, ButtonManager.ins.buttonWait);        // 打開等待室UI
 	}
 	/// <summary>
 	/// pi = null 時代表玩家退出房間，此時 index 代表退出的玩家的 index
@@ -212,7 +231,7 @@ public class UIRoomManager : MonoBehaviour {
 		}
 		colorPicker.SetProb(p);
 		// 載入遊戲場景
-		ButtonManager.UIswitcher1.SetBool("goToGame", true);
+		ButtonManager.ins.UIswitcher.SetBool("goToGame", true);
 		Ticker.StartTicker(0, () => { SceneManager.LoadScene("GameMain"); });
 	}
 	#endregion =============================================

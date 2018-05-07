@@ -16,6 +16,7 @@ public class SquareManager : MonoBehaviour {
 	HashSet<GameObject> squares = new HashSet<GameObject>();
 
 	private void Start() {
+		UIRoomManager.curStage = 4;
 		StartCoroutine(StartTicker());
 	}
 
@@ -147,5 +148,10 @@ public class SquareManager : MonoBehaviour {
 			}
 		}
 		//print("六角數量: " + squares.Count);
+	}
+
+	private void OnApplicationQuit() {
+		if (UIRoomManager.client != null) UIRoomManager.client.ApplicationQuit();
+		//print("Quit");
 	}
 }

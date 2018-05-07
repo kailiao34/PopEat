@@ -231,8 +231,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UItext: {fileID: 114882252571012384}
-  resIndex: 0
-  button: {fileID: 0}
+  button: {fileID: 114035229545313066}
+  buttonIndex: 0
 --- !u!114 &114665251146530852
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -7,33 +7,25 @@ using UnityEngine.EventSystems;
 public class ButtonManager : MonoBehaviour {
 
 	public static ButtonManager ins;
-	public static Animator UIswitcher1; //控制主選單介面切換
 	public Animator UIswitcher;
-	//<<<<<<< HEAD
 
-
-	public static Animator loadingIndicatorAnimator1; //呼叫 Loading 介面
-	public Animator loadingIndicatorAnimator;
+	public Animator loadingIndicatorAnimator;           //呼叫 Loading 介面
 
 	public Text roomNameText, waitRoomDisplayNameText;
-	//=======
 	string currentText;
 	[SerializeField]
 	GameObject resOK, createRoomOK, enterRoomOK;
-	//>>>>>>> 1114a1a7147f193846bb5505d0b03d508c517292
 
 	public Button[] buttons;
 	public UIRoomManager roomManager;
 	bool CreateOrJoinRoom;          // True: Create, False: Join
 
 	private void Awake() {
-		UIswitcher1 = UIswitcher;
-		loadingIndicatorAnimator1 = loadingIndicatorAnimator;
 		ins = this;
 	}
 
 	private void Start() {
-		UIswitcher1.SetBool("goToGame", false);
+		UIswitcher.SetBool("goToGame", false);
 	}
 
 	//private void Update() {
@@ -61,16 +53,16 @@ public class ButtonManager : MonoBehaviour {
 
 	//========呼叫暱稱輸入介面=========
 	public void buttonNick() {
-		UIswitcher1.SetBool("nick", !UIswitcher1.GetBool("nick"));
+		UIswitcher.SetBool("nick", !UIswitcher.GetBool("nick"));
 	}
 
 	//=======呼叫餐廳列表介面==========
 	public void buttonEat() {
-		if (UIswitcher1.GetBool("eat")) {
-			UIswitcher1.SetBool("eat", false);
-			loadingIndicatorAnimator1.SetBool("Enabled", false); // used for loading animator
+		if (UIswitcher.GetBool("eat")) {
+			UIswitcher.SetBool("eat", false);
+			loadingIndicatorAnimator.SetBool("Enabled", false); // used for loading animator
 		} else {
-			UIswitcher1.SetBool("eat", true);
+			UIswitcher.SetBool("eat", true);
 		}
 		ResSelecteOK();
 	}
@@ -94,15 +86,15 @@ public class ButtonManager : MonoBehaviour {
 	}
 
 	void ShowCreateOrJoinRoomUI() {
-		if (UIswitcher1.GetBool("cer")) {
-			UIswitcher1.SetBool("cer", false);
+		if (UIswitcher.GetBool("cer")) {
+			UIswitcher.SetBool("cer", false);
 		} else {
 			if (CreateOrJoinRoom) {
-				UIswitcher1.SetInteger("cerF", 1);
+				UIswitcher.SetInteger("cerF", 1);
 			} else {
-				UIswitcher1.SetInteger("cerF", 0);
+				UIswitcher.SetInteger("cerF", 0);
 			}
-			UIswitcher1.SetBool("cer", true);
+			UIswitcher.SetBool("cer", true);
 		}
 	}
 
@@ -110,11 +102,10 @@ public class ButtonManager : MonoBehaviour {
 
 	public void buttonWait() {
 		Button buttonAllGo = buttons[0];
-		Button buttonEscape = buttons[5];
 
 		//need Escape Yes No UI - Posponed
 		if (buttonAllGo.isActiveAndEnabled) {
-			UIswitcher1.SetBool("wait", !UIswitcher1.GetBool("wait"));
+			UIswitcher.SetBool("wait", !UIswitcher.GetBool("wait"));
 		}
 
 		waitRoomDisplayNameText.text = UIRoomManager.myInfos.roomName;
@@ -122,7 +113,7 @@ public class ButtonManager : MonoBehaviour {
 
 	//=======呼叫 Credits 介面==========
 	public void CreditList() {
-		UIswitcher1.SetBool("credits", !UIswitcher1.GetBool("credits"));
+		UIswitcher.SetBool("credits", !UIswitcher.GetBool("credits"));
 	}
 
 	public void ChangeButtonText(Text buttonText) {

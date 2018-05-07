@@ -8,6 +8,9 @@ public class FoodLis : MonoBehaviour {
 
 	public static Text[] resInfoText;
 	public Text[] resInfosUI;
+	[SerializeField]
+	Button InputFoodButtonIns;
+	static Button InputFoodButton;
 
 	[SerializeField]
 	InputField FoodInputField;
@@ -20,6 +23,7 @@ public class FoodLis : MonoBehaviour {
 	[SerializeField]
 	Animator EnterFoodListButtonAnimator;
 	Animator loadingIndicatorAnimator;
+
 	// 餐廳按鈕正常的顏色
 	public static ColorBlock resNormalCB;
 	//餐廳按鈕被按下時改成這個顏色
@@ -30,12 +34,13 @@ public class FoodLis : MonoBehaviour {
 
 	private void Awake() {
 		resInfoText = resInfosUI;
-		loadingIndicatorAnimator = ButtonManager.loadingIndicatorAnimator1;
+		loadingIndicatorAnimator = ButtonManager.ins.loadingIndicatorAnimator;
 
 		resNormalCB = resButtonPrefab.GetComponent<Button>().colors;
 		resHCB = resNormalCB;
 		resHCB.normalColor = UIRoomManager.gData.resHighlighted;
 		resHCB.highlightedColor = UIRoomManager.gData.resHighlighted;
+		InputFoodButton = InputFoodButtonIns;
 
 	}
 
@@ -46,7 +51,16 @@ public class FoodLis : MonoBehaviour {
 			GetRes.ins.GetResNames(24.99579212, 121.48876185, UIRoomManager.gData.radius, GetResNames);
 		} else {
 			UISort();
-			HighlightButton(preResSelected);
+			if (preResSelected < 0) {
+				EnterFoodListButtonAnimator.SetBool("switch", true);
+				InputFoodButton.GetComponent<FoodListButton>().UItext.text = UIRoomManager.myInfos.foodSelected;
+				preResSelected = 0;
+				HighlightButton(-1);
+			} else {
+				int pre = preResSelected;
+				preResSelected = -2;
+				HighlightButton(pre);
+			}
 		}
 	}
 
@@ -70,8 +84,19 @@ public class FoodLis : MonoBehaviour {
 	}
 
 	public static void HighlightButton(int buttonIndex) {
-		resButtons[preResSelected].colors = resNormalCB;			// 上一個選到的按鈕顏色改回正常
-		resButtons[buttonIndex].colors = resHCB;                    // 新選到的改顏色
+		if (buttonIndex == preResSelected) return;
+
+		if (preResSelected < 0) {                                   // 上一個選到的按鈕顏色改回正常
+			InputFoodButton.colors = resNormalCB;
+		} else {
+			resButtons[preResSelected].colors = resNormalCB;
+		}
+
+		if (buttonIndex < 0) {                                  // 新選到的改顏色
+			InputFoodButton.colors = resHCB;                        // 選到是使用者自行輸入的
+		} else {
+			resButtons[buttonIndex].colors = resHCB;
+		}
 		preResSelected = buttonIndex;
 	}
 

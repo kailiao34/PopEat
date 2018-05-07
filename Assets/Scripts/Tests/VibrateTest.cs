@@ -7,7 +7,7 @@ public class VibrateTest : MonoBehaviour {
 
 	private void Update() {
 		if (timeCount < time) {
-			Handheld.Vibrate();
+			//Handheld.Vibrate();
 			timeCount += Time.deltaTime;
 		} else {
 			enabled = false;

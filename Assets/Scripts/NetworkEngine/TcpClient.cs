@@ -22,14 +22,13 @@ public class TcpClient : ClientActions {
 	const string StartGameCode = "StartGame";
 	const string GameResultCode = "GameResult";
 
-
 	public TcpClient() {
-		methods.Add(GetInfosInRoomCode, RECGetInfosInRoom);
-		methods.Add(AddNewPlayerCode, RECAddNewPlayer);
-		methods.Add(PlayerExitCode, RECPlayerExit);
-		methods.Add(ReadyCode, RECReady);
-		methods.Add(StartGameCode, RECStartGame);
-		methods.Add(GameResultCode, RECGameResult);
+		methods.Add(GetInfosInRoomCode, RECGetInfosInRoom);		// 只有階段 2 可接收，收到後改為階段 3
+		methods.Add(AddNewPlayerCode, RECAddNewPlayer);			// 只有階段 3 可接收
+		methods.Add(PlayerExitCode, RECPlayerExit);				// 只有階段 3 可接收
+		methods.Add(ReadyCode, RECReady);						// 只有階段 3 可接收
+		methods.Add(StartGameCode, RECStartGame);				// 只有階段 3 可接收，切換場景後改為階段 4
+		methods.Add(GameResultCode, RECGameResult);				// 只有階段 4 可接收
 	}
 
 	#region ============== 傳送函數 ==============
@@ -71,10 +70,59 @@ public class TcpClient : ClientActions {
 
 	#region ============== 接收函數 ==============
 	/// <summary>
+	/// 當傳送 (SendPlayerInfos) 成功進房後會收到，接收在自己進房前已在房內的所有人的資訊
+	/// </summary>
+	void RECGetInfosInRoom(Socket inSocket, string[] inParams) {
+		if (UIRoomManager.curStage != 2) return;            // 只有階段 2 可接收
+		UIRoomManager.playersInRoom.Clear();
+		UIRoomManager.curStage = 3;                         // 進到階段 3
+
+		foreach (string s in inParams) {
+			PlayerInfos pi = ParsePlayerInfo(s);
+			if (pi == null) continue;
+
+			if (OnPlayerListChanged != null) OnPlayerListChanged(pi);
+		}
+	}
+
+	/// <summary>
+	/// 有新玩家加入房間時伺服器將發來此通知
+	/// </summary>
+	void RECAddNewPlayer(Socket inSocket, string[] inParams) {
+		if (inParams == null || inParams.Length < 1) return;
+		if (UIRoomManager.curStage != 3) return;                    // 只有階段 3 可接收
+
+		PlayerInfos pi = ParsePlayerInfo(inParams[0]);
+		if (pi == null) return;
+
+		if (OnPlayerListChanged != null) OnPlayerListChanged(pi);
+	}
+
+	/// <summary>
+	/// 當有人離開房間時接收到這個指令，收到的參數為對方的 ID
+	/// </summary>
+	void RECPlayerExit(Socket inSocket, string[] inParams) {
+		if (UIRoomManager.curStage != 3) return;                    // 只有階段 3 可接收
+		int id;
+		try {
+			id = int.Parse(inParams[0]);
+		} catch { return; }
+
+		for (int i = 0; i < UIRoomManager.playersInRoom.Count; i++) {
+			if (UIRoomManager.playersInRoom[i].ID == id) {
+				//UIRoomManager.InfosInRoom.RemoveAt(i);
+				if (OnPlayerListChanged != null) OnPlayerListChanged(playerIndex: i);
+				break;
+			}
+		}
+	}
+
+	/// <summary>
 	/// 當房間內有人改變 Ready 狀態時，會接收到伺服器傳來這個指令
 	/// 參數裡包括: 那個人的 ID，True 或 False
 	/// </summary>
 	void RECReady(Socket inSocket, string[] inParams) {
+		if (UIRoomManager.curStage != 3) return;                    // 只有階段 3 可接收
 		int id;
 		bool ready;
 		try {
@@ -96,53 +144,14 @@ public class TcpClient : ClientActions {
 			}
 		}
 	}
-	/// <summary>
-	/// 當傳送 (SendPlayerInfos) 成功進房後會收到，接收在自己進房前已在房內的所有人的資訊
-	/// </summary>
-	void RECGetInfosInRoom(Socket inSocket, string[] inParams) {
-		UIRoomManager.playersInRoom.Clear();
-
-		foreach (string s in inParams) {
-			PlayerInfos pi = ParsePlayerInfo(s);
-			if (pi == null) continue;
-
-			if (OnPlayerListChanged != null) OnPlayerListChanged(pi);
-		}
-	}
-	/// <summary>
-	/// 有新玩家加入房間時伺服器將發來此通知
-	/// </summary>
-	void RECAddNewPlayer(Socket inSocket, string[] inParams) {
-		if (inParams == null || inParams.Length < 1) return;
-
-		PlayerInfos pi = ParsePlayerInfo(inParams[0]);
-		if (pi == null) return;
-
-		if (OnPlayerListChanged != null) OnPlayerListChanged(pi);
-	}
-	/// <summary>
-	/// 當有人離開房間時接收到這個指令，收到的參數為對方的 ID
-	/// </summary>
-	void RECPlayerExit(Socket inSocket, string[] inParams) {
-		int id;
-		try {
-			id = int.Parse(inParams[0]);
-		} catch { return; }
-
-		for (int i = 0; i < UIRoomManager.playersInRoom.Count; i++) {
-			if (UIRoomManager.playersInRoom[i].ID == id) {
-				//UIRoomManager.InfosInRoom.RemoveAt(i);
-				if (OnPlayerListChanged != null) OnPlayerListChanged(playerIndex: i);
-				break;
-			}
-		}
-	}
 
 	void RECStartGame(Socket inSocket, string[] inParams) {
+		if (UIRoomManager.curStage != 3) return;                    // 只有階段 3 可接收
 		Ticker.StartTicker(0, OnStartGame);
 	}
 
 	void RECGameResult(Socket inSocket, string[] inParams) {
+		if (UIRoomManager.curStage != 4) return;                    // 只有階段 4 可接收
 		string res = null;
 		int colorIndex = 0;
 		try { colorIndex = int.Parse(inParams[0]); } catch { return; }

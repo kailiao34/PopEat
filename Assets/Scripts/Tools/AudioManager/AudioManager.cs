@@ -89,6 +89,10 @@ public class AudioManager : MonoBehaviour {
 	private void Update() {
 
 		if (!Application.isEditor) return;
+		if (!File.Exists(scriptFIleFolder + "/AudioEnums.cs")) {
+			WriteEnumsToFile(new List<string>());
+		}
+
 		soundsEditor = new List<AudioClip>();
 
 		List<string> audios = new List<string>();

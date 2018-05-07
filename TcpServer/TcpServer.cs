@@ -93,11 +93,11 @@ public class TcpServer : ServerActions {
 	/// <param name="endResultSec">最大的等待玩家結果秒數</param>
 	public TcpServer(int endResultSec) {
 		// 註冊指令對應的函數
-		methods.Add(PlayerInfosCode, RECPlayerInfos);
-		methods.Add(ReadyCode, RECReady);
-		methods.Add(LeaveRoomCode, RECLeaveRoom);
-		methods.Add(GameReadyCode, RECGameReady);
-		methods.Add(GameResultCode, RECGameResult);
+		methods.Add(PlayerInfosCode, RECPlayerInfos);       // 已進入房間但未進等待室，當這間房開始遊戲時將他踢出
+		methods.Add(ReadyCode, RECReady);                   // 如果已經開始遊戲不接受
+		methods.Add(LeaveRoomCode, RECLeaveRoom);			
+		methods.Add(GameReadyCode, RECGameReady);           // 如果已經開始遊戲不接受
+		methods.Add(GameResultCode, RECGameResult);			// 開始遊戲才接受
 
 		resultSec = endResultSec * 1000;
 	}
@@ -109,7 +109,7 @@ public class TcpServer : ServerActions {
 		if (infosDict.ContainsKey(inSocket)) return;
 
 		try {
-			string roomName = socketDict[inSocket];
+			string roomName = socketRoomDict[inSocket];
 			Room room;
 
 			// 傳來的 Infos 放入字典
@@ -123,6 +123,12 @@ public class TcpServer : ServerActions {
 			};
 
 			if (inWaitRoom.TryGetValue(roomName, out room)) {
+				// 如果已經開始遊戲
+				if (room.isPlaying) {
+					SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.Others).ToString());    // 回傳房間已開始遊戲
+					return;
+				}
+
 				List<Socket> sList = room.sockets;
 				string[] paramsStr = new string[sList.Count + 1];
 				int ii = 0;
@@ -163,6 +169,11 @@ public class TcpServer : ServerActions {
 		if (infosDict.TryGetValue(inSocket, out pi)) {
 			Room room;
 			if (inWaitRoom.TryGetValue(pi.roomName, out room)) {
+				if (room.isPlaying) {           // 如果已經開始遊戲
+					SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.Others).ToString());    // 回傳房間已開始遊戲
+					return;
+				}
+
 				// Ready 狀態傳給其它人 (包括傳送者自己)
 				SendCommand(room.sockets.ToArray(), ReadyCode, new string[] {
 					pi.ID.ToString(),
@@ -207,6 +218,11 @@ public class TcpServer : ServerActions {
 
 		// 如果房內有人未 Ready 略過這個指令
 		if (room.readyCount == room.sockets.Count) {
+			if (room.isPlaying) {           // 如果已經開始遊戲
+				SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.Others).ToString());    // 回傳房間已開始遊戲
+				return;
+			}
+
 			// 廣播開始遊戲
 			SendCommand(room.sockets.ToArray(), StartGameCode);
 			room.isPlaying = true;
@@ -225,6 +241,10 @@ public class TcpServer : ServerActions {
 			d = room.colorNumDict;
 		} catch { return; }
 
+		if (!room.isPlaying) {           // 如果還沒開始遊戲
+			return;
+		}
+
 		for (int i = 0; i < inParams.Length; i += 2) {
 			try {
 				int n = 0;
@@ -237,9 +257,9 @@ public class TcpServer : ServerActions {
 		}
 
 		// ************* Test *************
-		foreach (KeyValuePair<string, int> dd in d) {
-			System.Console.WriteLine(dd.Key + ": " + dd.Value);
-		}
+		//foreach (KeyValuePair<string, int> dd in d) {
+		//	System.Console.WriteLine(dd.Key + ": " + dd.Value);
+		//}
 		// *********************************
 
 		room.resultReturned++;
@@ -294,7 +314,7 @@ public class TcpServer : ServerActions {
 		RECLeaveRoom(socket, null);
 	}
 	public void PrintRooms() {
-		foreach (KeyValuePair<string, HashSet<Socket>> p in roomDict) {
+		foreach (KeyValuePair<string, HashSet<Socket>> p in roomSocketDict) {
 			System.Console.WriteLine(p.Key + " --> " + p.Value.Count);
 		}
 	}

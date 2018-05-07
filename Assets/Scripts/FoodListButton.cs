@@ -5,11 +5,6 @@ public class FoodListButton : MonoBehaviour {
 	public Button button;
 	public int buttonIndex;
 
-	private void Start() {
-		button = GetComponent<Button>();
-		//button.colors = FoodLis.resHC;
-	}
-
 	public void Select() {
 		//print("您選擇了: " + UItext.text);
 		UIRoomManager.myInfos.foodSelected = UItext.text;
@@ -18,13 +13,13 @@ public class FoodListButton : MonoBehaviour {
 		FoodLis.HighlightButton(buttonIndex);
 	}
 	public void Info() {
-		ButtonManager.UIswitcher1.SetBool("ResInfo", true);
+		ButtonManager.ins.UIswitcher.SetBool("ResInfo", true);
 
 		GetRes.ins.GetResDetail(UItext.text, ShowResDetailInfo);
 	}
 
 	public void InfoOff() {
-		ButtonManager.UIswitcher1.SetBool("ResInfo", false);
+		ButtonManager.ins.UIswitcher.SetBool("ResInfo", false);
 	}
 
 	void ShowResDetailInfo(Details d) {
