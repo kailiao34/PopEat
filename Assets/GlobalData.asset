@@ -17,7 +17,7 @@ MonoBehaviour:
   startSec: 8
   overSec: 8
   hexLayers: 9
-  resHighlighted: {r: 0.22745098, g: 0.5372549, b: 0.9647059, a: 0.3647059}
+  resHighlighted: {r: 0.408737, g: 0.75102913, b: 0.99264705, a: 0.3647059}
   colors:
   - {r: 0.9852941, g: 0.072448105, b: 0.072448105, a: 1}
   - {r: 0.23924091, g: 0.27503946, b: 0.43382353, a: 1}
