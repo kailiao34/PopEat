@@ -293,9 +293,4 @@ public class UIRoomManager : MonoBehaviour {
 		}
 		return null;
 	}
-
-	private void OnApplicationQuit() {
-		if (client != null) client.ApplicationQuit();
-		//print("Quit");
-	}
 }

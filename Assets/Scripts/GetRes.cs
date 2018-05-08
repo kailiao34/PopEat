@@ -173,7 +173,6 @@ public class GetRes : MonoBehaviour {
 	/// 在 Start 取得用戶地理位置
 	/// </summary>
 	IEnumerator GetLocation(bool needCallBack, int radius = 0, GetResNamesDel callBackEvent = null) {
-		LogUI.Show("GetLocation...", 3);
 		getLocSucceed = false;
 
 		// First, check if user has location service enabled
