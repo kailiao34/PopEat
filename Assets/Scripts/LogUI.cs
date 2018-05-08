@@ -11,12 +11,12 @@ public class LogUI : MonoBehaviour {
 		anim = GetComponent<Animator>();
 	}
 
-	public static void Show(string msg) {
+	public static void Show(string msg, float sec = 1) {
 		Ticker.StartTicker(0, ()=> {
 			text.text = msg;
 			anim.SetBool(hash, true);
 		});
-		Ticker.StartTicker(1, Hide);
+		Ticker.StartTicker(sec, Hide);
 	}
 
 	public static void Hide() {

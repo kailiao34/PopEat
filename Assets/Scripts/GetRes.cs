@@ -14,20 +14,40 @@ public class GetRes : MonoBehaviour {
 	public delegate void GetDetailsDel(List<Details> resDetails);
 	public delegate void GetResNamesDel(List<string> resNames);
 	public delegate void GetResDetailDel(Details details);
+	delegate void GetLocCallbackDel(float lat, float lng);
 
 	static Dictionary<string, Details> resDetailDict = new Dictionary<string, Details>();
+	static bool getLocSucceed = false;           // 是否已經成功讀取到裝置位置
+	static float lat, lng;
 
 	private void Awake() {
 		ins = this;
 	}
+
+#if (!UNITY_EDITOR && !UNITY_STANDALONE)
+	private void Start() {
+		if (!getLocSucceed) {
+			StartCoroutine(GetLocation(false));
+		}
+	}
+#endif
 
 	#region ======================= 外部使用函數 =======================
 	//public void GetAllResAndDetails(double lat, double lng, int radius, GetDetailsDel callBackEvent) {
 	//	//StartCoroutine(GetInfo(lat, lng, radius, callBackEvent));
 	//}
 
-	public void GetResNames(double lat, double lng, int radius, GetResNamesDel callBackEvent) {
-		StartCoroutine(GetNames(lat, lng, radius, callBackEvent));
+	public void GetResNames(int radius, GetResNamesDel callBackEvent) {
+#if (UNITY_EDITOR || UNITY_STANDALONE)      // 在 Editor 或 電腦執行下，用測試座標 (中和連城路)
+		StartCoroutine(GetNames(24.99579212f, 121.48876185f, radius, callBackEvent));
+		return;
+#endif
+
+		if (getLocSucceed) {
+			StartCoroutine(GetNames(lat, lng, radius, callBackEvent));
+		} else {
+			StartCoroutine(GetLocation(true, radius, callBackEvent));
+		}
 	}
 
 	public void GetResDetail(string resName, GetResDetailDel callBackEvent) {
@@ -35,7 +55,7 @@ public class GetRes : MonoBehaviour {
 	}
 	#endregion ==========================================================
 
-	IEnumerator GetNames(double lat, double lng, int radius, GetResNamesDel callBackEvent) {
+	IEnumerator GetNames(float lat, float lng, int radius, GetResNamesDel callBackEvent) {
 
 		StringBuilder url = new StringBuilder();
 		url.Append("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=")
@@ -148,5 +168,52 @@ public class GetRes : MonoBehaviour {
 		}
 
 		if (callBackEvent != null) callBackEvent(d);
+	}
+	/// <summary>
+	/// 在 Start 取得用戶地理位置
+	/// </summary>
+	IEnumerator GetLocation(bool needCallBack, int radius = 0, GetResNamesDel callBackEvent = null) {
+		LogUI.Show("GetLocation...", 3);
+		getLocSucceed = false;
+
+		// First, check if user has location service enabled
+		if (!Input.location.isEnabledByUser) {
+			OnGetLocationFailed("未開啟 GPS");
+			yield break;
+		}
+
+		// Start service before querying location
+		Input.location.Start();
+
+		// Wait until service initializes
+		int maxWait = 20;
+		while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0) {
+			yield return new WaitForSeconds(1);
+			maxWait--;
+		}
+
+		// Service didn't initialize in 20 seconds
+		if (maxWait < 1) {
+			OnGetLocationFailed("讀取裝置位置時等待逾時");
+			yield break;
+		}
+
+		// Connection has failed
+		if (Input.location.status == LocationServiceStatus.Failed) {
+			OnGetLocationFailed("無法讀取裝置位置");
+			yield break;
+		} else {
+			// Access granted and location value could be retrieved
+			lat = Input.location.lastData.latitude;
+			lng = Input.location.lastData.longitude;
+			getLocSucceed = true;
+			if (needCallBack) StartCoroutine(GetNames(lat, lng, radius, callBackEvent));
+		}
+		// Stop service if there is no need to query location updates continuously
+		Input.location.Stop();
+	}
+
+	void OnGetLocationFailed(string errorMsg) {
+		LogUI.Show(errorMsg);
 	}
 }

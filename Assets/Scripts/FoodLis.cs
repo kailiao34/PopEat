@@ -48,7 +48,7 @@ public class FoodLis : MonoBehaviour {
 		loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
 
 		if (resList == null || resList.Count == 0) {
-			GetRes.ins.GetResNames(24.99579212, 121.48876185, UIRoomManager.gData.radius, GetResNames);
+			GetRes.ins.GetResNames(UIRoomManager.gData.radius, GetResNames);
 		} else {
 			UISort();
 			if (preResSelected < 0) {

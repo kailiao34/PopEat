@@ -1738,7 +1738,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224399254349751726}
   m_Layer: 5
-  m_Name: "==== \u4E0B\u662F\u623F\u9593"
+  m_Name: "==== \u4E0B\u662F\u7B49\u5F85\u5BA4"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3809,17 +3809,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 114810964217082062}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Text, UnityEngine.UI
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: CheckAllSet
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7424,6 +7413,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114855613010100484
@@ -7438,8 +7438,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UItext: {fileID: 114888646682863780}
-  button: {fileID: 0}
-  buttonIndex: 0
+  button: {fileID: 114847889895961806}
+  buttonIndex: -1
 --- !u!114 &114862651627383824
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7920,14 +7920,13 @@ MonoBehaviour:
   - {fileID: 114924225936849584}
   - {fileID: 114312454881049344}
   - {fileID: 114645516199880042}
-  reviewListUI: {fileID: 114455492397970674}
+  InputFoodButtonIns: {fileID: 114847889895961806}
   FoodInputField: {fileID: 114235263979178132}
   buttonsParent: {fileID: 224431627682102250}
-  foodListButton: {fileID: 1000732580914918, guid: 1d435b83bc5f14643a8906f443d73a57,
+  resButtonPrefab: {fileID: 1000732580914918, guid: 1d435b83bc5f14643a8906f443d73a57,
     type: 2}
   EnterFoodListButton: {fileID: 114855613010100484}
   EnterFoodListButtonAnimator: {fileID: 95568546064727144}
-  eatCanvas: {fileID: 224560244164985054}
 --- !u!114 &114950366495875024
 MonoBehaviour:
   m_ObjectHideFlags: 1

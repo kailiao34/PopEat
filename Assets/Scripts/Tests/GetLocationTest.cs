@@ -15,6 +15,7 @@ public class GetLocationTest : MonoBehaviour
 
     IEnumerator Start()
     {
+		print("111");
 
         msg = "1111";
 
@@ -22,7 +23,9 @@ public class GetLocationTest : MonoBehaviour
         if (!Input.location.isEnabledByUser)
             yield break;
 
-        msg = "2222";
+		print("222");
+
+		msg = "2222";
 
         // Start service before querying location
         Input.location.Start();
@@ -42,8 +45,10 @@ public class GetLocationTest : MonoBehaviour
             yield break;
         }
 
-        // Connection has failed
-        if (Input.location.status == LocationServiceStatus.Failed)
+		print("333");
+
+		// Connection has failed
+		if (Input.location.status == LocationServiceStatus.Failed)
         {
             msg = "Unable to determine device location";
             yield break;
@@ -56,6 +61,10 @@ public class GetLocationTest : MonoBehaviour
         }
         // Stop service if there is no need to query location updates continuously
         Input.location.Stop();
+
+		LogUI.Show(msg, 60);
+
+		print("Msg: " + msg);
     }
 
 }

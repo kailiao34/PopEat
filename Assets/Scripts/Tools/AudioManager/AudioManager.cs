@@ -91,6 +91,7 @@ public class AudioManager : MonoBehaviour {
 		if (!Application.isEditor) return;
 		if (!File.Exists(scriptFIleFolder + "/AudioEnums.cs")) {
 			WriteEnumsToFile(new List<string>());
+			preAudios = null;
 		}
 
 		soundsEditor = new List<AudioClip>();
