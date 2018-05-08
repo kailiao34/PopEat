@@ -1,6 +1,0 @@
-[submodule "Assets/Scripts/NetworkEngine/TcpBase"]
-	path = Assets/Scripts/NetworkEngine/TcpBase
-	url = "D:\\Program\\C#\\Networking\\NetworkEngine\\TcpBase"
-[submodule "Assets/Scripts/NetworkEngine/NetworkBehaviour"]
-	path = Assets/Scripts/NetworkEngine/NetworkBehaviour
-	url = "D:\\Program\\C#\\Networking\\NetworkEngine\\NetworkBehaviour"
