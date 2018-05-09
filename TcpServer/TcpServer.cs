@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using System.IO;
+using System.Text;
 
 class Room {
 	public string roomName;
@@ -161,7 +163,9 @@ public class TcpServer : ServerActions {
 
 			// 將這個用戶加入等待室
 			room.sockets.Add(inSocket);
-		} catch { }
+		} catch {
+			LogError("RECPlayerInfos");
+		}
 	}
 
 	void RECReady(Socket inSocket, string[] inParams) {
@@ -214,7 +218,10 @@ public class TcpServer : ServerActions {
 
 	void RECGameReady(Socket inSocket, string[] inParams) {
 		Room room;
-		try { room = inWaitRoom[infosDict[inSocket].roomName]; } catch { return; }
+		try { room = inWaitRoom[infosDict[inSocket].roomName]; } catch {
+			LogError("RECGameReady");
+			return;
+		}
 
 		// 如果房內有人未 Ready 略過這個指令
 		if (room.readyCount == room.sockets.Count) {
@@ -239,7 +246,10 @@ public class TcpServer : ServerActions {
 		try {
 			room = inWaitRoom[infosDict[inSocket].roomName];
 			d = room.colorNumDict;
-		} catch { return; }
+		} catch {
+			LogError("RECGameResult");
+			return;
+		}
 
 		if (!room.isPlaying) {           // 如果還沒開始遊戲
 			return;
@@ -314,21 +324,27 @@ public class TcpServer : ServerActions {
 		RECLeaveRoom(socket, null);
 	}
 	public void PrintRooms() {
+		StringBuilder s = new StringBuilder();
 		foreach (KeyValuePair<string, HashSet<Socket>> p in roomSocketDict) {
-			System.Console.WriteLine(p.Key + " --> " + p.Value.Count);
+			s.Append(p.Key + " --> " + p.Value.Count).Append("\r\n");
 		}
+
+		File.WriteAllText("Rooms.txt",s.ToString());
 	}
 
 	public void PrintInfos() {
+		StringBuilder s = new StringBuilder();
+
 		foreach (KeyValuePair<Socket, PlayerInfos> p in infosDict) {
-			System.Console.WriteLine("NickName --->" + p.Value.nickName);
-			System.Console.WriteLine("foodSelected --->" + p.Value.foodSelected);
-			System.Console.WriteLine("roomName --->" + p.Value.roomName);
-			System.Console.WriteLine("ready --->" + p.Value.ready);
-			System.Console.WriteLine("ID --->" + p.Value.ID);
-			System.Console.WriteLine("resIndex --->" + p.Value.resIndex);
-			System.Console.WriteLine("=====================================");
+			s.Append("NickName --->" + p.Value.nickName).Append("\r\n");
+			s.Append("foodSelected --->" + p.Value.foodSelected).Append("\r\n");
+			s.Append("roomName --->" + p.Value.roomName).Append("\r\n");
+			s.Append("ready --->" + p.Value.ready).Append("\r\n");
+			s.Append("ID --->" + p.Value.ID).Append("\r\n");
+			s.Append("resIndex --->" + p.Value.resIndex).Append("\r\n");
+			s.Append("=====================================").Append("\r\n");
 		}
+		File.WriteAllText("Infos.txt", s.ToString());
 	}
 
 	/// <summary>

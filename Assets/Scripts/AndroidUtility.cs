@@ -6,13 +6,13 @@ public class AndroidUtility : MonoBehaviour {
 	
 	void Update () {
 		if (Input.GetKeyUp(KeyCode.Escape)) {
-			LogUI.Show("Escape");
+			//LogUI.Show("Escape");
 		}
 	}
 
-	//private void OnApplicationFocus(bool focus) {
-		
-	//}
+	private void OnApplicationFocus(bool focus) {
+		Application.Quit();
+	}
 
 	private void OnApplicationQuit() {
 		if (UIRoomManager.client != null) UIRoomManager.client.ApplicationQuit();

@@ -27,7 +27,7 @@ public class SquareManager : MonoBehaviour {
 
 		ArrangeHex();
 		for (int i = UIRoomManager.gData.overSec; i >= 0; i--) {     // 遊戲時間倒數
-			tickerText.text = "剩餘時間: " + i.ToString();
+			tickerText.text = /*"剩餘時間: " +*/ i.ToString();
 			yield return new WaitForSeconds(1f);
 		}
 		#region ================== 時間到後的工作 ==================

@@ -13,22 +13,7 @@ class Program {
 		new Thread(UserInput).Start();                  // 接收指令的 Thread
 
 		server = new TcpServer(20);             // 最大的等待玩家結果秒數
-		server.StartServer("36.226.122.86", 8056, 30);
-
-		//string[] ss = str.Split(new char[] { ' ' }, -1);
-		//foreach (string s in ss) {
-		//	Console.WriteLine(s);
-		//}
-
-		//string s = "RRI  ";
-		//int i1 = s.IndexOf(' ') +1;
-		//Console.WriteLine(i1);
-
-		//int i2 = s.IndexOf(' ', i1);
-		//Console.WriteLine(i2);
-
-		//System.DateTime t = new System.DateTime(long.Parse("636398971690000000"));
-		//System.Console.WriteLine(t.ToString());
+		server.StartServer("118.168.178.10", 8056, 30);
 
 	}
 

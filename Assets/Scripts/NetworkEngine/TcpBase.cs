@@ -2,6 +2,9 @@
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
+using System.IO;
+using System;
+using System.Net;
 
 /// <summary>
 /// 此腳本負責最基礎的 TCP/IP 功能
@@ -19,6 +22,10 @@ using System.Text;
 /// </summary>
 public class TcpBase {
 
+	string messageLogFileName = "ServerLogs.txt";
+	string errorLogFileName = "ErrorLogs.txt";
+	FileStream msgW, errorW;
+
 	//public delegate void ReceiveCallBack(Socket socket, string data);
 	public delegate void Methods(Socket inSocket, string[] inParams);
 	public delegate void Del();
@@ -28,8 +35,8 @@ public class TcpBase {
 	Dictionary<Socket, Thread> threadsDict = new Dictionary<Socket, Thread>();
 
 	public TcpBase() {
-		//開始連線，設定使用網路、串流、TCP
-		mySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//new server socket object
+		// 開始連線，設定使用網路、串流、TCP
+		mySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 	}
 
 	protected void Receive(Socket clientSocket) {
@@ -40,21 +47,72 @@ public class TcpBase {
 	}
 
 	protected void Send(Socket clientSocket, string data) {
-		if (CheckSocket(clientSocket)) {
-			clientSocket.Send(Encoding.UTF8.GetBytes(data));
-		}
+		if (CheckSocket(clientSocket)) clientSocket.Send(Encoding.UTF8.GetBytes(data));
 	}
 
 	protected void Send(Socket[] sockets, string data) {
 		foreach (Socket s in sockets) {
-			if (CheckSocket(s)) {
-				s.Send(Encoding.UTF8.GetBytes(data));
-			}
+			if (CheckSocket(s)) s.Send(Encoding.UTF8.GetBytes(data));
 		}
 	}
 
-	public void LogMessage(string msg, Socket socket = null, string fileName = "ErrorLog.txt") {
+	public void LogMessage(string msg, Socket socket = null) {
+		if (msgW == null) msgW = File.Open(messageLogFileName, FileMode.Append);
 
+		StringBuilder sb = new StringBuilder();
+		if (socket != null) {
+			try {
+				sb.Append((((IPEndPoint)socket.RemoteEndPoint).Address.ToString()));
+				sb.Append(" : ");
+			} catch { }
+		}
+		sb.Append(msg);
+
+		byte[] bytes = GetLogString(sb);
+
+		msgW.Write(bytes, 0, bytes.Length);
+		msgW.Flush();
+	}
+
+	public void LogMessage(StringBuilder sb, Socket socket = null) {
+		if (msgW == null) msgW = File.Open(messageLogFileName, FileMode.Append);
+
+		if (socket != null) {
+			try {
+				sb.Insert(0, " : ");
+				sb.Insert(0, (((IPEndPoint)socket.RemoteEndPoint).Address.ToString()));
+			} catch { }
+		}
+
+		byte[] bytes = GetLogString(sb);
+
+		msgW.Write(bytes, 0, bytes.Length);
+		msgW.Flush();
+	}
+
+	public void LogError(string msg) {
+		errorW = File.Open(errorLogFileName, FileMode.Append);
+
+		byte[] bytes = GetLogString(new StringBuilder(msg));
+
+		errorW.Write(bytes, 0, bytes.Length);
+		errorW.Close();
+	}
+
+	public void LogError(StringBuilder sb) {
+		if (errorW == null) errorW = File.Open(errorLogFileName, FileMode.Append);
+
+		byte[] bytes = GetLogString(sb);
+
+		errorW.Write(bytes, 0, bytes.Length);
+		errorW.Close();
+	}
+
+	byte[] GetLogString(StringBuilder sb) {
+		sb.Insert(0, ' ').Insert(0, DateTime.Now.ToString("yyyy/MM/dd-HH:mm:ss"));
+		sb.Append("\r\n");
+
+		return Encoding.UTF8.GetBytes(sb.ToString());
 	}
 	/// <summary>
 	/// 如果該 Socket 已經斷開連線，則從字典中將它刪除
@@ -85,6 +143,7 @@ public class TcpBase {
 			}
 			DataReceived(clientSocket, Encoding.UTF8.GetString(bytes, 0, size));
 		}
+
 	}
 	/// <summary>
 	/// 要斷開與用戶的連線也用這個函數

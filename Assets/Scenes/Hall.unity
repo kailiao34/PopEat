@@ -189,6 +189,7 @@ GameObject:
   - component: {fileID: 555045680}
   - component: {fileID: 555045679}
   - component: {fileID: 555045681}
+  - component: {fileID: 555045682}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -284,6 +285,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c845335d015518944a297a1de8bc11eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &555045682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 555045674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b9ef2c6d971c4040903a326c4d35fa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &615610489 stripped
@@ -424,47 +436,32 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 223419346681026934, guid: 74d3b26374e88fc46a37ad34cd4fced2,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1431389683}
-    - target: {fileID: 223552576992843404, guid: 74d3b26374e88fc46a37ad34cd4fced2,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1431389683}
-    - target: {fileID: 223065637760349630, guid: 74d3b26374e88fc46a37ad34cd4fced2,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1431389683}
-    - target: {fileID: 114147676090766882, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+    - target: {fileID: 114702595349141102, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 555045680}
-    - target: {fileID: 223142218163780590, guid: 74d3b26374e88fc46a37ad34cd4fced2,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1431389683}
-    - target: {fileID: 114847889895961806, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+    - target: {fileID: 114155773190397936, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 555045674}
-    - target: {fileID: 223509346208617062, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+      objectReference: {fileID: 555045680}
+    - target: {fileID: 114099649159071174, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
-      propertyPath: m_Camera
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1431389683}
-    - target: {fileID: 223184535781285760, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+      objectReference: {fileID: 555045680}
+    - target: {fileID: 114267104828088648, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
-      propertyPath: m_Camera
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1431389683}
-    - target: {fileID: 223611317503199492, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+      objectReference: {fileID: 555045680}
+    - target: {fileID: 114113890293273076, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+        type: 2}
+      propertyPath: roomManager
+      value: 
+      objectReference: {fileID: 555045680}
+    - target: {fileID: 223861602362202074, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_Camera
       value: 
@@ -474,32 +471,47 @@ Prefab:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 555045680}
-    - target: {fileID: 223861602362202074, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+    - target: {fileID: 223611317503199492, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1431389683}
-    - target: {fileID: 114113890293273076, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+    - target: {fileID: 223184535781285760, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
-      propertyPath: roomManager
+      propertyPath: m_Camera
       value: 
-      objectReference: {fileID: 555045680}
-    - target: {fileID: 114267104828088648, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+      objectReference: {fileID: 1431389683}
+    - target: {fileID: 223509346208617062, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      propertyPath: m_Camera
       value: 
-      objectReference: {fileID: 555045680}
-    - target: {fileID: 114099649159071174, guid: 74d3b26374e88fc46a37ad34cd4fced2,
-        type: 2}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 555045680}
-    - target: {fileID: 114155773190397936, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+      objectReference: {fileID: 1431389683}
+    - target: {fileID: 114847889895961806, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 555045680}
-    - target: {fileID: 114702595349141102, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+      objectReference: {fileID: 555045674}
+    - target: {fileID: 223142218163780590, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1431389683}
+    - target: {fileID: 223065637760349630, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1431389683}
+    - target: {fileID: 223552576992843404, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1431389683}
+    - target: {fileID: 223419346681026934, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1431389683}
+    - target: {fileID: 114147676090766882, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

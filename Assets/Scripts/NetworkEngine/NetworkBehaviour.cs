@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
+using System;
 
 /// <summary>
 /// 在 Tcp 底層上加入接收、傳送指令和參數傳送的功能，指令可以呼叫對應的 Function
