@@ -11,6 +11,8 @@ public class ButtonManager : MonoBehaviour {
 
 	public Animator loadingIndicatorAnimator;           //呼叫 Loading 介面
 
+    public Animator ExitAppAnimator; //呼叫 退出程式 介面
+
 	public Text roomNameText, waitRoomDisplayNameText;
 	string currentText;
 	[SerializeField]
@@ -27,6 +29,14 @@ public class ButtonManager : MonoBehaviour {
 	private void Start() {
 		UIswitcher.SetBool("goToGame", false);
 	}
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))     //按下 Android ← 呼叫退出退出程式介面
+        {
+            ExitAppUI();
+        }
+    }
 
 	//private void Update() {
 	//	if (Input.GetKeyDown(KeyCode.A)) {
@@ -122,4 +132,17 @@ public class ButtonManager : MonoBehaviour {
 	public void CurrentText(Text text) {
 		currentText = text.text;
 	}
+
+    //======呼叫 Exit APP 介面========
+    public void ExitAppUI()
+    {
+        ExitAppAnimator.SetBool("exitApp", !ExitAppAnimator.GetBool("exitApp"));
+    }
+
+    //======退出遊戲指令=======
+    public void ExitApp()
+    {
+        Application.Quit();
+        print("exit confirmed");
+    }
 }
