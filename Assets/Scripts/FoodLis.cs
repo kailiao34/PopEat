@@ -38,8 +38,8 @@ public class FoodLis : MonoBehaviour {
 
 		resNormalCB = resButtonPrefab.GetComponent<Button>().colors;
 		resHCB = resNormalCB;
-		resHCB.normalColor = UIRoomManager.gData.resHighlighted;
-		resHCB.highlightedColor = UIRoomManager.gData.resHighlighted;
+		resHCB.normalColor = Generic.gData.resHighlighted;
+		resHCB.highlightedColor = Generic.gData.resHighlighted;
 		InputFoodButton = InputFoodButtonIns;
 
 	}
@@ -48,7 +48,7 @@ public class FoodLis : MonoBehaviour {
 		loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
 
 		if (resList == null || resList.Count == 0) {
-			GetRes.ins.GetResNames(UIRoomManager.gData.radius, GetResNames);
+			GetRes.ins.GetResNames(Generic.gData.radius, GetResNames);
 		} else {
 			UISort();
 			if (preResSelected < 0) {

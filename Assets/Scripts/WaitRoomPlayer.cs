@@ -9,7 +9,7 @@ public class WaitRoomPlayer : MonoBehaviour {
 
 	public void FeedColor(int colorIndex) {
 		if (image != null) {
-			image.color = UIRoomManager.gData.colors[colorIndex];
+			image.color = Generic.gData.colors[colorIndex];
 		}
 	}
 	

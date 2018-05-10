@@ -4,9 +4,6 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class UIRoomManager : MonoBehaviour {
-	[SerializeField]
-	GlobalData GlocalDataAsset;
-	public static GlobalData gData;
 
 	#region ========== Colors Variables ==========
 	// 被選中的餐廳名列表，Index 對應 colorList，這個列表的數量決定遊戲中有幾種六角形
@@ -34,10 +31,6 @@ public class UIRoomManager : MonoBehaviour {
 	/// 4. 進入遊戲場景
 	/// </summary>
 	public static byte curStage;                            // 目前所處階段
-
-	private void Awake() {
-		if (gData == null) gData = GlocalDataAsset;
-	}
 
 	private void Start() {
 
@@ -248,7 +241,7 @@ public class UIRoomManager : MonoBehaviour {
 			myInfos.roomName = "";
 			try {
 				client = new TcpClient();
-				client.ConnectToServer(gData.ServerIP, gData.ServerPort);
+				client.ConnectToServer(Generic.gData.ServerIP, Generic.gData.ServerPort);
 				client.OnJoinedRoom = JoinRoomCallback;
 				client.OnPlayerListChanged = ListChangedCallback;
 				client.OnStartGame = StartGameCallback;

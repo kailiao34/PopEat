@@ -11,13 +11,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89b4d3a35fa733246a925943f362b9ff, type: 3}
   m_Name: GlobalData
   m_EditorClassIdentifier: 
-  ServerIP: 36.226.122.86
+  ServerIP: 127.0.0.1
   ServerPort: 8056
   radius: 500
   startSec: 8
   overSec: 8
   hexLayers: 9
   resHighlighted: {r: 0.408737, g: 0.75102913, b: 0.99264705, a: 0.3647059}
+  canMoveSpeed: 10
+  canZoomSpeed: 0.7
+  minCanSize: 3
   colors:
   - {r: 0.9852941, g: 0.072448105, b: 0.072448105, a: 1}
   - {r: 0.23924091, g: 0.27503946, b: 0.43382353, a: 1}

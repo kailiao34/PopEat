@@ -18,6 +18,13 @@ public class GlobalData : ScriptableObject {
 	public int hexLayers = 9;
 	[Header("餐廳被選擇時")]
 	public Color resHighlighted;
+	[Header("攝影機的平移速度")]
+	public float canMoveSpeed = 10;
+	[Header("攝影機的縮放速度")]
+	public float canZoomSpeed = 0.15f;
+	[Header("攝影機可拉近的最近距離")]
+	public float minCanSize = 3;
+
 	[Space]
 	public Color[] colors;
 }

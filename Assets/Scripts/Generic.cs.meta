@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 673603ae53aefad489c13bd6e6669a72
+timeCreated: 1525922866
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - GlocalDataAsset: {fileID: 11400000, guid: 96408bbd149ffb241b4e1c40fe24f752, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

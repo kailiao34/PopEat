@@ -103,6 +103,8 @@ public class TcpServer : ServerActions {
 
 		resultSec = endResultSec * 1000;
 	}
+
+	#region ====================== 接收函數 ======================
 	/// <summary>
 	/// 玩家按下 Go 按鈕後會發送 (加入等待室請求)
 	/// </summary>
@@ -278,6 +280,7 @@ public class TcpServer : ServerActions {
 			SendGameResult(room);
 		}
 	}
+	#endregion ===================================================
 	/// <summary>
 	/// 計時 a 秒後回傳統計結果
 	/// </summary>

@@ -10,12 +10,8 @@ public class AndroidUtility : MonoBehaviour {
 		}
 	}
 
-	private void OnApplicationFocus(bool focus) {
-		Application.Quit();
-	}
+	//private void OnApplicationPause(bool pause) {
+	//	if (pause) Application.Quit();
+	//}
 
-	private void OnApplicationQuit() {
-		if (UIRoomManager.client != null) UIRoomManager.client.ApplicationQuit();
-		//print("Quit");
-	}
 }

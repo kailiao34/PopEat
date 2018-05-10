@@ -30,12 +30,12 @@ public class UIGameManager : MonoBehaviour {
 
 	public void SetLocalWinner(string resName, int colorIndex) {
 		winnerLocalText.text = resName;
-		winnerLocalHex.color = UIRoomManager.gData.colors[colorIndex];
+		winnerLocalHex.color = Generic.gData.colors[colorIndex];
 	}
 
 	public void SetGlobalWinner(string resName, int colorIndex) {
 		winnerGlobalText.text = resName;
-		winnerGlobalHex.color = UIRoomManager.gData.colors[colorIndex];
+		winnerGlobalHex.color = Generic.gData.colors[colorIndex];
 	}
 
     //======呼叫遊戲結果介面=======
