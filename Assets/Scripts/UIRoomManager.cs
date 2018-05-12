@@ -34,7 +34,6 @@ public class UIRoomManager : MonoBehaviour {
 	public static byte curStage;                            // 目前所處階段
 
 	private void Start() {
-
 		string s = PlayerPrefs.GetString(nickNameSaveStr);
 		if (s != "") {
 			nickNameText.text = s;
@@ -43,20 +42,20 @@ public class UIRoomManager : MonoBehaviour {
 		LeaveRoom();
 
 		// ***************** Test *****************
-		//roomName = "ABAB";
-		//ConnectWithRoomName();
-		//client.CreateOrJoinRoom("ABAB");
-		////CreateRoom("ABAB");
-		//myInfos.nickName = "KAI";
-		//myInfos.foodSelected = "肯德鴉";
-		////myInfos.foodSelected = "喝";
+		roomName = "ABAB";
+		ConnectToServer();
+		client.CreateOrJoinRoom("ABAB");
+		//CreateRoom("ABAB");
+		myInfos.nickName = "KAI";
+		myInfos.foodSelected = "肯德鴉";
+		//myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
 	#region ========= 給UI按鈕使用的函數 =========
 	public void CreateRoom(string name) {
 		roomName = name;
-		ConnectWithRoomName();
+		ConnectToServer();
 
 		if (roomName == "") {
 			LogUI.Show("請輸入房名");
@@ -72,7 +71,7 @@ public class UIRoomManager : MonoBehaviour {
 
 	public void JoinRoom(string name) {
 		roomName = name;
-		ConnectWithRoomName();
+		ConnectToServer();
 
 		if (roomName == "") {
 			LogUI.Show("請輸入房名");
@@ -95,6 +94,7 @@ public class UIRoomManager : MonoBehaviour {
 		myInfos.ready = false;
 		curStage = 2;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
+		new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
 	}
 
 	public void NickNameButton(Text inputField) {
@@ -247,7 +247,7 @@ public class UIRoomManager : MonoBehaviour {
 	/// <summary>
 	/// 如果尚未連線則嘗試連線，若連線失敗返回 false
 	/// </summary>
-	public void ConnectWithRoomName() {
+	public void ConnectToServer() {
 		if (client == null || !client.isConnected) {
 			myInfos.roomName = "";
 			client = new TcpClient();

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
+using System.Text;
 
 public class DataServer : NetworkBehaviour {
 
@@ -11,11 +12,12 @@ public class DataServer : NetworkBehaviour {
 	string resDataFileName = "UserInputRes.txt";
 	FileStream locFile, resFile;
 
-	const string RECLocationCode = "RECLocAndRes";
+	const string RECLocationCode = "LocAndRes";
 
 	public DataServer() {
 		locFile = File.Open(locDataFileName, FileMode.Append);
 		resFile = File.Open(resDataFileName, FileMode.Append);
+		methods.Add(RECLocationCode, RECLocAndRes);
 	}
 
 	public void StartServer(string ipAddr, int port) {
@@ -27,8 +29,6 @@ public class DataServer : NetworkBehaviour {
 			acceptThread = new Thread(Accept);
 			acceptThread.Start();
 
-			// 註冊指令對應的函數
-			methods.Add(RECLocationCode, RECLocAndRes);
 		} catch (Exception ex) { LogError("StartServer: " + ex.Message); }
 	}
 
@@ -46,11 +46,14 @@ public class DataServer : NetworkBehaviour {
 	/// 接收位置座標和自行輸入的餐廳
 	/// </summary>
 	void RECLocAndRes(Socket inSocket, string[] inParams) {
-		if (inParams.Length == 1) {					// 收到座標
+		if (inParams.Length < 2 || inParams.Length > 3) return;
 
-		} else if (inParams.Length == 2) {			// 收到座標和餐廳
-
+		StringBuilder s = new StringBuilder();
+		for (int i = 0; i < inParams.Length; i++) {
+			s.Append(inParams[i]).Append(',');
 		}
+
+		LogMessage(s, (inParams.Length == 2) ? locFile : resFile);
 	}
 
 

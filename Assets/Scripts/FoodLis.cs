@@ -29,7 +29,7 @@ public class FoodLis : MonoBehaviour {
 	//餐廳按鈕被按下時改成這個顏色
 	public static ColorBlock resHCB;
 	// 記錄上一個被選到的餐廳按鈕
-	public static int preResSelected;
+	public static int preResSelected;			// 這個值如果是 -1 代表是自行輸入的餐廳
 	static List<Button> resButtons;
 
 	private void Awake() {

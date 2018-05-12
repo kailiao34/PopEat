@@ -8,7 +8,7 @@ class Program {
 	static void Main(string[] args) {
 
 		DataServer server = new DataServer();
-		server.StartServer("118.168.178.10", 8057);
+		server.StartServer("36.226.39.243", 8057);
 
 	}
 }

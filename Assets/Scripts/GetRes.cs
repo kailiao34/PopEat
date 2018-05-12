@@ -17,8 +17,8 @@ public class GetRes : MonoBehaviour {
 	delegate void GetLocCallbackDel(float lat, float lng);
 
 	static Dictionary<string, Details> resDetailDict = new Dictionary<string, Details>();
-	static bool getLocSucceed = false;           // 是否已經成功讀取到裝置位置
-	static float lat, lng;
+	public static bool getLocSucceed = false;           // 是否已經成功讀取到裝置位置
+	public static float lat, lng;
 
 	private void Awake() {
 		ins = this;

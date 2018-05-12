@@ -22,9 +22,8 @@ using System.Net;
 /// </summary>
 public class TcpBase {
 
-	string messageLogFileName = "ServerLogs.txt";
 	string errorLogFileName = "ErrorLogs.txt";
-	FileStream msgW, errorW;
+	FileStream errorW;
 
 	//public delegate void ReceiveCallBack(Socket socket, string data);
 	public delegate void Methods(Socket inSocket, string[] inParams);
@@ -56,59 +55,34 @@ public class TcpBase {
 		}
 	}
 
-	public void LogMessage(string msg, Socket socket = null) {
-		if (msgW == null) msgW = File.Open(messageLogFileName, FileMode.Append);
+	protected void LogMessage(StringBuilder msg, FileStream file) {
+		if (file == null) return;
 
-		StringBuilder sb = new StringBuilder();
-		if (socket != null) {
-			try {
-				sb.Append((((IPEndPoint)socket.RemoteEndPoint).Address.ToString()));
-				sb.Append(" : ");
-			} catch { }
-		}
-		sb.Append(msg);
+		byte[] bytes = AppendTimeStamp(msg);
 
-		byte[] bytes = GetLogString(sb);
-
-		msgW.Write(bytes, 0, bytes.Length);
-		msgW.Flush();
+		file.Write(bytes, 0, bytes.Length);
+		file.Flush();
 	}
 
-	public void LogMessage(StringBuilder sb, Socket socket = null) {
-		if (msgW == null) msgW = File.Open(messageLogFileName, FileMode.Append);
-
-		if (socket != null) {
-			try {
-				sb.Insert(0, " : ");
-				sb.Insert(0, (((IPEndPoint)socket.RemoteEndPoint).Address.ToString()));
-			} catch { }
-		}
-
-		byte[] bytes = GetLogString(sb);
-
-		msgW.Write(bytes, 0, bytes.Length);
-		msgW.Flush();
-	}
-
-	public void LogError(string msg) {
+	protected void LogError(string msg) {
 		errorW = File.Open(errorLogFileName, FileMode.Append);
 
-		byte[] bytes = GetLogString(new StringBuilder(msg));
+		byte[] bytes = AppendTimeStamp(new StringBuilder(msg));
 
 		errorW.Write(bytes, 0, bytes.Length);
 		errorW.Close();
 	}
 
-	public void LogError(StringBuilder sb) {
+	protected void LogError(StringBuilder sb) {
 		if (errorW == null) errorW = File.Open(errorLogFileName, FileMode.Append);
 
-		byte[] bytes = GetLogString(sb);
+		byte[] bytes = AppendTimeStamp(sb);
 
 		errorW.Write(bytes, 0, bytes.Length);
 		errorW.Close();
 	}
 
-	byte[] GetLogString(StringBuilder sb) {
+	byte[] AppendTimeStamp(StringBuilder sb) {
 		sb.Insert(0, ' ').Insert(0, DateTime.Now.ToString("yyyy/MM/dd-HH:mm:ss"));
 		sb.Append("\r\n");
 
