@@ -9,7 +9,7 @@ using System;
 /// 此腳本才開始有房間的概念
 /// </summary>
 public class ServerActions : NetworkBehaviour {
-	protected int maxClient;
+	protected int maxClient;		// 房間最大人數
 
 	Thread acceptThread;
 	/// <summary>
@@ -20,6 +20,12 @@ public class ServerActions : NetworkBehaviour {
 	/// 用 Socket 找房名的字典
 	/// </summary>
 	protected Dictionary<Socket, string> socketRoomDict = new Dictionary<Socket, string>();
+
+	// 指令表
+	protected const string CreateOrJoinRoomCode = "NBCOJR";
+	protected const string CreateRoomCode = "NBCR";
+	protected const string JoinRoomCode = "NBJR";
+	protected const string ReciveRoomStatusCode = "NBRS";
 
 	public void StartServer(string ipAddr, int port, int maxClient = 9999) {
 		this.maxClient = maxClient;
@@ -45,6 +51,7 @@ public class ServerActions : NetworkBehaviour {
 				Receive(clientSocket);        // 開啟接收資料線程
 			} catch (Exception ex) { LogError("Accept: " + ex.Message); }
 			//LogMessage("Accepted", clientSocket);
+			Console.WriteLine("Accepted");
 		}
 	}
 

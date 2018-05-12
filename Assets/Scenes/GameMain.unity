@@ -399,6 +399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b9ef2c6d971c4040903a326c4d35fa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ExitAppAnimator: {fileID: 1011276392}
 --- !u!114 &97413247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -913,7 +914,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 980588482}
+      - m_Target: {fileID: 97413246}
         m_MethodName: ExitApp
         m_Mode: 1
         m_Arguments:
@@ -1055,12 +1056,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &980588482 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114843163397718424, guid: cb64b69d21d34f2439561542395f8a66,
-    type: 2}
-  m_PrefabInternal: {fileID: 389419357}
-  m_Script: {fileID: 11500000, guid: f057a6b0906780840a45cf75952b8f9e, type: 3}
 --- !u!1 &1011276390
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,7 +1069,6 @@ GameObject:
   - component: {fileID: 1011276394}
   - component: {fileID: 1011276393}
   - component: {fileID: 1011276392}
-  - component: {fileID: 1011276391}
   m_Layer: 5
   m_Name: CanvasExitApp
   m_TagString: Untagged
@@ -1082,18 +1076,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1011276391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114299116007784612, guid: 74d3b26374e88fc46a37ad34cd4fced2,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1011276390}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d555a9e719714864080dc9e5c00d94db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &1011276392
 Animator:
   serializedVersion: 3
@@ -1287,7 +1269,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 980588482}
+      - m_Target: {fileID: 97413246}
         m_MethodName: ExitAppUI
         m_Mode: 1
         m_Arguments:

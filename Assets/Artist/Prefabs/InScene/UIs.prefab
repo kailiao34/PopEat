@@ -1309,7 +1309,6 @@ GameObject:
   - component: {fileID: 114066935407266288}
   - component: {fileID: 114651195252206212}
   - component: {fileID: 95855263953033410}
-  - component: {fileID: 114299116007784612}
   m_Layer: 5
   m_Name: CanvasExitApp
   m_TagString: Untagged
@@ -2974,7 +2973,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114660018572740318}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: MuteButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114044957492699822
@@ -3635,7 +3645,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UIswitcher: {fileID: 95719168249027812}
   loadingIndicatorAnimator: {fileID: 95391074194219946}
-  ExitAppAnimator: {fileID: 95855263953033410}
   roomNameText: {fileID: 114065340439223660}
   waitRoomDisplayNameText: {fileID: 114367149266321190}
   resOK: {fileID: 1979003063652664}
@@ -3656,6 +3665,9 @@ MonoBehaviour:
   - {fileID: 114702595349141102}
   - {fileID: 114918886002514186}
   roomManager: {fileID: 0}
+  soundButton: {fileID: 114660018572740318}
+  soundOnImage: {fileID: 21300000, guid: f4873442abaf3bd488be2c400bfa347e, type: 3}
+  soundOffImage: {fileID: 21300000, guid: ab684a3b828374c4c8ca04d47b1be963, type: 3}
 --- !u!114 &114114124799047126
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5045,17 +5057,6 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114299116007784612
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1530822516259912}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d555a9e719714864080dc9e5c00d94db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114312454881049344
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5291,8 +5292,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114113890293273076}
-        m_MethodName: ExitApp
+      - m_Target: {fileID: 0}
+        m_MethodName: ExitAppUI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8349,8 +8350,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114113890293273076}
-        m_MethodName: ExitAppUI
+      - m_Target: {fileID: 0}
+        m_MethodName: ExitApp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

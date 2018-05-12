@@ -40,19 +40,19 @@ public class TcpBase {
 	}
 
 	protected void Receive(Socket clientSocket) {
-			Thread threadReceive = new Thread(() => { ReceiveThread(clientSocket); });
-			threadReceive.Start();
+		Thread threadReceive = new Thread(() => { ReceiveThread(clientSocket); });
+		threadReceive.Start();
 
-			threadsDict.Add(clientSocket, threadReceive);
+		threadsDict.Add(clientSocket, threadReceive);
 	}
 
 	protected void Send(Socket clientSocket, string data) {
-			if (CheckSocket(clientSocket)) clientSocket.Send(Encoding.UTF8.GetBytes(data));
+		if (CheckSocket(clientSocket)) clientSocket.Send(Encoding.UTF8.GetBytes(data));
 	}
 
 	protected void Send(Socket[] sockets, string data) {
 		foreach (Socket s in sockets) {
-				if (CheckSocket(s)) s.Send(Encoding.UTF8.GetBytes(data));
+			if (CheckSocket(s)) s.Send(Encoding.UTF8.GetBytes(data));
 		}
 	}
 
@@ -127,36 +127,36 @@ public class TcpBase {
 	}
 
 	private void ReceiveThread(Socket clientSocket) {
-			byte[] bytes = new byte[clientSocket.ReceiveBufferSize];
-			int size;
+		byte[] bytes = new byte[clientSocket.ReceiveBufferSize];
+		int size;
 
-			while (clientSocket.Connected && isRunning) {
-				try {
-					size = clientSocket.Receive(bytes);
-					if (size <= 0) {
-						ClientLeave(clientSocket);
-						return;
-					}
-				} catch {
+		while (clientSocket.Connected && isRunning) {
+			try {
+				size = clientSocket.Receive(bytes);
+				if (size <= 0) {
 					ClientLeave(clientSocket);
 					return;
 				}
-				DataReceived(clientSocket, Encoding.UTF8.GetString(bytes, 0, size));
+			} catch {
+				ClientLeave(clientSocket);
+				return;
 			}
-		
+			DataReceived(clientSocket, Encoding.UTF8.GetString(bytes, 0, size));
+		}
+
 	}
 	/// <summary>
 	/// 要斷開與用戶的連線也用這個函數
 	/// </summary>
 	protected void ClientLeave(Socket socket) {
-			if (threadsDict.ContainsKey(socket)) {
-				OnDisconnected(socket);             // 呼叫斷線事件
-				socket.Close();
+		if (threadsDict.ContainsKey(socket)) {
+			OnDisconnected(socket);             // 呼叫斷線事件
+			socket.Close();
 
-				Thread t = threadsDict[socket];
-				threadsDict.Remove(socket);       // 從字典移除
-				t.Abort();                      // 停止 Receive Thread
-			}
+			Thread t = threadsDict[socket];
+			threadsDict.Remove(socket);       // 從字典移除
+			t.Abort();                      // 停止 Receive Thread
+		}
 	}
 
 	protected virtual void DataReceived(Socket socket, string data) { }
@@ -169,7 +169,7 @@ public class TcpBase {
 		isRunning = false;
 		// 關閉所有 Client 連線
 		foreach (KeyValuePair<Socket, Thread> d in threadsDict) {
-			try { d.Value.Abort(); } catch {  }
+			try { d.Value.Abort(); } catch { }
 			try { d.Key.Close(); } catch { }
 		}
 		// 關閉 Server Socket

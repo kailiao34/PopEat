@@ -234,7 +234,6 @@ MonoBehaviour:
   - {fileID: 349174167}
   - {fileID: 8322544}
   - {fileID: 161630518}
-  minCanSize: 3
 --- !u!114 &97413246
 MonoBehaviour:
   m_ObjectHideFlags: 0

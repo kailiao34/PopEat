@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Generic : MonoBehaviour {
 
@@ -11,7 +10,6 @@ public class Generic : MonoBehaviour {
 	private void Awake() {
 		gData = GlocalDataAsset;
 	}
-	
 
 	private void OnApplicationQuit() {
 		if (UIRoomManager.client != null) UIRoomManager.client.ApplicationQuit();

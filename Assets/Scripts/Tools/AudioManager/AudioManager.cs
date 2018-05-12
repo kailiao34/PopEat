@@ -15,12 +15,18 @@ public class AudioManager : MonoBehaviour {
 	static AudioListener listener;
 	static AudioSource source;
 	static AudioClip[] sounds;
+	/// <summary>
+	/// 目前是否靜音
+	/// </summary>
+	public static bool muted;
 
 	private void Awake() {
 		if (!Application.isPlaying) return;
 		source = GetComponent<AudioSource>();
 
 		if (soundsEditor != null) sounds = soundsEditor.ToArray();
+		if (listener == null) listener = FindObjectOfType<AudioListener>();
+		muted = !listener.enabled;
 	}
 
 	/// <summary>
@@ -63,10 +69,17 @@ public class AudioManager : MonoBehaviour {
 	/// 全遊戲靜音 (原本是開聲音的，呼叫後靜音，原本是靜音的，呼叫後開啟聲音)
 	/// </summary>
 	public static void Mute() {
-		if (listener == null) {
-			listener = FindObjectOfType<AudioListener>();
-		}
+		if (listener == null) listener = FindObjectOfType<AudioListener>();
+		muted = listener.enabled;
 		listener.enabled = !listener.enabled;
+	}
+	/// <summary>
+	/// True: 靜音, False: 開啟聲音
+	/// </summary>
+	public static void Mute(bool mute) {
+		if (listener == null) listener = FindObjectOfType<AudioListener>();
+		listener.enabled = !mute;
+		muted = mute;
 	}
 
 	static void CreateAudioSource() {

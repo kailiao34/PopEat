@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataServer {
-	class Program {
-		static void Main(string[] args) {
-		}
+class Program {
+	static void Main(string[] args) {
+
+		DataServer server = new DataServer();
+		server.StartServer("118.168.178.10", 8057);
+
 	}
 }

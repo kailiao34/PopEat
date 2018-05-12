@@ -1,19 +1,37 @@
 ﻿using System.Net.Sockets;
+using System.Threading;
 
 public class ClientActions : NetworkBehaviour {
 
 	public bool isConnected;
 	public delegate void RoomCallBack(RoomStatus status);
 	public RoomCallBack OnJoinedRoom;
-	
+	public Del OnConnectedToServer;
+
+	// 指令表
+	protected const string CreateOrJoinRoomCode = "NBCOJR";
+	protected const string CreateRoomCode = "NBCR";
+	protected const string JoinRoomCode = "NBJR";
+	protected const string ReciveRoomStatusCode = "NBRS";
+
 	public void ConnectToServer(string ipAddr, int port) {
-		mySocket.Connect(ipAddr, port);
-		
-		Receive(mySocket);
-		isConnected = true;
+		new Thread(()=> { Connect(ipAddr, port); }).Start();
 
 		// 註冊指令對應的函數
 		methods.Add(ReciveRoomStatusCode, RECRoomStatus);
+	}
+
+	void Connect(string ipAddr, int port) {
+		try {
+			mySocket.Connect(ipAddr, port);
+		} catch {
+			LogUI.Show("伺服器未開啟");
+			UIRoomManager.roomWaitForServer = false;
+			return;
+		}
+		Receive(mySocket);
+		isConnected = true;
+		if (OnConnectedToServer != null) OnConnectedToServer();
 	}
 
 	void RECRoomStatus(Socket inSocket, string[] inParams) {
@@ -35,7 +53,7 @@ public class ClientActions : NetworkBehaviour {
 	}
 
 	public void CreateRoom(string roomName) {
-		SendCommand(mySocket, CreateRoomCode, roomName );
+		SendCommand(mySocket, CreateRoomCode, roomName);
 	}
 
 	public void JoinRoom(string roomName) {
@@ -47,5 +65,5 @@ public class ClientActions : NetworkBehaviour {
 		//UnityEngine.Debug.Log("Server Offline");
 		if (socket == mySocket) isConnected = false;
 	}
-	
+
 }

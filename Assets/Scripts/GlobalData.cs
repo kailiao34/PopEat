@@ -7,6 +7,8 @@ public class GlobalData : ScriptableObject {
 
 	public string ServerIP = "127.0.0.1";
 	public int ServerPort = 8056;
+	public string DataServerIP = "127.0.0.1";
+	public int DataServerPort = 8057;
 
 	[Header("讀取幾公尺範圍內的餐廳")]
 	public int radius = 500;
@@ -19,9 +21,9 @@ public class GlobalData : ScriptableObject {
 	[Header("餐廳被選擇時")]
 	public Color resHighlighted;
 	[Header("攝影機的平移速度")]
-	public float canMoveSpeed = 10;
+	public float camMoveSpeed = 10;
 	[Header("攝影機的縮放速度")]
-	public float canZoomSpeed = 0.15f;
+	public float camZoomSpeed = 0.3f;
 	[Header("攝影機可拉近的最近距離")]
 	public float minCanSize = 3;
 

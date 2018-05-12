@@ -20,11 +20,7 @@ public class NetworkBehaviour : TcpBase {
 		RoomFulled = 104, Others = 105
 	}
 
-	// 指令表
-	protected const string CreateOrJoinRoomCode = "NBCOJR";
-	protected const string CreateRoomCode = "NBCR";
-	protected const string JoinRoomCode = "NBJR";
-	protected const string ReciveRoomStatusCode = "NBRS";
+
 
 	protected Dictionary<string, Methods> methods = new Dictionary<string, Methods>();
 
@@ -35,23 +31,23 @@ public class NetworkBehaviour : TcpBase {
 	/// </summary>
 
 	protected override void DataReceived(Socket socket, string data) {
-			// 取得指令代號
-			int i1 = data.IndexOf(' ');
-			if (i1 <= 0) return;
-			string code = data.Substring(0, i1);
-			if (!methods.ContainsKey(code)) return;         // 如果指令代號沒有被註冊則離開
+		// 取得指令代號
+		int i1 = data.IndexOf(' ');
+		if (i1 <= 0) return;
+		string code = data.Substring(0, i1);
+		if (!methods.ContainsKey(code)) return;         // 如果指令代號沒有被註冊則離開
 
-			string[] inParams = ExtractParams(data.Substring(i1 + 1));
-			if (inParams == null) return;                   // 如果參數解析失敗則離開
+		string[] inParams = ExtractParams(data.Substring(i1 + 1));
+		if (inParams == null) return;                   // 如果參數解析失敗則離開
 
-			methods[code](socket, inParams);                            // 呼叫指令代號對應的 Function
+		methods[code](socket, inParams);                            // 呼叫指令代號對應的 Function
 	}
 
 	protected void SendCommand(Socket socket, string cmd, string[] paramsStr = null) {
-			if (socket == null) return;
-			StringBuilder s = GetCmdString(paramsStr);
-			if (s == null) return;
-			Send(socket, (s.Insert(0, " ").Insert(0, cmd)).ToString());
+		if (socket == null) return;
+		StringBuilder s = GetCmdString(paramsStr);
+		if (s == null) return;
+		Send(socket, (s.Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
 	/// <summary>
@@ -59,19 +55,19 @@ public class NetworkBehaviour : TcpBase {
 	/// </summary>
 	protected void SendCommand(Socket socket, string cmd, string paramsStr) {
 		if (socket == null) return;
-			Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
+		Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
 	protected void SendCommand(Socket[] socket, string cmd, string[] paramsStr = null) {
 		if (socket == null) return;
-			Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
+		Send(socket, (GetCmdString(paramsStr).Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
 	protected void SendCommand(Socket[] socket, string cmd, string paramsStr) {
 		if (socket == null) return;
 		StringBuilder s = GetCmdString(paramsStr);
 		if (s == null) return;
-			Send(socket, (s.Insert(0, " ").Insert(0, cmd)).ToString());
+		Send(socket, (s.Insert(0, " ").Insert(0, cmd)).ToString());
 	}
 
 	/// <summary>

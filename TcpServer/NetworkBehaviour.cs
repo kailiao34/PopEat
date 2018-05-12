@@ -20,11 +20,7 @@ public class NetworkBehaviour : TcpBase {
 		RoomFulled = 104, Others = 105
 	}
 
-	// 指令表
-	protected const string CreateOrJoinRoomCode = "NBCOJR";
-	protected const string CreateRoomCode = "NBCR";
-	protected const string JoinRoomCode = "NBJR";
-	protected const string ReciveRoomStatusCode = "NBRS";
+	
 
 	protected Dictionary<string, Methods> methods = new Dictionary<string, Methods>();
 

@@ -11,8 +11,6 @@ public class ButtonManager : MonoBehaviour {
 
 	public Animator loadingIndicatorAnimator;           //呼叫 Loading 介面
 
-    public Animator ExitAppAnimator; //呼叫 退出程式 介面
-
 	public Text roomNameText, waitRoomDisplayNameText;
 	string currentText;
 	[SerializeField]
@@ -21,6 +19,10 @@ public class ButtonManager : MonoBehaviour {
 	public Button[] buttons;
 	public UIRoomManager roomManager;
 	bool CreateOrJoinRoom;          // True: Create, False: Join
+	[SerializeField]
+	Image soundButton;
+	[SerializeField]
+	Sprite soundOnImage, soundOffImage;
 
 	private void Awake() {
 		ins = this;
@@ -28,15 +30,23 @@ public class ButtonManager : MonoBehaviour {
 
 	private void Start() {
 		UIswitcher.SetBool("goToGame", false);
+
+		string m = PlayerPrefs.GetString("Mute");
+		if (m == "M") {         // 靜音
+			MuteButton();
+		}
 	}
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))     //按下 Android ← 呼叫退出退出程式介面
-        {
-            ExitAppUI();
-        }
-    }
+	public void MuteButton() {
+		AudioManager.Mute();
+		if (AudioManager.muted) {
+			soundButton.sprite = soundOffImage;
+			PlayerPrefs.SetString("Mute", "M");
+		} else {
+			soundButton.sprite = soundOnImage;
+			PlayerPrefs.SetString("Mute", "");
+		}
+	}
 
 	//private void Update() {
 	//	if (Input.GetKeyDown(KeyCode.A)) {
@@ -82,8 +92,12 @@ public class ButtonManager : MonoBehaviour {
 	// 雖然共用，但創房 和 進房 還是需要分別 (color)
 
 	public void buttonCer(bool isCreate) {
+		if (UIRoomManager.roomWaitForServer) {      // 正在等待伺服器回傳房間狀態
+			LogUI.Show("正在等待伺服器回應...");
+		} else {
 		CreateOrJoinRoom = isCreate;
 		ShowCreateOrJoinRoomUI();
+		}
 	}
 
 	public void ButtonCreateOrJoinRoomOkay() {
@@ -132,17 +146,4 @@ public class ButtonManager : MonoBehaviour {
 	public void CurrentText(Text text) {
 		currentText = text.text;
 	}
-
-    //======呼叫 Exit APP 介面========
-    public void ExitAppUI()
-    {
-        ExitAppAnimator.SetBool("exitApp", !ExitAppAnimator.GetBool("exitApp"));
-    }
-
-    //======退出遊戲指令=======
-    public void ExitApp()
-    {
-        Application.Quit();
-        print("exit confirmed");
-    }
 }
