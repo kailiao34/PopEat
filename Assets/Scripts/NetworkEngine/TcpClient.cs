@@ -159,6 +159,7 @@ public class TcpClient : ClientActions {
 		if (res == null) return;
 
 		Ticker.StartTicker(0, () => { UIGameManager.ins.SetGlobalWinner(res, colorIndex); });
+		ClientLeave(mySocket);
 		
 		//UnityEngine.Debug.Log("統計結果: " + colorIndex + " - " + res);
 	}

@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class GenerateHexTest : MonoBehaviour {
 
-	int hexLayers = 9;
-
-
 	public LineRenderer L1;
 	int I1;
 	List<Square> Inseries = new List<Square>() { null };
@@ -91,7 +88,7 @@ public class GenerateHexTest : MonoBehaviour {
 		for (int j = 0; j < 6; j++) {
 			GameObject tt1 = new GameObject();
 			tt1.gameObject.name = "j=====>" + j;
-			for (int i = 1; i < hexLayers; i++) {
+			for (int i = 1; i < Generic.gData.hexLayers; i++) {
 				float z = i * 0.84f;
 				for (int k = 1; k < i + 1; k++) {
 					GameObject gg2 = Instantiate(squarePrefab);

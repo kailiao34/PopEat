@@ -55,13 +55,13 @@ public class TcpBase {
 		}
 	}
 
-	protected void LogMessage(StringBuilder msg, FileStream file) {
-		if (file == null) return;
+	protected void LogMessage(StringBuilder msg, string fileName) {
+		FileStream file = File.Open(fileName, FileMode.Append);
 
 		byte[] bytes = AppendTimeStamp(msg);
 
 		file.Write(bytes, 0, bytes.Length);
-		file.Flush();
+		file.Close();
 	}
 
 	protected void LogError(string msg) {

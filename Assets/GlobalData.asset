@@ -17,8 +17,8 @@ MonoBehaviour:
   DataServerPort: 8057
   radius: 500
   startSec: 8
-  overSec: 8
-  hexLayers: 9
+  overSec: 10
+  hexLayers: 7
   resHighlighted: {r: 0.408737, g: 0.75102913, b: 0.99264705, a: 0.3647059}
   camMoveSpeed: 10
   camZoomSpeed: 0.3

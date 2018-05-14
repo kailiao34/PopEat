@@ -6,7 +6,7 @@ public class ClientActions : NetworkBehaviour {
 	public bool isConnected;
 	public delegate void RoomCallBack(RoomStatus status);
 	public RoomCallBack OnJoinedRoom;
-	public Del OnConnectedToServer;
+	public Del OnConnectedToServer, OnConnectFailed;
 
 	// 指令表
 	protected const string CreateOrJoinRoomCode = "NBCOJR";
@@ -25,8 +25,7 @@ public class ClientActions : NetworkBehaviour {
 		try {
 			mySocket.Connect(ipAddr, port);
 		} catch {
-			LogUI.Show("伺服器未開啟");
-			UIRoomManager.roomWaitForServer = false;
+			if (OnConnectFailed != null) OnConnectFailed();
 			return;
 		}
 		Receive(mySocket);

@@ -24,13 +24,13 @@ public class UIRoomManager : MonoBehaviour {
 	string nickNameSaveStr = "NickName";
 
 	public static GameObject UIObject;
-	public static bool roomWaitForServer;		// 是否正在等待伺服器回傳房間狀態
-	/// <summary>
-	/// 1. 起始 UI
-	/// 2. 按下 Go 後，收到伺服器傳來的等待室玩家列表前
-	/// 3. 在等待室內，收到玩家列表後
-	/// 4. 進入遊戲場景
-	/// </summary>
+	public static bool roomWaitForServer;       // 是否正在等待伺服器回傳房間狀態
+												/// <summary>
+												/// 1. 起始 UI
+												/// 2. 按下 Go 後，收到伺服器傳來的等待室玩家列表前
+												/// 3. 在等待室內，收到玩家列表後
+												/// 4. 進入遊戲場景
+												/// </summary>
 	public static byte curStage;                            // 目前所處階段
 
 	private void Start() {
@@ -42,13 +42,13 @@ public class UIRoomManager : MonoBehaviour {
 		LeaveRoom();
 
 		// ***************** Test *****************
-		roomName = "ABAB";
-		ConnectToServer();
-		client.CreateOrJoinRoom("ABAB");
-		//CreateRoom("ABAB");
-		myInfos.nickName = "KAI";
-		myInfos.foodSelected = "肯德鴉";
-		//myInfos.foodSelected = "喝";
+		//roomName = "ABAB";
+		//ConnectToServer();
+		//client.CreateOrJoinRoom("ABAB");
+		////CreateRoom("ABAB");
+		//myInfos.nickName = "KAI";
+		//myInfos.foodSelected = "肯德鴉";
+		////myInfos.foodSelected = "喝";
 		// ****************************************
 	}
 
@@ -94,7 +94,9 @@ public class UIRoomManager : MonoBehaviour {
 		myInfos.ready = false;
 		curStage = 2;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
-		//new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
+		if (myInfos.foodSelected != DataClient.preRes && GetRes.getLocSucceed) {
+			new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
+		}
 	}
 
 	public void NickNameButton(Text inputField) {
@@ -263,6 +265,10 @@ public class UIRoomManager : MonoBehaviour {
 			client.OnPlayerListChanged = ListChangedCallback;
 			client.OnStartGame = StartGameCallback;
 			client.OnMyInfoChanged = MyInfoChanged;
+			client.OnConnectFailed = () => {
+				LogUI.Show("伺服器未開啟");
+				roomWaitForServer = false;
+			};
 		}
 	}
 

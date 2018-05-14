@@ -8,15 +8,10 @@ using System.Text;
 public class DataServer : NetworkBehaviour {
 
 	Thread acceptThread;
-	string locDataFileName = "UserLocations.txt";
-	string resDataFileName = "UserInputRes.txt";
-	FileStream locFile, resFile;
 
 	const string RECLocationCode = "LocAndRes";
 
 	public DataServer() {
-		locFile = File.Open(locDataFileName, FileMode.Append);
-		resFile = File.Open(resDataFileName, FileMode.Append);
 		methods.Add(RECLocationCode, RECLocAndRes);
 	}
 
@@ -46,14 +41,19 @@ public class DataServer : NetworkBehaviour {
 	/// 接收位置座標和自行輸入的餐廳
 	/// </summary>
 	void RECLocAndRes(Socket inSocket, string[] inParams) {
-		if (inParams.Length < 2 || inParams.Length > 3) return;
-
-		StringBuilder s = new StringBuilder();
-		s.Append(inParams[0]).Append(',').Append(inParams[1]);
-		LogMessage(s, locFile);
-		if (inParams.Length == 3) {
-			s.Append(',').Append(inParams[2]);
-			LogMessage(s, resFile);
+		if (inParams.Length == 2) {
+			StringBuilder s = new StringBuilder();
+			s.Append(inParams[0]).Append(',').Append(inParams[1]);
+			LogMessage(s, "UserLocations.txt");
 		}
+		if (inParams.Length == 3) {
+			StringBuilder s = new StringBuilder();
+			s.Append(inParams[0]).Append(',').Append(inParams[1]).Append(',').Append(inParams[2]);
+			LogMessage(s, "UserInputRes.txt");
+		}
+	}
+
+	protected override void OnDisconnected(Socket socket) {
+		Console.WriteLine("Client Leave");
 	}
 }
