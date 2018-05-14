@@ -11,15 +11,19 @@ public class FoodListButton : MonoBehaviour {
 
 		// Highlight Selected
 		FoodLis.HighlightButton(buttonIndex);
+
+		Sounds.PlayButton();
 	}
 	public void Info() {
 		ButtonManager.ins.UIswitcher.SetBool("ResInfo", true);
 
 		GetRes.ins.GetResDetail(UItext.text, ShowResDetailInfo);
+		Sounds.PlayButton();
 	}
 
 	public void InfoOff() {
 		ButtonManager.ins.UIswitcher.SetBool("ResInfo", false);
+		Sounds.PlayButton();
 	}
 
 	void ShowResDetailInfo(Details d) {

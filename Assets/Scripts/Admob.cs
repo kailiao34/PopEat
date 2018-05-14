@@ -4,22 +4,22 @@ using GoogleMobileAds.Api;
 
 public class Admob : MonoBehaviour {
 
-    public BannerView bannerView;
+    public static BannerView bannerView;
 
     public void Start()
     {
-        #if UNITY_ANDROID
-            //string appId = "ca-app-pub-2763403976639382~3279308884"; //這是 PopEat Android 的 appId
-            string appId = "ca-app-pub-3940256099942544~3347511713"; //這是測試用的 appID
-        #elif UNITY_IPHONE
+#if UNITY_ANDROID
+		string appId = "ca-app-pub-2763403976639382~3279308884"; //這是 PopEat Android 的 appId
+																 //string appId = "ca-app-pub-3940256099942544~3347511713"; //這是測試用的 appID
+#elif UNITY_IPHONE
             //尚未添加  註： Google Play 和 Apple 用的是不同 ID!!!
             string appId = "not_yet_added";
-        #else
+#else
             string appId = "unexpected_platform";
-        #endif
+#endif
 
-        // Initialize the Google Mobile Ads SDK.
-        MobileAds.Initialize(appId);
+		// Initialize the Google Mobile Ads SDK.
+		MobileAds.Initialize(appId);
 
         RequestBanner();
         bannerView.Show();
@@ -27,19 +27,19 @@ public class Admob : MonoBehaviour {
 
     public void RequestBanner()
     {
-        #if UNITY_ANDROID
-            //string adUnitId = "ca-app-pub-2763403976639382/9852456090"; //這是 Banner1 的 adUnitId
-            string adUnitId = "ca-app-pub-3940256099942544/6300978111"; //這是測試用的 adUnitId
-        #elif UNITY_IPHONE
+#if UNITY_ANDROID
+		string adUnitId = "ca-app-pub-2763403976639382/9852456090"; //這是 Banner1 的 adUnitId
+																	//string adUnitId = "ca-app-pub-3940256099942544/6300978111"; //這是測試用的 adUnitId
+#elif UNITY_IPHONE
             //尚未添加  註： Google Play 和 Apple 用的是不同 ID!!!    
             string adUnitId = "not_yet_added";
-        #else
+#else
             string adUnitId = "unexpected_platform";
-        #endif
+#endif
 
-        // Create a 320x50 banner at the top of the screen.
-        // bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
-        bannerView = new BannerView(adUnitId, AdSize.SmartBanner, AdPosition.Top);
+		// Create a 320x50 banner at the top of the screen.
+		// bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
+		bannerView = new BannerView(adUnitId, AdSize.SmartBanner, AdPosition.Top);
 
         //Banner behaviour 參數
         // Called when an ad request has successfully loaded.
@@ -60,10 +60,11 @@ public class Admob : MonoBehaviour {
     public AdRequest createAdRequest()
     {
         return new AdRequest.Builder()
-            // .AddTestDevice(AdRequest.TestDeviceSimulator)
-            //.AddTestDevice("27f3d8fe5cf2553d0f66a3a05687ac70")
-                .TagForChildDirectedTreatment(false)
-                .Build();
+			//.AddTestDevice(AdRequest.TestDeviceSimulator)
+			.AddTestDevice("6e1c3c54e29cbbbe")
+			.AddTestDevice("6d2388782b1254a5")
+			.TagForChildDirectedTreatment(false)
+            .Build();
     }
 
     public void HandleOnAdLoaded(object sender, EventArgs args)

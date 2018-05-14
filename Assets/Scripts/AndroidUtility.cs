@@ -21,6 +21,7 @@ public class AndroidUtility : MonoBehaviour {
 	//======呼叫 Exit APP 介面========
 	public void ExitAppUI() {
 		ExitAppAnimator.SetBool("exitApp", !ExitAppAnimator.GetBool("exitApp"));
+		Sounds.PlayExit();
 	}
 
 	//======退出遊戲指令=======

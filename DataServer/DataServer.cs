@@ -49,12 +49,11 @@ public class DataServer : NetworkBehaviour {
 		if (inParams.Length < 2 || inParams.Length > 3) return;
 
 		StringBuilder s = new StringBuilder();
-		for (int i = 0; i < inParams.Length; i++) {
-			s.Append(inParams[i]).Append(',');
+		s.Append(inParams[0]).Append(',').Append(inParams[1]);
+		LogMessage(s, locFile);
+		if (inParams.Length == 3) {
+			s.Append(',').Append(inParams[2]);
+			LogMessage(s, resFile);
 		}
-
-		LogMessage(s, (inParams.Length == 2) ? locFile : resFile);
 	}
-
-
 }

@@ -9,7 +9,7 @@ using System;
 /// 此腳本才開始有房間的概念
 /// </summary>
 public class ServerActions : NetworkBehaviour {
-	protected int maxClient;		// 房間最大人數
+	protected int maxClient;        // 房間最大人數
 
 	Thread acceptThread;
 	/// <summary>
@@ -57,6 +57,7 @@ public class ServerActions : NetworkBehaviour {
 
 	protected override void OnDisconnected(Socket socket) {
 		ClientLeaveRoom(socket);
+		Console.WriteLine("Client Leave");
 		//LogMessage("Client Leave", socket);
 	}
 
@@ -101,17 +102,17 @@ public class ServerActions : NetworkBehaviour {
 
 	void RECCreateRoom(Socket inSocket, string[] inParams) {
 		try {
-		if (inParams == null || inParams.Length < 1) {              // 沒有輸入房名
-			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.NoRoomName).ToString());
-			return;
-		}
+			if (inParams == null || inParams.Length < 1) {              // 沒有輸入房名
+				SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.NoRoomName).ToString());
+				return;
+			}
 
-		if (roomSocketDict.ContainsKey(inParams[0])) {                   // 房間已存在，回傳錯誤
-			SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.RoomExists).ToString());
-		} else {                                                    // 房間不存在，成功創建				
-			roomSocketDict.Add(inParams[0], new HashSet<Socket>());
-			AddToRoom(inParams[0], inSocket, RoomStatus.Created);                        // 加入此房間
-		}
+			if (roomSocketDict.ContainsKey(inParams[0])) {                   // 房間已存在，回傳錯誤
+				SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.RoomExists).ToString());
+			} else {                                                    // 房間不存在，成功創建				
+				roomSocketDict.Add(inParams[0], new HashSet<Socket>());
+				AddToRoom(inParams[0], inSocket, RoomStatus.Created);                        // 加入此房間
+			}
 		} catch (Exception ex) { LogError("RECCreateRoom: " + ex.Message); }
 	}
 
@@ -127,8 +128,9 @@ public class ServerActions : NetworkBehaviour {
 			} else {                                                    // 房間不存在，回傳錯誤		
 				SendCommand(inSocket, ReciveRoomStatusCode, ((int)RoomStatus.RoomNotExists).ToString());
 			}
-		} catch (Exception ex) { LogError("RECJoinRoom: " + ex.Message);
-}
+		} catch (Exception ex) {
+			LogError("RECJoinRoom: " + ex.Message);
+		}
 	}
 	#endregion ========================================
 
@@ -136,7 +138,7 @@ public class ServerActions : NetworkBehaviour {
 	/// 需先自行判斷房間是否存在，若不存在會報錯
 	/// </summary>
 	protected virtual void AddToRoom(string roomName, Socket socket, RoomStatus roomStatus) {
-		if (roomSocketDict[roomName].Count >= maxClient) {		// 房間已滿
+		if (roomSocketDict[roomName].Count >= maxClient) {      // 房間已滿
 			SendCommand(socket, ReciveRoomStatusCode, ((int)RoomStatus.RoomFulled).ToString());
 			return;
 		}
@@ -150,6 +152,6 @@ public class ServerActions : NetworkBehaviour {
 		}
 		roomSocketDict[roomName].Add(socket);                    // 加入此房間
 		socketRoomDict[socket] = roomName;
-		SendCommand(socket, ReciveRoomStatusCode, ((int)roomStatus).ToString());	// 回傳房間狀態
+		SendCommand(socket, ReciveRoomStatusCode, ((int)roomStatus).ToString());    // 回傳房間狀態
 	}
 }

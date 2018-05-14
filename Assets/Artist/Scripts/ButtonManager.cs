@@ -74,6 +74,7 @@ public class ButtonManager : MonoBehaviour {
 	//========呼叫暱稱輸入介面=========
 	public void buttonNick() {
 		UIswitcher.SetBool("nick", !UIswitcher.GetBool("nick"));
+		Sounds.PlayButton();
 	}
 
 	//=======呼叫餐廳列表介面==========
@@ -85,6 +86,7 @@ public class ButtonManager : MonoBehaviour {
 			UIswitcher.SetBool("eat", true);
 		}
 		ResSelecteOK();
+		Sounds.PlayButton();
 	}
 
 	//=======呼叫進入/創立房間介面==========
@@ -98,6 +100,7 @@ public class ButtonManager : MonoBehaviour {
 		CreateOrJoinRoom = isCreate;
 		ShowCreateOrJoinRoomUI();
 		}
+		Sounds.PlayButton();
 	}
 
 	public void ButtonCreateOrJoinRoomOkay() {
@@ -107,6 +110,7 @@ public class ButtonManager : MonoBehaviour {
 			roomManager.JoinRoom(roomNameText.text);
 		}
 		ShowCreateOrJoinRoomUI();
+		Sounds.PlayButton();
 	}
 
 	void ShowCreateOrJoinRoomUI() {
@@ -133,11 +137,13 @@ public class ButtonManager : MonoBehaviour {
 		}
 
 		waitRoomDisplayNameText.text = UIRoomManager.myInfos.roomName;
+		Sounds.PlayButton();
 	}
 
 	//=======呼叫 Credits 介面==========
 	public void CreditList() {
 		UIswitcher.SetBool("credits", !UIswitcher.GetBool("credits"));
+		Sounds.PlayButton();
 	}
 
 	public void ChangeButtonText(Text buttonText) {

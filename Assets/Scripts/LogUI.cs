@@ -17,6 +17,7 @@ public class LogUI : MonoBehaviour {
 			anim.SetBool(hash, true);
 		});
 		Ticker.StartTicker(sec, Hide);
+		Ticker.StartTicker(0, Sounds.PlayExit);
 	}
 
 	public static void Hide() {

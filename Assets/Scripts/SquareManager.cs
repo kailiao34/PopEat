@@ -126,6 +126,12 @@ public class SquareManager : MonoBehaviour {
 
 	void Release() {
 		if (Inseries[0] != null) {
+			if (Inseries.Count == 1) {
+				Sounds.PlayHex();
+			} else if (Inseries.Count > 1) {
+				Sounds.PlayHexMul();
+			}
+
 			for (int i = 0; i < Inseries.Count; i++) {
 				squares.Remove(Inseries[i].gameObject);
 				Instantiate(hexFXPrefab, Inseries[i].transform.position, Quaternion.identity);      // 爆破效果

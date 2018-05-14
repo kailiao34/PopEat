@@ -35,6 +35,7 @@ public class AudioManager : MonoBehaviour {
 	/// <param name="audio">要播放的聲音</param>
 	/// <param name="volume">音量大小，最小是0, 沒有最大值</param>
 	public static void PlayOneShot(Audios audio, float volume = 1) {
+		if (muted) return;
 		int index = (int)audio;
 		if (sounds == null || index >= sounds.Length) return;
 		CreateAudioSource();

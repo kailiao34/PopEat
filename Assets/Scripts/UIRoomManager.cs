@@ -94,7 +94,7 @@ public class UIRoomManager : MonoBehaviour {
 		myInfos.ready = false;
 		curStage = 2;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
-		new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
+		//new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
 	}
 
 	public void NickNameButton(Text inputField) {
@@ -113,6 +113,7 @@ public class UIRoomManager : MonoBehaviour {
 		if (client != null && client.isConnected) {
 			client.SendReady();
 		}
+		Sounds.PlayButton();
 	}
 
 	public void LeaveRoom() {
@@ -136,6 +137,8 @@ public class UIRoomManager : MonoBehaviour {
 	}
 
 	public void StartGameButton() {
+		Sounds.PlayButton();
+
 		if (roomName == "") return;
 		bool canGO = true;
 
@@ -241,7 +244,11 @@ public class UIRoomManager : MonoBehaviour {
 		colorPicker.SetProb(p);
 		// 載入遊戲場景
 		ButtonManager.ins.UIswitcher.SetBool("goToGame", true);
-		Ticker.StartTicker(0, () => { SceneManager.LoadScene("GameMain"); });
+		Ticker.StartTicker(0, () => {
+			Admob.bannerView.Destroy();
+			SceneManager.LoadScene("GameMain");
+
+		});
 	}
 	#endregion =============================================
 	/// <summary>
