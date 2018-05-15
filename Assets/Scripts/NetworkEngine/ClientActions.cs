@@ -3,7 +3,11 @@ using System.Threading;
 
 public class ClientActions : NetworkBehaviour {
 
-	public bool isConnected;
+	public enum ConnectStatus {
+		Connecting = 0, Connected = 1, UnIntialized, Failed = 2, Closed = 3
+	}
+
+	public ConnectStatus connectStatus = ConnectStatus.UnIntialized;
 	public delegate void RoomCallBack(RoomStatus status);
 	public RoomCallBack OnJoinedRoom;
 	public Del OnConnectedToServer, OnConnectFailed;
@@ -14,22 +18,27 @@ public class ClientActions : NetworkBehaviour {
 	protected const string JoinRoomCode = "NBJR";
 	protected const string ReciveRoomStatusCode = "NBRS";
 
-	public void ConnectToServer(string ipAddr, int port) {
-		new Thread(()=> { Connect(ipAddr, port); }).Start();
+	public ClientActions() {
+		methods.Add(ReciveRoomStatusCode, RECRoomStatus);	// 註冊指令對應的函數
+	}
 
-		// 註冊指令對應的函數
-		methods.Add(ReciveRoomStatusCode, RECRoomStatus);
+	public void ConnectToServer(string ipAddr, int port) {
+		if (connectStatus <= ConnectStatus.Connected) return;
+		connectStatus = ConnectStatus.Connecting;
+		new Thread(()=> { Connect(ipAddr, port); }).Start();
 	}
 
 	void Connect(string ipAddr, int port) {
 		try {
+			InitMySocket();
 			mySocket.Connect(ipAddr, port);
-		} catch {
+		} catch (System.Exception e) {
+			connectStatus = ConnectStatus.Failed;
 			if (OnConnectFailed != null) OnConnectFailed();
 			return;
 		}
 		Receive(mySocket);
-		isConnected = true;
+		connectStatus = ConnectStatus.Connected;
 		if (OnConnectedToServer != null) OnConnectedToServer();
 	}
 
@@ -62,7 +71,7 @@ public class ClientActions : NetworkBehaviour {
 	protected override void OnDisconnected(Socket socket) {
 		base.OnDisconnected(socket);
 		//UnityEngine.Debug.Log("Server Offline");
-		if (socket == mySocket) isConnected = false;
+		if (socket == mySocket) connectStatus = ConnectStatus.Closed;
 	}
 
 }

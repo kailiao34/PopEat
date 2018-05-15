@@ -8,12 +8,16 @@ public class Square : MonoBehaviour {
 	MeshRenderer ren;
 
 	void Start() {
+		colorIndex = UIRoomManager.colorPicker.Get();
+
 		// ****************** Test ******************
-		//colorIndex = SquareColorTest.p.Get();
-		//ren.material.color = SquareColorTest.colors[colorIndex];
+#if UNITY_EDITOR
+		if (colorIndex == -1) {
+			colorIndex = Random.Range(0, 3);
+		}
+#endif
 		// ******************************************
 
-		colorIndex = UIRoomManager.colorPicker.Get();
 		if (ren != null) {
 			ren.material.color = Generic.gData.colors[colorIndex];
 		}

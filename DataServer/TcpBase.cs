@@ -34,6 +34,10 @@ public class TcpBase {
 	Dictionary<Socket, Thread> threadsDict = new Dictionary<Socket, Thread>();
 
 	public TcpBase() {
+		InitMySocket();
+	}
+
+	protected void InitMySocket() {
 		// 開始連線，設定使用網路、串流、TCP
 		mySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 	}
@@ -143,8 +147,8 @@ public class TcpBase {
 		isRunning = false;
 		// 關閉所有 Client 連線
 		foreach (KeyValuePair<Socket, Thread> d in threadsDict) {
-			try { d.Value.Abort(); } catch { }
 			try { d.Key.Close(); } catch { }
+			try { d.Value.Abort(); } catch { }
 		}
 		// 關閉 Server Socket
 		if (mySocket != null) mySocket.Close();

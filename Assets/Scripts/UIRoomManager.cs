@@ -21,6 +21,7 @@ public class UIRoomManager : MonoBehaviour {
 	Button goButton;
 	[SerializeField]
 	Text nickNameText;
+	static Button goButtonTmp;
 	string nickNameSaveStr = "NickName";
 
 	public static GameObject UIObject;
@@ -34,6 +35,7 @@ public class UIRoomManager : MonoBehaviour {
 	public static byte curStage;                            // 目前所處階段
 
 	private void Start() {
+		goButtonTmp = goButton;
 		string s = PlayerPrefs.GetString(nickNameSaveStr);
 		if (s != "") {
 			nickNameText.text = s;
@@ -42,13 +44,14 @@ public class UIRoomManager : MonoBehaviour {
 		LeaveRoom();
 
 		// ***************** Test *****************
-		//roomName = "ABAB";
-		//ConnectToServer();
-		//client.CreateOrJoinRoom("ABAB");
-		////CreateRoom("ABAB");
-		//myInfos.nickName = "KAI";
+		////roomName = "ABAB";
+		////ConnectToServer();
 		//myInfos.foodSelected = "肯德鴉";
+		//////client.CreateOrJoinRoom("ABAB");
+		//CreateRoom("ABAB");
+		////myInfos.nickName = "KAI";
 		////myInfos.foodSelected = "喝";
+		////CheckAllSet();
 		// ****************************************
 	}
 
@@ -60,9 +63,9 @@ public class UIRoomManager : MonoBehaviour {
 		if (roomName == "") {
 			LogUI.Show("請輸入房名");
 		} else if (roomName != myInfos.roomName) {         // 一樣的房名不再創建名間
-			if (client.isConnected) {
+			if (client.connectStatus == ClientActions.ConnectStatus.Connected) {
 				client.CreateRoom(roomName);
-			} else {
+			} else if (client.connectStatus == ClientActions.ConnectStatus.Connecting) {
 				client.OnConnectedToServer = () => { client.CreateRoom(roomName); };
 			}
 			roomWaitForServer = true;
@@ -76,9 +79,9 @@ public class UIRoomManager : MonoBehaviour {
 		if (roomName == "") {
 			LogUI.Show("請輸入房名");
 		} else if (roomName != myInfos.roomName) {         // 一樣的房名不再加入
-			if (client.isConnected) {
+			if (client.connectStatus == ClientActions.ConnectStatus.Connected) {
 				client.JoinRoom(roomName);
-			} else {
+			} else if (client.connectStatus == ClientActions.ConnectStatus.Connecting) {
 				client.OnConnectedToServer = () => { client.JoinRoom(roomName); };
 			}
 			roomWaitForServer = true;
@@ -112,14 +115,14 @@ public class UIRoomManager : MonoBehaviour {
 	}
 
 	public void ReadyButton() {
-		if (client != null && client.isConnected) {
+		if (client != null && client.connectStatus == ClientActions.ConnectStatus.Connected) {
 			client.SendReady();
 		}
 		Sounds.PlayButton();
 	}
 
 	public void LeaveRoom() {
-		if (client != null && client.isConnected) {
+		if (client != null && client.connectStatus == ClientActions.ConnectStatus.Connected) {
 			client.SendLeaveRoom();
 		}
 		playersInRoom.Clear();
@@ -257,10 +260,9 @@ public class UIRoomManager : MonoBehaviour {
 	/// 如果尚未連線則嘗試連線，若連線失敗返回 false
 	/// </summary>
 	public void ConnectToServer() {
-		if (client == null || !client.isConnected) {
+		if (client == null) {
 			myInfos.roomName = "";
 			client = new TcpClient();
-			client.ConnectToServer(Generic.gData.ServerIP, Generic.gData.ServerPort);
 			client.OnJoinedRoom = JoinRoomCallback;
 			client.OnPlayerListChanged = ListChangedCallback;
 			client.OnStartGame = StartGameCallback;
@@ -269,6 +271,9 @@ public class UIRoomManager : MonoBehaviour {
 				LogUI.Show("伺服器未開啟");
 				roomWaitForServer = false;
 			};
+		}
+		if (client.connectStatus != ClientActions.ConnectStatus.Connecting) {
+			client.ConnectToServer(Generic.gData.ServerIP, Generic.gData.ServerPort);
 		}
 	}
 
@@ -284,13 +289,12 @@ public class UIRoomManager : MonoBehaviour {
 	/// 確認 暱稱、餐廳、房間都已輸入好後，開放 Go Button
 	/// </summary>
 	public void CheckAllSet() {
-		if (client == null || !client.isConnected || myInfos.roomName == ""
-			|| myInfos.nickName == "" ||
-			myInfos.foodSelected == "") {
-			goButton.interactable = false;
+		if (client == null || client.connectStatus != ClientActions.ConnectStatus.Connected
+			|| myInfos.roomName == "" || myInfos.nickName == "" || myInfos.foodSelected == "") {
+			goButtonTmp.interactable = false;
 			return;
 		}
-		goButton.interactable = true;
+		goButtonTmp.interactable = true;
 	}
 
 	/// <summary>

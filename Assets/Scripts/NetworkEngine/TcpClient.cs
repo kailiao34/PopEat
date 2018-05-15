@@ -28,7 +28,7 @@ public class TcpClient : ClientActions {
 		methods.Add(PlayerExitCode, RECPlayerExit);				// 只有階段 3 可接收
 		methods.Add(ReadyCode, RECReady);						// 只有階段 3 可接收
 		methods.Add(StartGameCode, RECStartGame);				// 只有階段 3 可接收，切換場景後改為階段 4
-		methods.Add(GameResultCode, RECGameResult);				// 只有階段 4 可接收
+		methods.Add(GameResultCode, RECGameResult);             // 只有階段 4 可接收
 	}
 
 	#region ============== 傳送函數 ==============

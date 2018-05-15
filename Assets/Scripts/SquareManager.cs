@@ -3,37 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SquareManager : MonoBehaviour {
-	public LineRenderer L1;
-	int I1;
-	List<Square> Inseries = new List<Square>() { null };
-	bool Startbool = true;
-	Square selected, preSelected;
+	[SerializeField]
+	public LineRenderer linePrefab;
 	// For Hex Arrangement
 	[SerializeField]
 	GameObject squarePrefab, hexFXPrefab;
 	[SerializeField]
 	UnityEngine.UI.Text tickerText;
 	HashSet<GameObject> squares = new HashSet<GameObject>();
-	bool stop = false;
+	//bool stop = false;
+
+	Camera cam;
+	Queue<LineRenderer> lineRecycling = new Queue<LineRenderer>();
+	List<LineRenderer> lineList = new List<LineRenderer>();
+	List<List<Square>> hexList = new List<List<Square>>();
+	List<bool> beginList = new List<bool>();
+	List<Square> curSelected = new List<Square>();
 
 	private void Start() {
 		UIRoomManager.curStage = 4;
 		StartCoroutine(StartTicker());
-		MoveCamera.movingCallback = MoveSwitch;
+		//MoveCamera.movingCallback = MoveSwitch;
+		cam = Camera.main;
 	}
 
-	void MoveSwitch(bool dontMove) {
-		if (stop) return;
-		if (dontMove) {
-			Release();
-			enabled = false;
-		} else {
-			enabled = true;
-		}
-	}
+	//void MoveSwitch(bool dontMove) {
+	//	if (stop) return;
+	//	if (dontMove) {
+	//		Release();
+	//		enabled = false;
+	//	} else {
+	//		enabled = true;
+	//	}
+	//}
 
 	IEnumerator StartTicker() {
-		for (int i = Generic.gData.startSec; i > 0; i--) {	// 教學動畫倒數
+		for (int i = Generic.gData.startSec; i > 0; i--) {  // 教學動畫倒數
 			yield return new WaitForSeconds(1f);
 		}
 
@@ -44,12 +49,14 @@ public class SquareManager : MonoBehaviour {
 		}
 		#region ================== 時間到後的工作 ==================
 		enabled = false;                                        // 不能再消六角
-		stop = true;
-		Release();												// 消除正在連的
+																//stop = true;
+		for (int i = 0; i < hexList.Count; i++) {                // 消除正在連的
+			Release(i);
+		}
 		//print("GameOver");
-		
-		Dictionary<int, int> d = new Dictionary<int, int>();	
-		foreach (GameObject g in squares) {						// 計算各顏色剩餘數量
+
+		Dictionary<int, int> d = new Dictionary<int, int>();
+		foreach (GameObject g in squares) {                     // 計算各顏色剩餘數量
 			int n;
 			int ii = g.GetComponent<Square>().colorIndex;
 			if (d.TryGetValue(ii, out n)) {
@@ -59,7 +66,7 @@ public class SquareManager : MonoBehaviour {
 			}
 		}
 
-		UIRoomManager.client.SendGameResult(d);					// 傳送本地端統計結果給伺服器
+		UIRoomManager.client.SendGameResult(d);                 // 傳送本地端統計結果給伺服器
 
 		int colorIndex = 0, max = int.MinValue;
 		// 計算本地端獲勝者
@@ -76,76 +83,112 @@ public class SquareManager : MonoBehaviour {
 	}
 
 	void Update() {
+		for (int i = 0; i < Input.touchCount; i++) {
+			Touch touch = Input.GetTouch(i);
+			if (touch.phase == TouchPhase.Began) {
+				NewLine(Input.touchCount);
+				beginList[i] = true;
+			}
 
+			if (touch.phase == TouchPhase.Ended) {          // 放開，消除方塊
+				Release(i);
+				RemoveLine(i);
+			} else {                                        // 按住，連連看
+				if (beginList[i]) Click(Input.mousePosition, i);
+			}
+		}
+
+#if UNITY_EDITOR
+		// 滑鼠測試用
+		if (Input.GetMouseButtonDown(0)) {
+			NewLine(1);
+			beginList[0] = true;
+		}
 		if (Input.GetMouseButton(0)) {           // 按住，連連看
-			if (Startbool) eliminateSquare();
+			if (beginList[0]) Click(Input.mousePosition, 0);
 		}
 		if (Input.GetMouseButtonUp(0)) {         // 放開，消除方塊
-			Release();
-			Startbool = true;
+			Release(0);
+			RemoveLine(0);
 		}
+#endif
 	}
-	void eliminateSquare() {
+
+	void Click(Vector2 screenPoint, int index) {
 		RaycastHit hit;
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		Ray ray = Camera.main.ScreenPointToRay(screenPoint);
 		if (Physics.Raycast(ray, out hit, 100.0f)) {
-			if (hit.collider.gameObject.tag == "Square") {
-				selected = hit.collider.gameObject.GetComponent<Square>();
-				Colourdetermination();
-			} else if (hit.collider.gameObject.tag == "floor") {
-				Release();
-			}
-		}
-		//Debug.DrawLine(ray.origin, hit.point, Color.green);
-	}
-	void Colourdetermination() {
-		if (Inseries[0] == null) {
-			L1.positionCount += 1;
-			I1 += 1;
-			Inseries[0] = selected;
-			L1.SetPosition(0, new Vector3(selected.transform.position.x, selected.transform.position.y + 1f, selected.transform.position.z));
-		} else {
-			if (selected != preSelected && selected.Clickbool) {
-				Release();
-				return;
-			}
-			if (selected.Clickbool == false && selected != Inseries[0]) {
-				if (selected.colorIndex != Inseries[0].colorIndex) {
-					Release();
+			Square hex = hit.collider.gameObject.GetComponent<Square>();
+			if (hex != null) {                                  // 點到六角
+				if (hex == curSelected[index]) return;
+				// 點到已被選過的或不同顏色的
+				if (hex.Clickbool || (curSelected[index] != null && hex.colorIndex != curSelected[index].colorIndex)) {
+					Release(index);
 					return;
-				} else if (selected.colorIndex == Inseries[0].colorIndex) {
-					Inseries.Add(selected);
-					L1.positionCount += 1;
-					L1.SetPosition(Inseries.Count - 1, new Vector3(selected.transform.position.x, selected.transform.position.y + 1f, selected.transform.position.z));
 				}
+				// LineRenderer
+				int c = lineList[index].positionCount;
+				lineList[index].positionCount = c + 1;
+				lineList[index].SetPosition(c, hex.transform.position);
+				hex.Clickbool = true;
+				// Hex
+				hexList[index].Add(hex);
+				curSelected[index] = hex;
+			} else {                                            // 點到地板
+				Release(index);
 			}
-		}
-		selected.Clickbool = true;
-		preSelected = selected;
-	}
-
-	void Release() {
-		if (Inseries[0] != null) {
-			if (Inseries.Count == 1) {
-				Sounds.PlayHex();
-			} else if (Inseries.Count > 1) {
-				Sounds.PlayHexMul();
-			}
-
-			for (int i = 0; i < Inseries.Count; i++) {
-				squares.Remove(Inseries[i].gameObject);
-				Instantiate(hexFXPrefab, Inseries[i].transform.position, Quaternion.identity);      // 爆破效果
-
-				Destroy(Inseries[i].gameObject);
-			}
-			Inseries.Clear();
-			Inseries.Add(null);
-			L1.positionCount = 0;
-			I1 = 0;
-			Startbool = false;
 		}
 	}
 
+	void NewLine(int count) {
+		for (int i = lineList.Count; i < count; i++) {
+			LineRenderer l;
+			if (lineRecycling.Count == 0) {
+				l = Instantiate(linePrefab);
+			} else {
+				l = lineRecycling.Dequeue();
+			}
+			lineList.Add(l);
+			hexList.Add(new List<Square>());
+			beginList.Add(true);
+			curSelected.Add(null);
+		}
+	}
+
+	void RemoveLine(int index) {
+		lineRecycling.Enqueue(lineList[index]);
+
+		lineList.RemoveAt(index);
+		hexList.RemoveAt(index);
+		beginList.RemoveAt(index);
+		curSelected.RemoveAt(index);
+	}
+
+	void Release(int index) {
+
+		// 播放音效
+		if (hexList[index].Count == 1) {
+			Sounds.PlayHex();
+		} else if (hexList[index].Count > 1) {
+			Sounds.PlayHexMul();
+		}
+
+		if (hexList[index].Count > 0) {
+			beginList[index] = false;
+		}
+
+		// 消除選到的六角
+		for (int i = 0; i < hexList[index].Count; i++) {
+			squares.Remove(hexList[index][i].gameObject);
+			Instantiate(hexFXPrefab, hexList[index][i].transform.position, Quaternion.identity);      // 爆破效果
+
+			Destroy(hexList[index][i].gameObject);
+		}
+
+		hexList[index].Clear();
+		// 關掉這條 LineRenderer
+		lineList[index].positionCount = 0;
+	}
 	void ArrangeHex() {
 		squares.Add(Instantiate(squarePrefab));
 
@@ -169,5 +212,5 @@ public class SquareManager : MonoBehaviour {
 		//print("六角數量: " + squares.Count);
 	}
 
-	
+
 }
