@@ -61,7 +61,7 @@ public class Admob : MonoBehaviour {
     {
         return new AdRequest.Builder()
 			//.AddTestDevice(AdRequest.TestDeviceSimulator)
-			.AddTestDevice("6e1c3c54e29cbbbe")
+			.AddTestDevice("5411A5C35D8EF6DDDE88C40E1008C3E") //黑米的
 			.AddTestDevice("6d2388782b1254a5")
 			.TagForChildDirectedTreatment(false)
             .Build();
