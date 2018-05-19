@@ -97,9 +97,9 @@ public class UIRoomManager : MonoBehaviour {
 		myInfos.ready = false;
 		curStage = 2;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
-		if (myInfos.foodSelected != DataClient.preRes && GetRes.getLocSucceed) {
-			new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
-		}
+		//if (myInfos.foodSelected != DataClient.preRes && GetRes.getLocSucceed) {
+		//	new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
+		//}
 	}
 
 	public void NickNameButton(Text inputField) {
