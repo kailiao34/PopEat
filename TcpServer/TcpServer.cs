@@ -297,6 +297,7 @@ public class TcpServer : ServerActions {
 			}
 		}
 		SendCommand(room.sockets.ToArray(), GameResultCode, winner);    // 廣播給所有玩家最後的勝利者
+		LogMessage(new StringBuilder(room.roomName), "RoomStatistics.txt");
 		CloseRoom(room);
 	}
 
@@ -348,6 +349,10 @@ public class TcpServer : ServerActions {
 			s.Append("=====================================").Append("\r\n");
 		}
 		File.WriteAllText("Infos.txt", s.ToString());
+	}
+
+	public void PrintUserCount() {
+		System.Console.WriteLine("Current User Count: " + infosDict.Count);
 	}
 
 	/// <summary>

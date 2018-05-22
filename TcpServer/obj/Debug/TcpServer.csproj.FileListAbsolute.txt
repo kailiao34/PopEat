@@ -1,7 +1,6 @@
 D:\Program\Unity\Popeat\TcpServer\bin\Debug\TcpServer.exe.config
 D:\Program\Unity\Popeat\TcpServer\bin\Debug\TcpServer.exe
 D:\Program\Unity\Popeat\TcpServer\bin\Debug\TcpServer.pdb
-D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.csprojResolveAssemblyReference.cache
 D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.csproj.CoreCompileInputs.cache
 D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.exe
 D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.pdb
@@ -19,3 +18,4 @@ C:\Unity Program\PopEat\TcpServer\obj\Debug\TcpServer.csprojResolveAssemblyRefer
 C:\Unity Program\PopEat\TcpServer\obj\Debug\TcpServer.csproj.CoreCompileInputs.cache
 C:\Unity Program\PopEat\TcpServer\obj\Debug\TcpServer.exe
 C:\Unity Program\PopEat\TcpServer\obj\Debug\TcpServer.pdb
+D:\Program\Unity\Popeat\TcpServer\obj\Debug\TcpServer.csprojAssemblyReference.cache

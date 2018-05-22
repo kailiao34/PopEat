@@ -51,13 +51,13 @@ public class ServerActions : NetworkBehaviour {
 				Receive(clientSocket);        // 開啟接收資料線程
 			} catch (Exception ex) { LogError("Accept: " + ex.Message); }
 			//LogMessage("Accepted", clientSocket);
-			Console.WriteLine("Accepted");
+			//Console.WriteLine("Accepted");
 		}
 	}
 
 	protected override void OnDisconnected(Socket socket) {
 		ClientLeaveRoom(socket);
-		Console.WriteLine("Client Leave");
+		//Console.WriteLine("Client Leave");
 		//LogMessage("Client Leave", socket);
 	}
 

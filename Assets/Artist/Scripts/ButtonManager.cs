@@ -47,12 +47,14 @@ public class ButtonManager : MonoBehaviour {
 			PlayerPrefs.SetString("Mute", "");
 		}
 	}
+#if (UNITY_EDITOR || UNITY_STANDALONE)
 
-	//private void Update() {
-	//	if (Input.GetKeyDown(KeyCode.A)) {
-	//		buttonEat();
-	//	}
-	//}
+	private void Update() {
+		if (Input.GetKeyDown(KeyCode.Home)) {
+			buttonEat();
+		}
+	}
+#endif
 	/// <summary>
 	/// EnterRoom or CreateRoom Callback
 	/// True: Create Room, False: Enter Room

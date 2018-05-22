@@ -11,9 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89b4d3a35fa733246a925943f362b9ff, type: 3}
   m_Name: GlobalData
   m_EditorClassIdentifier: 
-  ServerIP: 127.0.0.1
+  ServerIP: 104.155.212.149
   ServerPort: 8056
-  DataServerIP: 127.0.0.1
+  DataServerIP: 104.155.212.149
   DataServerPort: 8057
   radius: 500
   startSec: 8
