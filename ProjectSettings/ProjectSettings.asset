@@ -243,8 +243,8 @@ PlayerSettings:
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: "E:/K,S/_GDrive/Google \u96F2\u7AEF\u786C\u789F/\u4E09\u528D\u5BA2\u5171\u7528/PopEat/GooglePlay/popeat.keystore"
-  AndroidKeyaliasName: popeat
+  AndroidKeystoreName: 
+  AndroidKeyaliasName: 
   AndroidTVCompatibility: 0
   AndroidIsGame: 0
   AndroidEnableTango: 0
