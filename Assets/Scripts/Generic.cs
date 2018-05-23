@@ -5,10 +5,16 @@ public class Generic : MonoBehaviour {
 
 	[SerializeField]
 	GlobalData GlocalDataAsset;
-	public static GlobalData gData;
+	static GlobalData g;
+	public static GlobalData gData {
+		get {
+			if (g == null) g = FindObjectOfType<Generic>().GlocalDataAsset;
+			return g;
+		}
+	}
 
 	private void Awake() {
-		gData = GlocalDataAsset;
+		g = GlocalDataAsset;
 	}
 
 	private void OnApplicationQuit() {

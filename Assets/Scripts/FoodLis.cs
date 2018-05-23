@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class FoodLis : MonoBehaviour {
 	public static List<string> resList;
+	public static FoodLis ins;
 
 	public static Text[] resInfoText;
 	public Text[] resInfosUI;
@@ -22,6 +23,7 @@ public class FoodLis : MonoBehaviour {
 	FoodListButton EnterFoodListButton;
 	[SerializeField]
 	Animator EnterFoodListButtonAnimator;
+	[SerializeField]
 	Animator loadingIndicatorAnimator;
 
 	// 餐廳按鈕正常的顏色
@@ -33,8 +35,8 @@ public class FoodLis : MonoBehaviour {
 	static List<Button> resButtons;
 
 	private void Awake() {
+		ins = this;
 		resInfoText = resInfosUI;
-		loadingIndicatorAnimator = ButtonManager.ins.loadingIndicatorAnimator;
 
 		resNormalCB = resButtonPrefab.GetComponent<Button>().colors;
 		resHCB = resNormalCB;
@@ -45,10 +47,8 @@ public class FoodLis : MonoBehaviour {
 	}
 
 	private void Start() {
-		loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
-
 		if (resList == null || resList.Count == 0) {
-			GetRes.ins.GetResNames(Generic.gData.radius, GetResNames);
+			GetResNames();
 		} else {
 			UISort();
 			if (preResSelected < 0) {
@@ -62,6 +62,11 @@ public class FoodLis : MonoBehaviour {
 				HighlightButton(pre);
 			}
 		}
+	}
+
+	public void GetResNames() {
+		loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
+		GetRes.ins.GetResNames(Generic.gData.radius, GetResNames);
 	}
 
 	void GetResNames(List<string> resNames) {

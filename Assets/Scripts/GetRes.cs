@@ -18,6 +18,7 @@ public class GetRes : MonoBehaviour {
 
 	static Dictionary<string, Details> resDetailDict = new Dictionary<string, Details>();
 	public static bool getLocSucceed = false;           // 是否已經成功讀取到裝置位置
+	public static bool isLoadingLoc = false;					// 是否正在讀取裝置位置
 	public static float lat, lng;
 
 	private void Awake() {
@@ -174,10 +175,12 @@ public class GetRes : MonoBehaviour {
 	/// </summary>
 	IEnumerator GetLocation(bool needCallBack, int radius = 0, GetResNamesDel callBackEvent = null) {
 		getLocSucceed = false;
+		isLoadingLoc = true;
 
 		// First, check if user has location service enabled
 		if (!Input.location.isEnabledByUser) {
 			OnGetLocationFailed("未開啟 GPS");
+			isLoadingLoc = false;
 			yield break;
 		}
 
@@ -194,18 +197,21 @@ public class GetRes : MonoBehaviour {
 		// Service didn't initialize in 20 seconds
 		if (maxWait < 1) {
 			OnGetLocationFailed("讀取裝置位置時等待逾時");
+			isLoadingLoc = false;
 			yield break;
 		}
 
 		// Connection has failed
 		if (Input.location.status == LocationServiceStatus.Failed) {
 			OnGetLocationFailed("無法讀取裝置位置");
+			isLoadingLoc = false;
 			yield break;
 		} else {
 			// Access granted and location value could be retrieved
 			lat = Input.location.lastData.latitude;
 			lng = Input.location.lastData.longitude;
 			getLocSucceed = true;
+			isLoadingLoc = false;
 			if (needCallBack) StartCoroutine(GetNames(lat, lng, radius, callBackEvent));
 		}
 		// Stop service if there is no need to query location updates continuously
