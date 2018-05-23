@@ -84,14 +84,15 @@ public class ButtonManager : MonoBehaviour {
 		if (GetRes.isLoadingLoc) return;		// 如果正在讀裝置位置，則這個按鈕不回應
 		if (UIswitcher.GetBool("eat")) {					// 如果原本是開的，就關掉
 			UIswitcher.SetBool("eat", false);
-			loadingIndicatorAnimator.SetBool("Enabled", false); // used for loading animator
+			LoadingUI.Hide();
+			//loadingIndicatorAnimator.SetBool("Enabled", false); // used for loading animator
 		} else {											// 如果原本是關的，就打開
 			UIswitcher.SetBool("eat", true);
-
-			loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
+			//LoadingUI.Show();
+			//loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
 
 			if (FoodLis.resList == null || FoodLis.resList.Count == 0) {
-				FoodLis.ins.GetResNames();
+				if (FoodLis.ins != null) FoodLis.ins.GetResNames();
 			}
 		}
 		ResSelecteOK();

@@ -216,7 +216,6 @@ GameObject:
   - component: {fileID: 555045682}
   - component: {fileID: 555045683}
   - component: {fileID: 555045684}
-  - component: {fileID: 555045685}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -364,34 +363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92b34e600cd03c94ca7f248b873d0271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &555045685
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 555045674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 168dd11a55fc21643a0bba8c76af3e17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resInfosUI:
-  - {fileID: 2037605681}
-  - {fileID: 1299397983}
-  - {fileID: 920301859}
-  - {fileID: 183755552}
-  - {fileID: 1192861450}
-  - {fileID: 1824967933}
-  - {fileID: 384860661}
-  - {fileID: 1196369540}
-  InputFoodButtonIns: {fileID: 272353886}
-  FoodInputField: {fileID: 2054467245}
-  buttonsParent: {fileID: 1905693798}
-  resButtonPrefab: {fileID: 1000732580914918, guid: 1d435b83bc5f14643a8906f443d73a57,
-    type: 2}
-  EnterFoodListButton: {fileID: 272353885}
-  EnterFoodListButtonAnimator: {fileID: 716467606}
-  loadingIndicatorAnimator: {fileID: 1788212150}
 --- !u!114 &615610489 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114147676090766882, guid: 74d3b26374e88fc46a37ad34cd4fced2,
@@ -520,6 +491,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1622907628 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1091078419181434, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+    type: 2}
+  m_PrefabInternal: {fileID: 1823688311}
+--- !u!114 &1622907629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1622907628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ff9bc1d9daebc41a3bdb200d706743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadingIndicatorAnimator: {fileID: 1788212150}
 --- !u!95 &1788212150 stripped
 Animator:
   m_PrefabParentObject: {fileID: 95391074194219946, guid: 74d3b26374e88fc46a37ad34cd4fced2,
@@ -687,7 +675,7 @@ Prefab:
     - target: {fileID: 224799441884395392, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -960
       objectReference: {fileID: 0}
     - target: {fileID: 224799441884395392, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
@@ -697,7 +685,7 @@ Prefab:
     - target: {fileID: 224799441884395392, guid: 74d3b26374e88fc46a37ad34cd4fced2,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 1920
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114944305573156870, guid: 74d3b26374e88fc46a37ad34cd4fced2, type: 2}
@@ -708,6 +696,39 @@ Animator:
   m_PrefabParentObject: {fileID: 95855263953033410, guid: 74d3b26374e88fc46a37ad34cd4fced2,
     type: 2}
   m_PrefabInternal: {fileID: 1823688311}
+--- !u!1 &1823688313 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1945612023991196, guid: 74d3b26374e88fc46a37ad34cd4fced2,
+    type: 2}
+  m_PrefabInternal: {fileID: 1823688311}
+--- !u!114 &1823688314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1823688313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 168dd11a55fc21643a0bba8c76af3e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resInfosUI:
+  - {fileID: 2037605681}
+  - {fileID: 1299397983}
+  - {fileID: 920301859}
+  - {fileID: 183755552}
+  - {fileID: 1192861450}
+  - {fileID: 1824967933}
+  - {fileID: 384860661}
+  - {fileID: 1196369540}
+  InputFoodButtonIns: {fileID: 272353886}
+  FoodInputField: {fileID: 2054467245}
+  buttonsParent: {fileID: 1905693798}
+  resButtonPrefab: {fileID: 1000732580914918, guid: 1d435b83bc5f14643a8906f443d73a57,
+    type: 2}
+  EnterFoodListButton: {fileID: 272353885}
+  EnterFoodListButtonAnimator: {fileID: 716467606}
+  loadingIndicatorAnimator: {fileID: 1788212150}
 --- !u!114 &1824967933 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114924225936849584, guid: 74d3b26374e88fc46a37ad34cd4fced2,

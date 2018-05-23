@@ -33,6 +33,7 @@ public class FoodLis : MonoBehaviour {
 	// 記錄上一個被選到的餐廳按鈕
 	public static int preResSelected;			// 這個值如果是 -1 代表是自行輸入的餐廳
 	static List<Button> resButtons;
+	
 
 	private void Awake() {
 		ins = this;
@@ -65,7 +66,8 @@ public class FoodLis : MonoBehaviour {
 	}
 
 	public void GetResNames() {
-		loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
+		LoadingUI.Show();
+		//loadingIndicatorAnimator.SetBool("Enabled", true); // used for loading animator
 		GetRes.ins.GetResNames(Generic.gData.radius, GetResNames);
 	}
 
@@ -76,8 +78,8 @@ public class FoodLis : MonoBehaviour {
 
 	void UISort() {
 		resButtons = new List<Button>();
-
-		loadingIndicatorAnimator.SetBool("Enabled", false); // used for loading animator
+		LoadingUI.Hide();
+		//loadingIndicatorAnimator.SetBool("Enabled", false); // used for loading animator
 		for (int i = 0; i < resList.Count; i++) {
 			GameObject newButton = Instantiate(resButtonPrefab, buttonsParent);
 			FoodListButton f = newButton.GetComponent<FoodListButton>();
