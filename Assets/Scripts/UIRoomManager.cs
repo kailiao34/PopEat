@@ -43,16 +43,18 @@ public class UIRoomManager : MonoBehaviour {
 		}
 		LeaveRoom();
 
+#if (UNITY_EDITOR || UNITY_STANDALONE)
 		// ***************** Test *****************
 		//roomName = "ABAB";
 		//ConnectToServer();
-		myInfos.foodSelected = "肯德鴉";
+		//myInfos.foodSelected = "肯德鴉";
 		////client.CreateOrJoinRoom("ABAB");
 		//CreateRoom("ABAB");
 		//myInfos.nickName = "KAI";
 		//myInfos.foodSelected = "喝";
 		//CheckAllSet();
 		// ****************************************
+#endif
 	}
 
 	#region ========= 給UI按鈕使用的函數 =========

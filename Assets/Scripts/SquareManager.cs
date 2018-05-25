@@ -11,6 +11,9 @@ public class SquareManager : MonoBehaviour {
 	[SerializeField]
 	UnityEngine.UI.Text tickerText;
 	HashSet<GameObject> squares = new HashSet<GameObject>();
+	[SerializeField]
+	MeshRenderer sampleHex;
+
 	//bool stop = false;
 
 	Camera cam;
@@ -25,6 +28,7 @@ public class SquareManager : MonoBehaviour {
 		StartCoroutine(StartTicker());
 		//MoveCamera.movingCallback = MoveSwitch;
 		cam = Camera.main;
+		sampleHex.material.color = Generic.gData.colors[UIRoomManager.myInfos.colorIndex];
 	}
 
 	//void MoveSwitch(bool dontMove) {
