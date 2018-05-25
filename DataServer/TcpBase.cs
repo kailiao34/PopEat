@@ -60,30 +60,37 @@ public class TcpBase {
 	}
 
 	protected void LogMessage(StringBuilder msg, string fileName) {
-		FileStream file = File.Open(fileName, FileMode.Append);
+		try {
+			FileStream file = File.Open(fileName, FileMode.Append);
 
-		byte[] bytes = AppendTimeStamp(msg);
+			byte[] bytes = AppendTimeStamp(msg);
 
-		file.Write(bytes, 0, bytes.Length);
-		file.Close();
+			file.Write(bytes, 0, bytes.Length);
+			file.Close();
+		} catch { }
 	}
 
 	protected void LogError(string msg) {
-		errorW = File.Open(errorLogFileName, FileMode.Append);
+		try {
+			errorW = File.Open(errorLogFileName, FileMode.Append);
 
-		byte[] bytes = AppendTimeStamp(new StringBuilder(msg));
+			byte[] bytes = AppendTimeStamp(new StringBuilder(msg));
 
-		errorW.Write(bytes, 0, bytes.Length);
-		errorW.Close();
+			errorW.Write(bytes, 0, bytes.Length);
+			errorW.Close();
+		} catch { }
 	}
 
 	protected void LogError(StringBuilder sb) {
-		if (errorW == null) errorW = File.Open(errorLogFileName, FileMode.Append);
+		try {
+			if (errorW == null) errorW = File.Open(errorLogFileName, FileMode.Append);
+			//if (errorW == null) return;
 
-		byte[] bytes = AppendTimeStamp(sb);
+			byte[] bytes = AppendTimeStamp(sb);
 
-		errorW.Write(bytes, 0, bytes.Length);
-		errorW.Close();
+			errorW.Write(bytes, 0, bytes.Length);
+			errorW.Close();
+		} catch { }
 	}
 
 	byte[] AppendTimeStamp(StringBuilder sb) {

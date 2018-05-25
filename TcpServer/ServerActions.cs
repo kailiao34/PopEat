@@ -151,9 +151,9 @@ public class ServerActions : NetworkBehaviour {
 				roomSocketDict[oldRoom].Remove(socket);                         // 將他換過來
 				if (roomSocketDict[oldRoom].Count == 0) roomSocketDict.Remove(oldRoom);
 			}
-			socketRoomDict[socket] = roomName;
 		}
 		roomSocketDict[roomName].Add(socket);                    // 加入此房間
+		socketRoomDict[socket] = roomName;
 		SendCommand(socket, ReciveRoomStatusCode, ((int)roomStatus).ToString());    // 回傳房間狀態
 	}
 }

@@ -26,6 +26,10 @@ public class FoodLis : MonoBehaviour {
 	[SerializeField]
 	Animator loadingIndicatorAnimator;
 
+	static InputField FoodInputFieldStatic;
+	static Animator EnterFoodListButtonAnimatorStatic;
+	static FoodListButton EnterFoodListButtonStatic;
+
 	// 餐廳按鈕正常的顏色
 	public static ColorBlock resNormalCB;
 	//餐廳按鈕被按下時改成這個顏色
@@ -45,6 +49,9 @@ public class FoodLis : MonoBehaviour {
 		resHCB.highlightedColor = Generic.gData.resHighlighted;
 		InputFoodButton = InputFoodButtonIns;
 
+		FoodInputFieldStatic = FoodInputField;
+		EnterFoodListButtonAnimatorStatic = EnterFoodListButtonAnimator;
+		EnterFoodListButtonStatic = EnterFoodListButton;
 	}
 
 	private void Start() {
@@ -110,9 +117,9 @@ public class FoodLis : MonoBehaviour {
 	private void OnEnable() {
 		OnValueChanged();
 	}
-
+	
 	public void OnValueChanged() {
-		EnterFoodListButtonAnimator.SetBool("switch", FoodInputField.text != "");
-		EnterFoodListButton.UItext.text = FoodInputField.text;
+		EnterFoodListButtonAnimatorStatic.SetBool("switch", FoodInputFieldStatic.text != "");
+		EnterFoodListButtonStatic.UItext.text = FoodInputFieldStatic.text;
 	}
 }

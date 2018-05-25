@@ -324,7 +324,6 @@ public class TcpServer : ServerActions {
 
 	protected override void OnDisconnected(Socket socket) {
 		base.OnDisconnected(socket);
-
 		RECLeaveRoom(socket, null);
 	}
 	public void PrintRooms() {
@@ -333,7 +332,8 @@ public class TcpServer : ServerActions {
 			s.Append(p.Key + " --> " + p.Value.Count).Append("\r\n");
 		}
 
-		File.WriteAllText("Rooms.txt", s.ToString());
+		System.Console.WriteLine(s.ToString());
+		//File.WriteAllText("Rooms.txt", s.ToString());
 	}
 
 	public void PrintInfos() {
@@ -348,7 +348,8 @@ public class TcpServer : ServerActions {
 			s.Append("resIndex --->" + p.Value.resIndex).Append("\r\n");
 			s.Append("=====================================").Append("\r\n");
 		}
-		File.WriteAllText("Infos.txt", s.ToString());
+		System.Console.WriteLine(s.ToString());
+		//File.WriteAllText("Infos.txt", s.ToString());
 	}
 
 	public void PrintUserCount() {

@@ -22,6 +22,7 @@ Popeat.sln
 /TcpServer/.vs/
 /TcpServer/obj/*
 /TcpServer/Properties/
+/TcpServer/bin/Debug
 /DataServer/.vs/
 /DataServer/obj/*
 /DataServer/Properties/
