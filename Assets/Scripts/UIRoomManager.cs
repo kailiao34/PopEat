@@ -16,7 +16,7 @@ public class UIRoomManager : MonoBehaviour {
 	public static TcpClient client;
 	public static AlgoClasses.Probability colorPicker = new AlgoClasses.Probability();
 
-	string roomName = "";
+	static string tmpRoomName = "";
 	[SerializeField]
 	Button goButton;
 	[SerializeField]
@@ -44,45 +44,45 @@ public class UIRoomManager : MonoBehaviour {
 		LeaveRoom();
 
 		// ***************** Test *****************
-		////roomName = "ABAB";
-		////ConnectToServer();
-		//myInfos.foodSelected = "肯德鴉";
-		//////client.CreateOrJoinRoom("ABAB");
+		//roomName = "ABAB";
+		//ConnectToServer();
+		myInfos.foodSelected = "肯德鴉";
+		////client.CreateOrJoinRoom("ABAB");
 		//CreateRoom("ABAB");
-		////myInfos.nickName = "KAI";
-		////myInfos.foodSelected = "喝";
-		////CheckAllSet();
+		//myInfos.nickName = "KAI";
+		//myInfos.foodSelected = "喝";
+		//CheckAllSet();
 		// ****************************************
 	}
 
 	#region ========= 給UI按鈕使用的函數 =========
 	public void CreateRoom(string name) {
-		roomName = name;
+		tmpRoomName = name;
 		ConnectToServer();
 
-		if (roomName == "") {
+		if (tmpRoomName == "") {
 			LogUI.Show("請輸入房名");
-		} else if (roomName != myInfos.roomName) {         // 一樣的房名不再創建名間
+		} else if (tmpRoomName != myInfos.roomName) {         // 一樣的房名不再創建名間
 			if (client.connectStatus == ClientActions.ConnectStatus.Connected) {
-				client.CreateRoom(roomName);
+				client.CreateRoom(tmpRoomName);
 			} else if (client.connectStatus == ClientActions.ConnectStatus.Connecting) {
-				client.OnConnectedToServer = () => { client.CreateRoom(roomName); };
+				client.OnConnectedToServer = () => { client.CreateRoom(tmpRoomName); };
 			}
 			roomWaitForServer = true;
 		}
 	}
 
 	public void JoinRoom(string name) {
-		roomName = name;
+		tmpRoomName = name;
 		ConnectToServer();
 
-		if (roomName == "") {
+		if (tmpRoomName == "") {
 			LogUI.Show("請輸入房名");
-		} else if (roomName != myInfos.roomName) {         // 一樣的房名不再加入
+		} else if (tmpRoomName != myInfos.roomName) {         // 一樣的房名不再加入
 			if (client.connectStatus == ClientActions.ConnectStatus.Connected) {
-				client.JoinRoom(roomName);
+				client.JoinRoom(tmpRoomName);
 			} else if (client.connectStatus == ClientActions.ConnectStatus.Connecting) {
-				client.OnConnectedToServer = () => { client.JoinRoom(roomName); };
+				client.OnConnectedToServer = () => { client.JoinRoom(tmpRoomName); };
 			}
 			roomWaitForServer = true;
 		}
@@ -97,9 +97,9 @@ public class UIRoomManager : MonoBehaviour {
 		myInfos.ready = false;
 		curStage = 2;
 		client.SendPlayerInfos(myInfos);    // 傳送自己的 Infos 給 伺服器，伺服器將回傳在房裡的人和自己的ID
-		//if (myInfos.foodSelected != DataClient.preRes && GetRes.getLocSucceed) {
-		//	new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
-		//}
+											//if (myInfos.foodSelected != DataClient.preRes && GetRes.getLocSucceed) {
+											//	new DataClient().ConnectToServer(Generic.gData.DataServerIP, Generic.gData.DataServerPort);
+											//}
 	}
 
 	public void NickNameButton(Text inputField) {
@@ -128,7 +128,7 @@ public class UIRoomManager : MonoBehaviour {
 		playersInRoom.Clear();
 		WaitRoomManager.ins.ClearAllPlayer();
 		myInfos.roomName = "";
-		roomName = "";
+		tmpRoomName = "";
 
 		colorResName.Clear();
 		resWeight.Clear();
@@ -144,7 +144,7 @@ public class UIRoomManager : MonoBehaviour {
 	public void StartGameButton() {
 		Sounds.PlayButton();
 
-		if (roomName == "") return;
+		if (tmpRoomName == "") return;
 		bool canGO = true;
 
 		if (myInfos.ready) {            // 如果自己 Ready 了再檢查別人
@@ -172,10 +172,11 @@ public class UIRoomManager : MonoBehaviour {
 	void JoinRoomCallback(TcpClient.RoomStatus status) {
 
 		if (status == NetworkBehaviour.RoomStatus.Created) {                // 成功創建房間 (CreateRoom)
-																			//Debug.Log("創建成功");
+			//Debug.Log("創建成功");
 			if (curStage > 1) return;               // 只能是階段 1
 			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterOrCreateRoomOK(true); });
-			myInfos.roomName = roomName;
+			myInfos.roomName = tmpRoomName;
+
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomExists) {      // 房間已存在 (CreateRoom)
@@ -183,10 +184,10 @@ public class UIRoomManager : MonoBehaviour {
 			LogUI.Show("房間已存在，請重新輸入");
 
 		} else if (status == NetworkBehaviour.RoomStatus.Joined) {          // 成功加入房間 (JoinRoom)
-																			//Debug.Log("加入成功");
+			//Debug.Log("加入成功");
 			if (curStage > 1) return;               // 只能是階段 1
 			Ticker.StartTicker(0, () => { ButtonManager.ins.EnterOrCreateRoomOK(false); });
-			myInfos.roomName = roomName;
+			myInfos.roomName = tmpRoomName;
 			Ticker.StartTicker(0, () => { CheckAllSet(); });
 
 		} else if (status == NetworkBehaviour.RoomStatus.RoomNotExists) {   // 房間不存在 (JoinRoom)
