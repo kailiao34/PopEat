@@ -13,6 +13,7 @@ class Program {
 		//new Thread(UserInput).Start();                  // 接收指令的 Thread
 
 		server = new TcpServer(28);             // 最大的等待玩家結果秒數
+												//server.StartServer("114.42.162.52", 8056, 30);
 		server.StartServer("10.140.0.2", 8056, 30);
 	}
 

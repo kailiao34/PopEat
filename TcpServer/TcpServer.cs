@@ -97,9 +97,9 @@ public class TcpServer : ServerActions {
 		// 註冊指令對應的函數
 		methods.Add(PlayerInfosCode, RECPlayerInfos);       // 已進入房間但未進等待室，當這間房開始遊戲時將他踢出
 		methods.Add(ReadyCode, RECReady);                   // 如果已經開始遊戲不接受
-		methods.Add(LeaveRoomCode, RECLeaveRoom);			
+		methods.Add(LeaveRoomCode, RECLeaveRoom);
 		methods.Add(GameReadyCode, RECGameReady);           // 如果已經開始遊戲不接受
-		methods.Add(GameResultCode, RECGameResult);			// 開始遊戲才接受
+		methods.Add(GameResultCode, RECGameResult);         // 開始遊戲才接受
 
 		resultSec = endResultSec * 1000;
 	}
@@ -113,7 +113,8 @@ public class TcpServer : ServerActions {
 		if (infosDict.ContainsKey(inSocket)) return;
 
 		try {
-			string roomName = socketRoomDict[inSocket];
+			string roomName;
+			if (!socketRoomDict.TryGetValue(inSocket, out roomName)) return;
 			Room room;
 
 			// 傳來的 Infos 放入字典
@@ -137,8 +138,10 @@ public class TcpServer : ServerActions {
 				string[] paramsStr = new string[sList.Count + 1];
 				int ii = 0;
 				foreach (Socket s in sList) {
-					paramsStr[ii] = InfosStr(infosDict[s]);
-					ii++;
+					if (infosDict.ContainsKey(s)) {
+						paramsStr[ii] = InfosStr(infosDict[s]);
+						ii++;
+					}
 				}
 
 				// 賦與新進的這位 ID 和 餐廳 Index
@@ -245,19 +248,16 @@ public class TcpServer : ServerActions {
 		if ((inParams.Length % 2) != 0) return;
 		Dictionary<string, int> d;
 		Room room;
-		try {
-			room = inWaitRoom[infosDict[inSocket].roomName];
-			d = room.colorNumDict;
-		} catch {
-			LogError("RECGameResult");
-			return;
-		}
+
+		if (!infosDict.ContainsKey(inSocket)) return;
+		if (!inWaitRoom.TryGetValue(infosDict[inSocket].roomName, out room)) return;
+		d = room.colorNumDict;
 
 		if (!room.isPlaying) {           // 如果還沒開始遊戲
 			return;
 		}
 
-		for (int i = 0; i < inParams.Length; i += 2) {
+		for (int i = 0; i < inParams.Length; i += 2) {                      // 統計各六角數量
 			try {
 				int n = 0;
 				if (d.TryGetValue(inParams[i], out n)) {
@@ -333,7 +333,7 @@ public class TcpServer : ServerActions {
 			s.Append(p.Key + " --> " + p.Value.Count).Append("\r\n");
 		}
 
-		File.WriteAllText("Rooms.txt",s.ToString());
+		File.WriteAllText("Rooms.txt", s.ToString());
 	}
 
 	public void PrintInfos() {
@@ -359,7 +359,7 @@ public class TcpServer : ServerActions {
 	/// 關閉房間，斷開跟這房間內所有客戶端的連線
 	/// </summary>
 	void CloseRoom(Room room) {
-		inWaitRoom.Remove(room.roomName);
+		if (inWaitRoom.ContainsKey(room.roomName)) inWaitRoom.Remove(room.roomName);
 		foreach (Socket socket in room.sockets) {
 			ClientLeave(socket);
 		}

@@ -138,6 +138,8 @@ public class ServerActions : NetworkBehaviour {
 	/// 需先自行判斷房間是否存在，若不存在會報錯
 	/// </summary>
 	protected virtual void AddToRoom(string roomName, Socket socket, RoomStatus roomStatus) {
+		if (!roomSocketDict.ContainsKey(roomName)) return;
+
 		if (roomSocketDict[roomName].Count >= maxClient) {      // 房間已滿
 			SendCommand(socket, ReciveRoomStatusCode, ((int)RoomStatus.RoomFulled).ToString());
 			return;
@@ -149,9 +151,9 @@ public class ServerActions : NetworkBehaviour {
 				roomSocketDict[oldRoom].Remove(socket);                         // 將他換過來
 				if (roomSocketDict[oldRoom].Count == 0) roomSocketDict.Remove(oldRoom);
 			}
+			socketRoomDict[socket] = roomName;
 		}
 		roomSocketDict[roomName].Add(socket);                    // 加入此房間
-		socketRoomDict[socket] = roomName;
 		SendCommand(socket, ReciveRoomStatusCode, ((int)roomStatus).ToString());    // 回傳房間狀態
 	}
 }

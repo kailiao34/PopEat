@@ -20,8 +20,6 @@ public class NetworkBehaviour : TcpBase {
 		RoomFulled = 104, Others = 105
 	}
 
-
-
 	protected Dictionary<string, Methods> methods = new Dictionary<string, Methods>();
 
 	/// <summary>
@@ -39,8 +37,9 @@ public class NetworkBehaviour : TcpBase {
 
 		string[] inParams = ExtractParams(data.Substring(i1 + 1));
 		if (inParams == null) return;                   // 如果參數解析失敗則離開
-
-		methods[code](socket, inParams);                            // 呼叫指令代號對應的 Function
+		try {
+			methods[code](socket, inParams);                            // 呼叫指令代號對應的 Function
+		} catch (Exception e) { LogError(new StringBuilder("DataReceived: ").Append(e.Message)); }
 	}
 
 	protected void SendCommand(Socket socket, string cmd, string[] paramsStr = null) {
