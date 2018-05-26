@@ -1,0 +1,11 @@
+1. 將 AudioManager 腳本加入場景中任何一個物件上 (只需要在第一個場景加入即可)
+完成!!
+
+開始始用:
+1. 在 Arist/Sounds 資料夾下放入聲音檔
+2. AudioManager 有三個函數可以用:
+	AudioManager.PlayOneShot(Audios.xx, 音量大小);
+	AudioManager.Play(Audios.xx, 音量大小, 是否循環播放);
+	AudioManager.Stop();
+	
+Audios 是個 Enum，會自動被 Arist/Sounds 下的檔名同步更新

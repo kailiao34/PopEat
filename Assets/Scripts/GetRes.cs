@@ -2,207 +2,223 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
-public class Details {
-	public string name;                                             // 餐廳名
-	public string address;                                          // 地址
-	public string phoneNum;                                         // 電話
-	public List<string> openingHours = new List<string>();          // 營業時間 (字串表示)
-	public float rating;                                            // 評價分數
-	public List<Reviews> reviews = new List<Reviews>();             // 網友評價
-	public bool permanentlyClosed;                                  // 如果 True 則此餐廳已永久停業
-	internal bool requested;                                     // 內部使用 (已向 Google 要過資料)
-	internal string detailUrl;                                       // 取得資料的網址
-																	 //public List<string> photos;
-}
-
-public class Reviews {
-	public string name;
-	public int rating;
-	public string text;
-	public DateTime time = new DateTime(1970, 1, 1);
-}
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 public class GetRes : MonoBehaviour {
-	public static GetRes ins;
-	public delegate void GetInfoDel(string[] resNames);
-	public delegate void GetDetailDel(Details resDetails);
 
-	protected Dictionary<string, Details> resDict = new Dictionary<string, Details>();
+	[Header("Google Place Key")]
+	public string googlePlaceKey = "AIzaSyDiC9HjxWI0dBa9x5hYL9xOmOnWJcFE-zU";
+
+	public static GetRes ins;
+	public delegate void GetDetailsDel(List<Details> resDetails);
+	public delegate void GetResNamesDel(List<string> resNames);
+	public delegate void GetResDetailDel(Details details);
+	delegate void GetLocCallbackDel(float lat, float lng);
+
+	static Dictionary<string, Details> resDetailDict = new Dictionary<string, Details>();
+	public static bool getLocSucceed = false;           // 是否已經成功讀取到裝置位置
+	public static bool isLoadingLoc = false;					// 是否正在讀取裝置位置
+	public static float lat, lng;
 
 	private void Awake() {
 		ins = this;
 	}
 
+#if (!UNITY_EDITOR && !UNITY_STANDALONE)
+	private void Start() {
+		if (!getLocSucceed) {
+			StartCoroutine(GetLocation(false));
+		}
+	}
+#endif
+
 	#region ======================= 外部使用函數 =======================
-	/// <summary>
-	/// 取得附近餐廳名
-	/// </summary>
-	/// <param name="lat">緯度 (台灣是 24.xx 或 25.xx)</param>
-	/// <param name="lng">經度 (台灣是 121.xx)</param>
-	/// <param name="radius">取得餐廳的半徑範圍</param>
-	/// <param name="callBackEvent">從 Google 得到資料後的 Callback 函數</param>
-	public void Get(double lat, double lng, int radius, GetInfoDel callBackEvent) {
-		StartCoroutine(GetInfo(lat, lng, radius, callBackEvent));
+	//public void GetAllResAndDetails(double lat, double lng, int radius, GetDetailsDel callBackEvent) {
+	//	//StartCoroutine(GetInfo(lat, lng, radius, callBackEvent));
+	//}
+
+	public void GetResNames(int radius, GetResNamesDel callBackEvent) {
+#if (UNITY_EDITOR || UNITY_STANDALONE)      // 在 Editor 或 電腦執行下，用測試座標 (中和連城路)
+		StartCoroutine(GetNames(24.99579212f, 121.48876185f, radius, callBackEvent));
+		return;
+#endif
+
+		if (getLocSucceed) {
+			StartCoroutine(GetNames(lat, lng, radius, callBackEvent));
+		} else {
+			StartCoroutine(GetLocation(true, radius, callBackEvent));
+		}
 	}
 
-	/// <summary>
-	/// 輸入餐廳名，取得這家餐廳的詳細資料，如果輸入的名稱錯誤，Callback 的傳入參數會是 Null
-	/// </summary>
-	/// <param name="resName">餐廳名</param>
-	public void GetResDetails(string resName, GetDetailDel callBackEvent) {
-		StartCoroutine(GetDetails(resName, callBackEvent));
+	public void GetResDetail(string resName, GetResDetailDel callBackEvent) {
+		StartCoroutine(GetDetail(resName, callBackEvent));
 	}
 	#endregion ==========================================================
 
-	#region ======================= 內部使用函數 =======================
-	IEnumerator GetDetails(string resName, GetDetailDel callBackEvent) {
-		Details d;
+	IEnumerator GetNames(float lat, float lng, int radius, GetResNamesDel callBackEvent) {
 
-		if (resDict.ContainsKey(resName)) {
-			d = resDict[resName];
+		StringBuilder url = new StringBuilder();
+		url.Append("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=")
+			.Append(lat.ToString()).Append(",").Append(lng.ToString()).Append("&radius=").Append(radius.ToString())
+			.Append("&type=restaurant&language=zh-TW&rankby =distance&key=").Append(googlePlaceKey);
 
-			// 如果還沒取得過，則向 Google 要資料
-			if (!d.requested) {
-				WWW www = new WWW(d.detailUrl);
+		WWW www = new WWW(url.ToString());
+		yield return www;
+
+		JArray resultsArray = (JArray)JObject.Parse(www.text)["results"];
+		List<string> names = new List<string>();
+
+		#region =========================== 取得餐廳列表 ===========================
+		for (int i = 0; i < resultsArray.Count; i++) {
+			JObject result = (JObject)resultsArray[i];
+			string name = result.Value<string>("name");             // 取得餐廳名
+
+			Details d;
+			if (!resDetailDict.TryGetValue(name, out d)) {
+				d = new Details();
+			}
+
+			d.name = name;
+			d.permanentlyClosed = false;
+			d.placeID = result.Value<string>("place_id");
+			d.visited = false;
+			names.Add(name);
+			resDetailDict[name] = d;
+		}
+		#endregion ==================================================================
+
+		if (callBackEvent != null) callBackEvent(names);
+	}
+
+	IEnumerator GetDetail(string resName, GetResDetailDel callBackEvent) {
+
+		Details d = null;
+
+		if (resDetailDict.TryGetValue(resName, out d)) {
+			if (!d.visited) {                       // 如果這間餐廳還沒有向Google要過資料
+				StringBuilder url = new StringBuilder();
+				url.Append("https://maps.googleapis.com/maps/api/place/details/json?placeid=")
+					.Append(d.placeID).Append("&language=zh-TW&key=").Append(googlePlaceKey);
+
+				#region ======= 取得餐廳的 Details =======
+				WWW www = new WWW(url.ToString());
 				yield return www;
 
-				string text = www.text;
-				int s = 0, e = 0;
+				JObject responce = JObject.Parse(www.text);
 
-				#region ===================== 解析 Json =====================
+				#region ------------- 解析 Json -------------
 				// 是否永遠關閉
-				if (text.IndexOf("permanently_closed") > 0) {
+				if (responce["result"]["permanently_closed"] != null) {
 					d.permanentlyClosed = true;
 				}
 				// 取得地址
-				s = text.IndexOf("formatted_address") + 22;
-				if (s > 22) {
-					e = text.IndexOf("\",", s);
-					d.address = text.Substring(s, e - s);
+				d.address = responce["result"].Value<string>("formatted_address");
+				if (d.address.Length > 0) {
+					StringBuilder sb = new StringBuilder();
+					sb.Append(d.address[0]);
+					//讓數字和中文字之間添加空白，避免一組數字被從中切開(ex. 631 -> 6 換行 31)。
+					for (int j = 1; j < d.address.Length; j++) {
+						char c = d.address[j];
+						char pc = d.address[j - 1];
+						bool isNumber = char.IsNumber(c);
+						bool wasNumber = char.IsNumber(pc);
+						if (isNumber != wasNumber) {
+							sb.Append(" ");
+						}
+						sb.Append(c);
+					}
+					d.address = sb.ToString();
 				}
+
 				// 取得電話
-				s = text.IndexOf("formatted_phone_number") + 27;
-				if (s > 27) {
-					e = text.IndexOf("\",", s);
-					d.phoneNum = text.Substring(s, e - s);
-				}
+				d.phoneNum = responce["result"].Value<string>("formatted_phone_number");
 				// 取得營業時間
-				s = text.IndexOf("weekday_text");
-				if (s > 0) {
-					int maxEnd = text.IndexOf("},", s);
-					while (true) {
-						s = text.IndexOf("星期", s);
-						if (s <= 0 || s >= maxEnd) break;
-						e = text.IndexOf("\"", s);
-						d.openingHours.Add(text.Substring(s, e - s));
-						s = e;
+				if (responce["result"]["opening_hours"] != null && responce["result"]["opening_hours"]["weekday_text"] != null) {
+					JArray weekdayArray = (JArray)responce["result"]["opening_hours"]["weekday_text"];
+					for (int j = 0; j < weekdayArray.Count; j++) {
+						d.openingHours.Add(weekdayArray[j].Value<string>());
 					}
 				}
+				// 取得是否營業中
+				if (responce["result"]["opening_hours"] != null && responce["result"]["opening_hours"]["open_now"] != null) {
+					if (responce["result"]["opening_hours"]["open_now"].Value<bool>()) {
+						d.openNow = 0;
+					} else d.openNow = 1;
+				} else d.openNow = 2;
+
 				// 取得評價分數
-				s = text.IndexOf("rating") + 10;
-				if (s > 10) {
-					e = text.IndexOf(",", s);
-					float rate;
-					if (float.TryParse(text.Substring(s, e - s), out rate)) {
-						d.rating = rate;
-					}
-				}
+				d.rating = responce["result"].Value<float>("rating");
 				// 取得評價留言
-				s = text.IndexOf("reviews");
-				if (s > 0) {
-					while (true) {
+				JArray reviewArray = (JArray)responce["result"]["reviews"];
+				if (reviewArray != null) {
+					for (int j = 0; j < reviewArray.Count; j++) {
 						Reviews review = new Reviews();
-
-						// 留言者暱稱
-						s = text.IndexOf("author_name", s) + 16;
-						if (s <= 16) break;
-						e = text.IndexOf("\"", s);
-						review.name = text.Substring(s, e - s);
-
-						// 給予的評價分數
-						s = text.IndexOf("rating", s) + 10;
-						if (s <= 10) break;
-						e = text.IndexOf(",", s);
-						int rate;
-						if (int.TryParse(text.Substring(s, e - s), out rate)) {
-							review.rating = rate;
-						}
-
-						// 給予的評價內容
-						s = text.IndexOf("text", s) + 9;
-						if (s <= 9) break;
-						e = text.IndexOf("\"", s);
-						review.text = text.Substring(s, e - s);
-
-						// 評價時的時間
-						s = text.IndexOf("time", s) + 8;
-						if (s <= 8) break;
-						e = text.IndexOf("}", s);
-						int sec;
-						if (int.TryParse(text.Substring(s, e - s), out sec)) {
-							review.time = new DateTime(1970, 1, 1).AddSeconds(sec);
-						}
-
+						JObject reviewJObject = (JObject)reviewArray[j];
+						review.name = reviewJObject.Value<string>("author_name");
+						review.rating = reviewJObject.Value<int>("rating");
+						review.text = reviewJObject.Value<string>("text") + "\n";
+						review.time = new DateTime(1970, 1, 1).AddSeconds(reviewJObject.Value<int>("time"));
 						d.reviews.Add(review);
 					}
 				}
-				#endregion ==================================================
-
-				d.requested = true;
-				AddToDatabase(d);
+				#endregion -------------------------
+				#endregion =================================
+				d.visited = true;
 			}
-
-		} else {
-			d = null;       // 輸入的餐廳名沒有在字典裡
 		}
-		
+
 		if (callBackEvent != null) callBackEvent(d);
-
 	}
+	/// <summary>
+	/// 在 Start 取得用戶地理位置
+	/// </summary>
+	IEnumerator GetLocation(bool needCallBack, int radius = 0, GetResNamesDel callBackEvent = null) {
+		getLocSucceed = false;
+		isLoadingLoc = true;
 
-	IEnumerator GetInfo(double lat, double lng, int radius, GetInfoDel callBackEvent) {
-		WWW www = new WWW("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + lat.ToString() + "," + lng.ToString() + "&radius=" + radius.ToString() +
-			"&type=restaurant&language=zh-TW&rankby =distance&key=AIzaSyDiC9HjxWI0dBa9x5hYL9xOmOnWJcFE-zU");
-		yield return www;
-
-		string text = www.text;
-
-		List<string> namesList = new List<string>();
-		int s = 0, e = 0;
-
-        while (true) {
-			string name, url;
-
-			// 取得餐廳名
-            s = text.IndexOf("name", s) + 9;
-            if (s <= 9) break;
-            e = text.IndexOf("\",", s);
-			name = text.Substring(s, e - s);
-
-			// 取得餐廳 ID 的 Url
-			s = text.IndexOf("place_id", s) + 13;
-			if (s <= 13) break;
-			e = text.IndexOf("\",", s);
-			url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + text.Substring(s, e - s) +
-				"&language=zh-TW&key=AIzaSyDiC9HjxWI0dBa9x5hYL9xOmOnWJcFE-zU";
-
-			// 填入字典
-			Details detail = new Details {
-				name = name,
-				requested = false,
-				permanentlyClosed = false,
-				detailUrl = url
-			};
-			resDict.Add(name, detail);
-
-			namesList.Add(name);
+		// First, check if user has location service enabled
+		if (!Input.location.isEnabledByUser) {
+			OnGetLocationFailed("未開啟 GPS");
+			isLoadingLoc = false;
+			yield break;
 		}
 
-		if (callBackEvent != null) callBackEvent(namesList.ToArray());
+		// Start service before querying location
+		Input.location.Start();
+
+		// Wait until service initializes
+		int maxWait = 20;
+		while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0) {
+			yield return new WaitForSeconds(1);
+			maxWait--;
+		}
+
+		// Service didn't initialize in 20 seconds
+		if (maxWait < 1) {
+			OnGetLocationFailed("讀取裝置位置時等待逾時");
+			isLoadingLoc = false;
+			yield break;
+		}
+
+		// Connection has failed
+		if (Input.location.status == LocationServiceStatus.Failed) {
+			OnGetLocationFailed("無法讀取裝置位置");
+			isLoadingLoc = false;
+			yield break;
+		} else {
+			// Access granted and location value could be retrieved
+			lat = Input.location.lastData.latitude;
+			lng = Input.location.lastData.longitude;
+			getLocSucceed = true;
+			isLoadingLoc = false;
+			if (needCallBack) StartCoroutine(GetNames(lat, lng, radius, callBackEvent));
+		}
+		// Stop service if there is no need to query location updates continuously
+		Input.location.Stop();
 	}
 
-	protected virtual void AddToDatabase(Details detail) { }
-
-	#endregion ==========================================================
+	void OnGetLocationFailed(string errorMsg) {
+		LogUI.Show(errorMsg);
+	}
 }

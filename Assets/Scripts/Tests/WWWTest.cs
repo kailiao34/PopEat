@@ -3,36 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WWWTest : MonoBehaviour {
-
-	void Start() {
-		GetRes.ins.Get(24.99579212, 121.48876185, 500, PrintNames);
+    void Start() {
+		//GetRes.ins.GetAllRes(24.99579212, 121.48876185, 500, PrintDetails);
 	}
 
-	void PrintNames(string[] resNames) {
-		foreach (string s in resNames) {
-			GetRes.ins.GetResDetails(s, PrintDetails);
-		}
-	}
+	public static void PrintDetails(List<Details> d) {
 
-	void PrintDetails(Details dd) {
-		print(dd.name);
-		print(dd.address);
-		print(dd.phoneNum);
-		foreach (string s in dd.openingHours) {
-			print(s);
+		int index = 0;
+
+		foreach (Details dd in d) {
+			index++;
+			print("============================== (" + index + ") ==============================");
+			print("餐廳名 --> " + dd.name);
+
+			print("地址 --> " + dd.address);
+			print("電話 --> " + dd.phoneNum);
+			print("====== ↓↓↓ 以下是營業時間 (字串型式) ======");
+			foreach (string s in dd.openingHours) {
+				print(s);
+			}
+			print("餐廳評價(是數字，到時可以用星號表示之類) --> " + dd.rating);
+			print("====== 以下是各個評價留言 (每個留言有4個資訊: 留言者名、給予的評價、留言、留言時間 ======");
+			foreach (Reviews r in dd.reviews) {
+				print("-------- 評價 --------");
+				print(r.name);
+				print(r.rating);
+				print(r.text);
+				print(r.time);
+			}
+
+			print("------------------------- 評價完 --------------------------");
+			print("餐廳是否已永久關閉 --> " + dd.permanentlyClosed);
+			print("===================================================================");
 		}
-		print(dd.rating);
-		print("--------- reviews ----------");
-		foreach (Reviews r in dd.reviews) {
-			print(r.name);
-			print(r.rating);
-			print(r.text);
-			print(r.time);
-		}
-		print("----------------------------");
-		print(dd.permanentlyClosed);
-		print(dd.requested);
-		print("=======================");
 	}
-	
 }
