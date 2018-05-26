@@ -39,7 +39,11 @@ public class NetworkBehaviour : TcpBase {
 			if (inParams == null) return;                   // 如果參數解析失敗則離開
 		try {
 			methods[code](socket, inParams);                            // 呼叫指令代號對應的 Function
-		} catch (Exception e) { LogError(new StringBuilder("DataReceived: ").Append(e.Message)); }
+		} catch (Exception e) {
+			StringBuilder s = new StringBuilder("DataReceived: ");
+			s.Append(e.Message);
+			LogError(s);
+		}
 	}
 
 	protected void SendCommand(Socket socket, string cmd, string[] paramsStr = null) {
