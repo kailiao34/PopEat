@@ -205,9 +205,10 @@ public class UIRoomManager : MonoBehaviour {
 			LogUI.Show("這個房間已經開始遊戲");
 			Ticker.StartTicker(0, LeaveRoom);
 
-		} else {                                                            // 未知錯誤
-			LogUI.Show("錯誤");
-		}
+		} 
+		//else {                                                            // 未知錯誤
+		//	LogUI.Show("錯誤");
+		//}
 		roomWaitForServer = false;
 	}
 
